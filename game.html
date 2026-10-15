@@ -236,6 +236,14 @@
             <rect x="3" y="7" width="10" height="8" fill="#eab308" />
             <rect x="7" y="10" width="2" height="3" fill="#050813" />
         </symbol>
+
+        <!-- Instagram Pixel Art -->
+        <symbol id="px-instagram" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="12" rx="3" fill="#e1306c" />
+            <rect x="4" y="4" width="8" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="1.2" />
+            <circle cx="8" cy="8" r="2.2" fill="none" stroke="#ffffff" stroke-width="1.2" />
+            <circle cx="10.8" cy="5.2" r="0.8" fill="#ffffff" />
+        </symbol>
     </svg>
 
     <div class="arcade-container">
@@ -420,10 +428,30 @@
                         </button>
                     </form>
 
-                    <!-- Botão de Compartilhamento WhatsApp 1-Toque -->
-                    <a id="btnWhatsAppShare" href="#" target="_blank" class="btn-acao btn-whatsapp" style="align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
-                        <svg class="px-icon"><use href="#px-whatsapp"/></svg> COMPARTILHAR NO WHATSAPP
-                    </a>
+                    <!-- Card Comemorativo do Recorde (Arte Padrão Oficial) -->
+                    <div id="boxCardGameOver" style="display: none; margin: 12px 0 6px 0; text-align: center;">
+                        <span style="font-size: 0.68rem; color: #facc15; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
+                            ★ ARTE OFICIAL DE CONVOCAÇÃO DA RESISTÊNCIA ★
+                        </span>
+                        <div style="margin-top: 6px; border: 1px solid rgba(250, 204, 21, 0.4); border-radius: 4px; overflow: hidden; box-shadow: 0 0 12px rgba(220, 38, 38, 0.35);">
+                            <img id="imgCardGameOver" src="" alt="Arte Comemorativa do Levante 13" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+
+                    <!-- Bloco de Compartilhamento Viral (WhatsApp & Instagram) -->
+                    <div id="boxCompartilhamento" style="display: none; margin-top: 10px; flex-direction: column; gap: 8px;">
+                        <a id="btnWhatsAppShare" href="#" target="_blank" class="btn-acao btn-whatsapp">
+                            <svg class="px-icon"><use href="#px-whatsapp"/></svg> COMPARTILHAR NO WHATSAPP
+                        </a>
+
+                        <button id="btnInstagramShare" type="button" class="btn-acao btn-instagram">
+                            <svg class="px-icon"><use href="#px-instagram"/></svg> COMPARTILHAR NO INSTAGRAM
+                        </button>
+
+                        <a id="btnBaixarCard" href="#" download="levante13_recorde.png" class="btn-link" style="display: block; text-align: center; margin-top: 4px; font-size: 0.72rem; color: #38bdf8; text-decoration: none;">
+                            ⬇ Baixar Arte do Recorde (PNG)
+                        </a>
+                    </div>
 
                     <button id="btnJogarNovamente" class="btn-acao btn-secundario" style="margin-top: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
                         <svg class="px-icon"><use href="#px-refresh"/></svg> REINICIAR MISSÃO
@@ -613,6 +641,11 @@
         const formScore = document.getElementById('formSalvarScore');
         const btnSalvar = document.getElementById('btnSalvarScore');
         const btnWhatsApp = document.getElementById('btnWhatsAppShare');
+        const btnInstagram = document.getElementById('btnInstagramShare');
+        const btnBaixarCard = document.getElementById('btnBaixarCard');
+        const boxCardGameOver = document.getElementById('boxCardGameOver');
+        const imgCardGameOver = document.getElementById('imgCardGameOver');
+        const boxCompartilhamento = document.getElementById('boxCompartilhamento');
         const btnRestart = document.getElementById('btnJogarNovamente');
         const btnTrocarPilotoGameOver = document.getElementById('btnTrocarPilotoGameOver');
 
@@ -672,10 +705,67 @@
                         btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-check"/></svg> REGISTRADO!';
                         formScore.style.display = 'none';
 
-                        // Ativa botão de compartilhamento com WhatsApp
-                        if (json.whatsapp_url) {
+                        // Exibe a Arte Padrão Oficial do Recorde
+                        const cardUrl = json.card_path || json.card_imagem;
+                        if (cardUrl && imgCardGameOver) {
+                            imgCardGameOver.src = cardUrl;
+                            if (boxCardGameOver) boxCardGameOver.style.display = 'block';
+                            if (btnBaixarCard) btnBaixarCard.href = cardUrl;
+                        }
+
+                        // Ativa botões de compartilhamento (WhatsApp & Instagram)
+                        if (boxCompartilhamento) boxCompartilhamento.style.display = 'flex';
+
+                        if (btnWhatsApp && json.whatsapp_url) {
                             btnWhatsApp.href = json.whatsapp_url;
-                            btnWhatsApp.style.display = 'flex';
+                        }
+
+                        if (btnInstagram) {
+                            btnInstagram.onclick = async () => {
+                                const legenda = json.instagram_legenda || `🚀 Pilotei a Vanguarda 13 e registrei ${window.jogo.pontos.toLocaleString('pt-BR')} pts! Jogue em https://levante13.online`;
+
+                                // Tenta compartilhamento nativo em smartphones (Instagram Stories / Feed)
+                                if (navigator.share && cardUrl) {
+                                    try {
+                                        const blobRes = await fetch(cardUrl);
+                                        const blob = await blobRes.blob();
+                                        const file = new File([blob], 'levante13_recorde.png', { type: 'image/png' });
+                                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                                            await navigator.share({
+                                                title: 'Levante 13: A Virada',
+                                                text: legenda,
+                                                files: [file]
+                                            });
+                                            return;
+                                        }
+                                    } catch (err) {
+                                        // Continua para o fluxo web se usuário cancelar
+                                    }
+                                }
+
+                                // Fluxo Desktop / Web padrão:
+                                // 1. Copia a legenda oficial com a chamada para ação
+                                if (navigator.clipboard && navigator.clipboard.writeText) {
+                                    try {
+                                        await navigator.clipboard.writeText(legenda);
+                                    } catch (err) {
+                                        console.warn('Erro ao copiar para clipboard:', err);
+                                    }
+                                }
+
+                                // 2. Dispara download da arte do recorde
+                                if (btnBaixarCard) btnBaixarCard.click();
+
+                                // 3. Abre o Instagram
+                                window.open('https://www.instagram.com/', '_blank');
+
+                                // 4. Feedback visual no botão
+                                const textoOriginal = btnInstagram.innerHTML;
+                                btnInstagram.innerHTML = '<svg class="px-icon"><use href="#px-check"/></svg> ARTE BAIXADA E LEGENDA COPIADA!';
+                                setTimeout(() => {
+                                    btnInstagram.innerHTML = textoOriginal;
+                                }, 3500);
+                            };
                         }
                     } else {
                         alert(json.erro || 'Falha ao registrar pontuação.');
@@ -694,9 +784,10 @@
             btnRestart.addEventListener('click', () => {
                 document.getElementById('gameOverModal').style.display = 'none';
                 formScore.style.display = 'block';
+                if (boxCardGameOver) boxCardGameOver.style.display = 'none';
+                if (boxCompartilhamento) boxCompartilhamento.style.display = 'none';
                 btnSalvar.disabled = false;
                 btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> REGISTRAR RECORDE';
-                btnWhatsApp.style.display = 'none';
                 window.jogo.iniciarPartida();
             });
         }
