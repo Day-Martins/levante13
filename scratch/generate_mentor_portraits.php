@@ -38,6 +38,17 @@ $mentores = [
         'gamma'    => 1.0
     ],
     [
+        'id' => 'drauzio',
+        'ref' => $baseDir . '/RefImg/Drauzio.png',
+        'level' => 4,
+        'nome' => 'DRAUZIO',
+        'crop' => ['x' => 50, 'y' => 15, 'w' => 330, 'h' => 330],
+        'corBorda' => [56, 189, 248], // ciano neon médico
+        'corNome'  => [255, 255, 255],
+        'paleta'   => 36,
+        'gamma'    => 1.05
+    ],
+    [
         'id' => 'henrique',
         'ref' => $baseDir . '/RefImg/Henrique.png',
         'level' => 5,
