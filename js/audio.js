@@ -334,6 +334,39 @@ class GerenciadorAudio {
             osc.stop(agora + tempo + dur);
         });
     }
+
+    /**
+     * Sirene / alarme tático retrô Sci-Fi para a entrada imponente do Chefe.
+     * Pulsa duas vezes em tom estridente estilo sirene de alerta vermelho.
+     */
+    tocarAlertaChefe() {
+        if (this.mutado || !this.ctx) return;
+        this.iniciar();
+
+        const agora = this.ctx.currentTime;
+        const pulsos = [0.0, 0.28, 0.56];
+
+        pulsos.forEach((inicio) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sawtooth';
+            // Variação de pitch rápido descendente/ascendente de sirene de invasão
+            osc.frequency.setValueAtTime(440, agora + inicio);
+            osc.frequency.exponentialRampToValueAtTime(880, agora + inicio + 0.12);
+            osc.frequency.exponentialRampToValueAtTime(220, agora + inicio + 0.24);
+
+            gain.gain.setValueAtTime(0.001, agora + inicio);
+            gain.gain.linearRampToValueAtTime(0.35, agora + inicio + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, agora + inicio + 0.25);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(agora + inicio);
+            osc.stop(agora + inicio + 0.25);
+        });
+    }
 }
 
 // Instância global de áudio
