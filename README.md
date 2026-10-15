@@ -65,9 +65,10 @@ Isso barra a trapaça óbvia (editar a requisição no DevTools). Quem reescreve
 - Transmissões holográficas no início de cada frente com retratos em pixel art de referências históricas e contemporâneas:
   - **Frente 1:** Ana Prestes (Historiadora e Socióloga)
   - **Frente 2:** Jones Manoel (Educador Popular e Historiador)
-  - **Frente 3:** Pastor Henrique Vieira (Teólogo e Ativista)
-  - **Frente 4:** Sonia Guajajara (Liderança Indígena e Ministra)
-  - **Frente 5 & 6:** Presidente Lula (Liderança Popular e Soberania)
+  - **Frente 3:** Sonia Guajajara (Liderança Indígena e Ministra)
+  - **Frente 4:** Dr. Drauzio Varella (Médico Sanitarista e Cientista da Saúde)
+  - **Frente 5:** Pastor Henrique Vieira (Teólogo e Ativista)
+  - **Frente 6:** Presidente Lula (Liderança Popular e Soberania)
 
 ### 🌊 Movimentação Errática de Manada
 - Conforme o número de invasores na grade diminui, a movimentação torna-se progressivamente mais errática e imprevisível, simulando a quebra do efeito de manada fascista.

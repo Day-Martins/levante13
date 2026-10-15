@@ -4,13 +4,13 @@
   "subtitle": "A Ciência a Serviço do Povo e a Defesa do SUS",
   "theme": "bio_hazard",
   "holotransmission": {
-    "mentor": "Comando da Saúde Popular",
-    "role": "Cientista-Chefe da Saúde Pública e Sanitarista",
+    "mentor": "Dr. Drauzio Varella",
+    "role": "Médico Oncologista, Sanitarista e Cientista Popular",
     "avatar": "levels/level_4/mentor.png",
     "dialogue": [
-      "Vanguarda 13, aqui é o Comando da Saúde Coletiva na escuta.",
+      "Vanguarda 13, aqui é o Dr. Drauzio Varella na escuta.",
       "As forças obscurantistas tentaram sabotar a imunização, asfixiar os leitos e enriquecer traficantes de remédios ineficazes.",
-      "A ciência pública e o SUS são as maiores trincheiras da humanidade. Dispersem a névoa tóxica e garantam a vacina nos braços do povo!"
+      "A ciência pública e o SUS são as maiores trincheiras da humanidade. Dispersem a névoa tóxica e garantam a vacina e a vida nos braços do povo!"
     ]
   },
   "grid": {

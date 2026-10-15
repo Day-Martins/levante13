@@ -41,11 +41,13 @@ if ($partida) {
 
     $tituloOg = "O piloto {$nomePiloto} garantiu {$pontosFormatados} pts no Levante 13: A Virada!";
     $descricaoOg = "As forças do obscurantismo estão avançando sobre o Brasil! O piloto {$nomePiloto} defendeu a Frente {$frenteAlcancada}. Você consegue virar esse jogo? Jogue agora!";
-    $imagemOg = "{$dominioBase}/cards/card_{$token}.png";
+    $imagemOg = file_exists(__DIR__ . "/cards/card_{$token}.png") ? "cards/card_{$token}.png" : "{$dominioBase}/cards/card_{$token}.png";
+    $imagemOgFull = "{$dominioBase}/cards/card_{$token}.png";
 } else {
     $tituloOg = "Levante 13: A Virada — O Jogo da Resistência Popular";
     $descricaoOg = "Junte-se à aliança popular e pilote a Vanguarda 13 para defender o Brasil contra o fascismo! Jogue grátis direto no navegador.";
-    $imagemOg = "{$dominioBase}/assets/card_template.png";
+    $imagemOg = "assets/img/og-preview.png";
+    $imagemOgFull = "{$dominioBase}/assets/img/og-preview.png";
 }
 ?>
 <!DOCTYPE html>
@@ -60,7 +62,7 @@ if ($partida) {
     <meta property="og:url" content="<?= htmlspecialchars("{$dominioBase}/share.php?id={$token}", ENT_QUOTES, 'UTF-8') ?>">
     <meta property="og:title" content="<?= htmlspecialchars($tituloOg, ENT_QUOTES, 'UTF-8') ?>">
     <meta property="og:description" content="<?= htmlspecialchars($descricaoOg, ENT_QUOTES, 'UTF-8') ?>">
-    <meta property="og:image" content="<?= htmlspecialchars($imagemOg, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($imagemOgFull, ENT_QUOTES, 'UTF-8') ?>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="pt_BR">
@@ -70,7 +72,7 @@ if ($partida) {
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<?= htmlspecialchars($tituloOg, ENT_QUOTES, 'UTF-8') ?>">
     <meta name="twitter:description" content="<?= htmlspecialchars($descricaoOg, ENT_QUOTES, 'UTF-8') ?>">
-    <meta name="twitter:image" content="<?= htmlspecialchars($imagemOg, ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars($imagemOgFull, ENT_QUOTES, 'UTF-8') ?>">
 
     <!-- FONTE RETRÔ VCR OSD MONO (https://www.dafont.com/vcr-osd-mono.font) -->
     <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>

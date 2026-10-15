@@ -81,10 +81,22 @@ function processarConsultaLeaderboard(PDO $pdo): void
         ];
     }
 
+    // Contagem de codinomes cadastrados / pilotos mobilizados (Urna + Leaderboard)
+    $sqlTotalCodinomes = <<<SQL
+    SELECT COUNT(DISTINCT codename) AS total FROM (
+        SELECT codename FROM players
+        UNION
+        SELECT player_name AS codename FROM leaderboard WHERE player_name IS NOT NULL AND player_name != ''
+    )
+    SQL;
+    $stmtCount = $pdo->query($sqlTotalCodinomes);
+    $totalCodinomes = (int)($stmtCount->fetchColumn() ?: 0);
+
     echo json_encode([
-        'sucesso' => true,
-        'total'   => count($ranking),
-        'ranking' => $ranking
+        'sucesso'         => true,
+        'total'           => count($ranking),
+        'total_codinomes' => $totalCodinomes,
+        'ranking'         => $ranking
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
 
@@ -189,21 +201,25 @@ function processarSubmissaoScore(PDO $pdo): void
     // 6. Geração do card comemorativo em PHP GD para redes sociais
     $cardGerado = gerarCardResistencia($playerName, $score, $levelReached, $shareToken);
 
+    $scoreFormatado = number_format($score, 0, ',', '.');
     $linkShare = 'https://levante13.online/share.php?id=' . $shareToken;
     $urlCard   = 'https://levante13.online/cards/card_' . $shareToken . '.png';
+    $caminhoRelativoCard = 'cards/card_' . $shareToken . '.png';
+
+    $msgWhatsApp = "🚀 Pilotei a Vanguarda 13 e garanti {$scoreFormatado} pts na Frente {$levelReached}! Você consegue virar esse jogo? Jogue agora: {$linkShare}";
+    $legendaInstagram = "🚀 Pilotei a Vanguarda 13 e registrei {$scoreFormatado} pts na Frente {$levelReached} do Levante 13!\n\nVocê consegue superar minha marca e virar o jogo? Jogue grátis agora no navegador:\n{$linkShare}\n\n#Levante13 #AVirada #ResistenciaPopular #Democracia @lulaoficial";
 
     http_response_code(201);
     echo json_encode([
-        'sucesso'     => true,
-        'mensagem'    => 'Recorde registrado com sucesso no Comando do Levante 13!',
-        'id'          => $idGerado,
-        'token'       => $shareToken,
-        'link_share'  => $linkShare,
-        'card_imagem' => $cardGerado ? $urlCard : null,
-        'whatsapp_url' => 'https://api.whatsapp.com/send?text=' . urlencode(
-            "🚀 Pilotei a Vanguarda 13 e garanti " . number_format($score, 0, ',', '.') . 
-            " pts na Frente {$levelReached}! Você consegue virar esse jogo? " . $linkShare
-        )
+        'sucesso'            => true,
+        'mensagem'           => 'Recorde registrado com sucesso no Comando do Levante 13!',
+        'id'                 => $idGerado,
+        'token'              => $shareToken,
+        'link_share'         => $linkShare,
+        'card_imagem'        => $cardGerado ? $urlCard : null,
+        'card_path'          => $cardGerado ? $caminhoRelativoCard : null,
+        'whatsapp_url'       => 'https://api.whatsapp.com/send?text=' . urlencode($msgWhatsApp),
+        'instagram_legenda'  => $legendaInstagram
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
 

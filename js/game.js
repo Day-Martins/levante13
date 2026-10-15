@@ -79,6 +79,8 @@ class MotorLevante13 {
         this.spriteChefe = null;
         this.temporizadorSuprimentoChefe = 0;
         this.textoAlertaChefe = '';
+        this.subtextoAlertaChefe = '';
+        this.tipoAlertaChefe = 'info';
         this.tempoAlertaChefe = 0;
 
         // Fases e Níveis Dinâmicos
@@ -127,9 +129,15 @@ class MotorLevante13 {
      */
     configurarEventos() {
         window.addEventListener('keydown', (e) => {
-            // Se o modal de credencial/Urna estiver aberto, ignora atalhos globais do jogo
+            // Se qualquer modal estiver aberto (credencial/Urna, ajuda/power-ups, placar), ignora atalhos de disparo/início
             const modalCredencial = document.getElementById('modalCredencial');
-            if (modalCredencial && modalCredencial.style.display === 'flex') {
+            const modalPowerups = document.getElementById('powerupsModal');
+            const modalRanking = document.getElementById('leaderboardModal');
+            if (
+                (modalCredencial && modalCredencial.style.display === 'flex') ||
+                (modalPowerups && modalPowerups.style.display === 'flex') ||
+                (modalRanking && modalRanking.style.display === 'flex')
+            ) {
                 return;
             }
 
@@ -310,16 +318,23 @@ class MotorLevante13 {
         const modalTransicao = document.getElementById('transicaoFaseModal');
         if (modalTransicao) modalTransicao.style.display = 'none';
 
-        // Reseta formulário de recorde
+        // Reseta formulário de recorde e caixas de compartilhamento
         const formScore = document.getElementById('formSalvarScore');
         const btnSalvar = document.getElementById('btnSalvarScore');
+        const boxCompartilhamento = document.getElementById('boxCompartilhamento');
+        const boxCard = document.getElementById('boxCardGameOver');
         const btnWhatsApp = document.getElementById('btnWhatsAppShare');
+        const btnInstagram = document.getElementById('btnInstagramShare');
+
         if (formScore) formScore.style.display = 'block';
         if (btnSalvar) {
             btnSalvar.disabled = false;
             btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> REGISTRAR RECORDE';
         }
-        if (btnWhatsApp) btnWhatsApp.style.display = 'none';
+        if (boxCompartilhamento) boxCompartilhamento.style.display = 'none';
+        if (boxCard) boxCard.style.display = 'none';
+        if (btnWhatsApp) btnWhatsApp.style.display = 'inline-flex';
+        if (btnInstagram) btnInstagram.style.display = 'inline-flex';
     }
 
     /**
@@ -431,19 +446,50 @@ class MotorLevante13 {
     }
 
     /**
-     * Exibe o Manual de Power-ups da Vanguarda 13 antes do início do combate
+     * Exibe o Manual de Power-ups da Vanguarda 13.
+     * Se invocado durante o fluxo normal de início da Fase 1, atua como tutorial de partida.
+     * Se invocado pelo botão de ajuda '?', atua como consulta e preserva o estado anterior.
+     * @param {boolean} modoConsultaManual - true se foi acionado via botão de ajuda '?'
      */
-    exibirManualPowerups() {
-        this.estado = 'TUTORIAL_POWERUPS';
-        this.manualPowerupsExibido = true;
+    exibirManualPowerups(modoConsultaManual = false) {
+        this.modoConsultaManual = modoConsultaManual;
+        this.estadoAnteriorManual = this.estado;
+
+        // Se for o tutorial obrigatório inicial da fase 1
+        if (!modoConsultaManual && this.estado === 'HOLOTRANSMISSAO') {
+            this.estado = 'TUTORIAL_POWERUPS';
+            this.manualPowerupsExibido = true;
+        }
+
         const modal = document.getElementById('powerupsModal');
+        const btnEntendido = document.getElementById('btnEntendidoPowerups');
+        const subtexto = document.getElementById('subtextoManualPowerups');
+
+        if (btnEntendido && subtexto) {
+            // Se está em tela de Game Over, placar ou se foi apenas uma consulta da barra superior
+            const emGameOver = this.estado === 'FIM_DE_JOGO' || this.estadoAnteriorManual === 'FIM_DE_JOGO';
+            const apenasConsulta = modoConsultaManual || emGameOver || this.estadoAnteriorManual === 'JOGANDO' || this.estadoAnteriorManual === 'CHEFE';
+
+            if (apenasConsulta && !(!this.manualPowerupsExibido && this.indiceFaseAtual === 0 && !modoConsultaManual)) {
+                btnEntendido.innerHTML = 'FECHAR MANUAL <svg class="px-icon"><use href="#px-close"/></svg>';
+                btnEntendido.className = 'btn-acao btn-secundario';
+                subtexto.textContent = 'Clique para fechar o manual e retornar à tela anterior';
+            } else {
+                btnEntendido.innerHTML = 'ENTENDIDO! ÀS ARMAS <svg class="px-icon"><use href="#px-play"/></svg>';
+                btnEntendido.className = 'btn-acao btn-transicao';
+                subtexto.textContent = 'Clique no botão acima para iniciar a batalha';
+            }
+        }
+
         if (modal) {
             modal.style.display = 'flex';
         }
     }
 
     /**
-     * Fecha o Manual de Power-ups e inicia o combate da fase
+     * Fecha o Manual de Power-ups.
+     * Se for o tutorial inicial da Fase 1, inicia o combate.
+     * Se for consulta (ou se estava em Game Over / tela de score), apenas fecha e restaura o estado.
      */
     fecharManualPowerups() {
         const modal = document.getElementById('powerupsModal');
@@ -451,9 +497,16 @@ class MotorLevante13 {
             modal.style.display = 'none';
         }
 
-        if (this.estado === 'TUTORIAL_POWERUPS') {
+        // Se era o tutorial inicial que estava esperando para iniciar o jogo
+        if (!this.modoConsultaManual && this.estado === 'TUTORIAL_POWERUPS') {
             this.montarGradeInimigos();
             this.estado = 'JOGANDO';
+            return;
+        }
+
+        // Se foi apenas uma consulta manual, restaura o estado anterior sem reiniciar ou disparar jogo
+        if (this.estadoAnteriorManual) {
+            this.estado = this.estadoAnteriorManual;
         }
     }
 
@@ -651,6 +704,8 @@ class MotorLevante13 {
                             'SOBRECARGA CRÍTICA DESESPERADA!'
                         ];
                         this.textoAlertaChefe = `💥 DANO CRÍTICO: ${titulosFase[evDano.faseAtual] || 'RUPTURA DE CASCO!'}`;
+                        this.subtextoAlertaChefe = 'A BLINDAGEM DO OPRESSOR ESTÁ COLAPSANDO!';
+                        this.tipoAlertaChefe = 'critico';
                         this.tempoAlertaChefe = 150;
                     }
 
@@ -951,6 +1006,8 @@ class MotorLevante13 {
         const dropX = Math.max(30, Math.min(this.cw - 50, this.cw / 2 + (Math.random() - 0.5) * 160));
         this.droparItemEspecial(dropX, 40);
         this.textoAlertaChefe = mensagem;
+        this.subtextoAlertaChefe = 'COLETE A CÁPSULA PARA FORTALECER A NAVE';
+        this.tipoAlertaChefe = 'suprimento';
         this.tempoAlertaChefe = 140;
     }
 
@@ -962,10 +1019,17 @@ class MotorLevante13 {
 
         this.estado = 'CHEFE';
         this.chefe = new ChefeSetor(this.cw, this.dadosFaseAtual.chefe, this.spriteChefe, this.indiceFaseAtual + 1);
-        this.shakeTela = 18;
+        this.shakeTela = 22;
         this.temporizadorSuprimentoChefe = 0;
-        this.textoAlertaChefe = `⚠️ CAPITÂNIA AUTORITÁRIA: ${this.chefe.nome.toUpperCase()}`;
-        this.tempoAlertaChefe = 180;
+
+        // Dispara som de sirene tática retrô Sci-Fi
+        audio.tocarAlertaChefe();
+
+        // Configura banner de alerta de grande impacto
+        this.textoAlertaChefe = `⚠️ ALERTA DE CHEFE: ${this.chefe.nome.toUpperCase()}`;
+        this.subtextoAlertaChefe = this.chefe.titulo ? `[ ${this.chefe.titulo.toUpperCase()} ]` : '[ NAVE CAPITÂNIA AUTORITÁRIA ]';
+        this.tipoAlertaChefe = 'chefe';
+        this.tempoAlertaChefe = 220;
     }
 
     derrotarChefe() {
@@ -975,8 +1039,10 @@ class MotorLevante13 {
         this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#ef4444', 40);
         this.shakeTela = 25;
         this.chefe = null;
-        this.textoAlertaChefe = '⭐ NAVE CAPITÂNIA DESTRUÍDA! O POVO AVANÇA!';
-        this.tempoAlertaChefe = 120;
+        this.textoAlertaChefe = '⭐ NAVE CAPITÂNIA DESTRUÍDA!';
+        this.subtextoAlertaChefe = 'O POVO AVANÇA! FRENTE LIBERTADA!';
+        this.tipoAlertaChefe = 'vitoria';
+        this.tempoAlertaChefe = 140;
         this.avancarParaProximaFase();
     }
 
@@ -1287,21 +1353,75 @@ class MotorLevante13 {
             this.ctx.strokeRect(barX, barY, barW, 6);
         }
 
-        // Alerta Tático da Batalha (Power-ups ou Dano Crítico)
+        // Alerta Tático da Batalha (Entrada do Chefe, Dano Crítico ou Power-ups)
         if (this.tempoAlertaChefe > 0 && this.textoAlertaChefe) {
             const alphaAlerta = Math.min(1, this.tempoAlertaChefe / 20);
             this.ctx.save();
             this.ctx.globalAlpha = alphaAlerta;
-            this.ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
-            this.ctx.strokeStyle = '#38bdf8';
-            this.ctx.lineWidth = 1;
-            this.ctx.fillRect(20, 50, this.cw - 40, 20);
-            this.ctx.strokeRect(20, 50, this.cw - 40, 20);
 
-            this.ctx.font = '7px "Press Start 2P", "Courier New", monospace';
-            this.ctx.fillStyle = '#fef08a';
+            const ehChefe = this.tipoAlertaChefe === 'chefe';
+            const ehCritico = this.tipoAlertaChefe === 'critico';
+            const ehVitoria = this.tipoAlertaChefe === 'vitoria';
+
+            // Cores dinâmicas de acordo com o evento tático
+            let corBorda = '#38bdf8';
+            let corFundo = 'rgba(15, 23, 42, 0.95)';
+            let corTitulo = '#fef08a';
+            let corSub = '#94a3b8';
+
+            if (ehChefe) {
+                // Alerta Vermelho de Emergência com pulsação neon
+                const pulso = Math.floor(Date.now() / 120) % 2 === 0;
+                corBorda = pulso ? '#ef4444' : '#facc15';
+                corFundo = 'rgba(24, 8, 14, 0.96)';
+                corTitulo = pulso ? '#ffffff' : '#facc15';
+                corSub = '#fca5a5';
+            } else if (ehCritico) {
+                corBorda = '#f97316';
+                corFundo = 'rgba(30, 15, 10, 0.95)';
+                corTitulo = '#fdba74';
+                corSub = '#fef08a';
+            } else if (ehVitoria) {
+                corBorda = '#22c55e';
+                corFundo = 'rgba(10, 26, 18, 0.95)';
+                corTitulo = '#4ade80';
+                corSub = '#bbf7d0';
+            }
+
+            const boxW = this.cw - 24;
+            const boxX = 12;
+            const boxH = this.subtextoAlertaChefe ? 44 : 28;
+            const boxY = this.chefe ? 48 : 50;
+
+            // Fundo escurecido de alta opacidade
+            this.ctx.fillStyle = corFundo;
+            this.ctx.fillRect(boxX, boxY, boxW, boxH);
+
+            // Borda neon dupla estilo HUD militar Sci-Fi
+            this.ctx.strokeStyle = corBorda;
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(boxX + 2, boxY + 2, boxW - 4, boxH - 4);
+
+            // Texto Principal do Alerta: Fonte VCR OSD Mono ampliada para leitura nítida (13px)
+            this.ctx.font = 'bold 13px "VCR OSD Mono", "Press Start 2P", monospace';
+            this.ctx.fillStyle = corTitulo;
             this.ctx.textAlign = 'center';
-            this.ctx.fillText(this.textoAlertaChefe, this.cw / 2, 63);
+
+            if (this.subtextoAlertaChefe) {
+                this.ctx.fillText(this.textoAlertaChefe, this.cw / 2, boxY + 18);
+
+                // Subtexto descritivo explicativo (10px)
+                this.ctx.font = '10px "VCR OSD Mono", monospace';
+                this.ctx.fillStyle = corSub;
+                this.ctx.fillText(this.subtextoAlertaChefe, this.cw / 2, boxY + 35);
+            } else {
+                this.ctx.fillText(this.textoAlertaChefe, this.cw / 2, boxY + 18);
+            }
+
             this.ctx.restore();
         }
 

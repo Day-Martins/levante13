@@ -234,6 +234,16 @@
             <rect x="7" y="10" width="2" height="1" fill="currentColor" />
             <rect x="2" y="12" width="12" height="2" fill="currentColor" />
         </symbol>
+
+        <!-- Símbolo Pilotos Mobilizados / Usuários (Pixel Art) -->
+        <symbol id="px-users" viewBox="0 0 16 16">
+            <rect x="6" y="2" width="4" height="4" fill="currentColor" />
+            <rect x="4" y="7" width="8" height="6" fill="currentColor" />
+            <rect x="1" y="4" width="3" height="3" fill="currentColor" opacity="0.7" />
+            <rect x="0" y="8" width="4" height="5" fill="currentColor" opacity="0.7" />
+            <rect x="12" y="4" width="3" height="3" fill="currentColor" opacity="0.7" />
+            <rect x="12" y="8" width="4" height="5" fill="currentColor" opacity="0.7" />
+        </symbol>
     </svg>
 
     <!-- 1. CABEÇALHO SÓBRIO -->
@@ -261,8 +271,14 @@
         <!-- 2. HERO PRINCIPAL (VERSÃO EM BREVE COM BOTÃO DESATIVADO) -->
         <section id="inicio" class="hero">
             <div class="container">
-                <div class="hero-tag" id="heroBadgeStatus">
-                    ★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                    <div class="hero-tag" id="heroBadgeStatus">
+                        ★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE
+                    </div>
+                    <div id="boxContadorPilotosHero" class="hero-tag" style="display: none; background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.6); color: #4ade80;">
+                        <svg class="px-icon" style="color: #22c55e;"><use href="#px-users"></use></svg>
+                        <span><strong id="numContadorPilotosHero" style="color: #ffffff;">0</strong> PILOTOS CONVOCADOS</span>
+                    </div>
                 </div>
 
                 <h1 class="hero-title">
@@ -329,12 +345,18 @@
                         <h2 class="secao-titulo">Placar da Resistência</h2>
                         <p class="secao-sub">Os maiores recordes registrados pelos pilotos da democracia.</p>
                     </div>
-                    <button id="btnAtualizarRanking" class="btn-sec" type="button"
-                        style="padding: 8px 14px; font-size: 0.8rem; cursor: pointer;">
-                        <svg class="px-icon">
-                            <use href="#px-refresh"></use>
-                        </svg> Atualizar
-                    </button>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <div id="boxContadorPilotosPlacar" class="contador-pilotos-badge" style="display: none; align-items: center; gap: 6px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(56, 189, 248, 0.4); padding: 6px 12px; font-size: 0.82rem; color: #38bdf8;">
+                            <svg class="px-icon" style="color: var(--amarelo);"><use href="#px-users"></use></svg>
+                            <span><strong id="numContadorPilotosPlacar" style="color: #ffffff;">0</strong> PILOTOS MOBILIZADOS</span>
+                        </div>
+                        <button id="btnAtualizarRanking" class="btn-sec" type="button"
+                            style="padding: 8px 14px; font-size: 0.8rem; cursor: pointer;">
+                            <svg class="px-icon">
+                                <use href="#px-refresh"></use>
+                            </svg> Atualizar
+                        </button>
+                    </div>
                 </div>
 
                 <div class="tabela-ranking">

@@ -7,16 +7,32 @@ declare(strict_types=1);
  * Arquivo: api/generate_card.php
  * 
  * Funcionalidades:
- * - Gera imagem de 1200x630px para compartilhamento em redes sociais (Open Graph / WhatsApp).
- * - Carimba codinome do piloto, pontuação e setor defendido.
- * - Utiliza template base pré-definido se existir ou sintetiza visual retrô espacial de forma nativa.
+ * - Gera imagem de alta resolução (1200x630px) para compartilhamento no WhatsApp, Instagram e Open Graph.
+ * - Carimba codinome do piloto, pontuação destacada em dourado, setor defendido e mentor.
+ * - Banner oficial de convocação para atrair novos jogadores: https://levante13.online.
  * - Grava arquivo em `cards/card_[token].png`.
  */
 
 const CARDS_DIR = __DIR__ . '/../cards';
 const ASSETS_DIR = __DIR__ . '/../assets';
-const FONTE_PADRAO = ASSETS_DIR . '/fonts/arcade.ttf';
-const TEMPLATE_PADRAO = ASSETS_DIR . '/card_template.png';
+const LEVELS_DIR = __DIR__ . '/../levels';
+const FONTE_PADRAO = ASSETS_DIR . '/fonts/vcr_osd_mono.ttf';
+
+/**
+ * Retorna o nome amigável da Frente
+ */
+function obterNomeFrente(int $levelReached): string
+{
+    $nomes = [
+        1 => 'FRENTE 1 (DEMOCRACIA)',
+        2 => 'FRENTE 2 (TRABALHO)',
+        3 => 'FRENTE 3 (AMAZONIA)',
+        4 => 'FRENTE 4 (SUS / SAUDE)',
+        5 => 'FRENTE 5 (ESTADO LAICO)',
+        6 => 'FRENTE 6 (SOBERANIA)'
+    ];
+    return $nomes[$levelReached] ?? "FRENTE {$levelReached}";
+}
 
 /**
  * Gera a imagem comemorativa da partida.
@@ -33,13 +49,11 @@ function gerarCardResistencia(
     int $levelReached,
     string $shareToken
 ): bool {
-    // Verifica se a extensão GD do PHP está disponível
     if (!extension_loaded('gd')) {
         error_log('Aviso: Extensão PHP GD não está instalada no servidor.');
         return false;
     }
 
-    // Garante que o diretório de destino exista
     if (!is_dir(CARDS_DIR)) {
         if (!mkdir(CARDS_DIR, 0755, true) && !is_dir(CARDS_DIR)) {
             error_log('Falha ao criar diretório de cards: ' . CARDS_DIR);
@@ -49,102 +63,115 @@ function gerarCardResistencia(
 
     $largura = 1200;
     $altura  = 630;
-    $imagem  = null;
 
-    // Tenta carregar o template base pré-definido caso exista
-    if (file_exists(TEMPLATE_PADRAO)) {
-        $info = getimagesize(TEMPLATE_PADRAO);
-        if ($info !== false && $info[2] === IMAGETYPE_PNG) {
-            $imagem = imagecreatefrompng(TEMPLATE_PADRAO);
-        }
+    $img = imagecreatetruecolor($largura, $altura);
+    if (!$img) {
+        return false;
     }
 
-    // Se não houver template em PNG, gera a arte base proceduralmente com estética Space Opera
-    if (!$imagem) {
-        $imagem = imagecreatetruecolor($largura, $altura);
-        if (!$imagem) {
-            return false;
-        }
+    imagealphablending($img, true);
+    imagesavealpha($img, true);
 
-        // Habilita canal alfa e suavização
-        imagealphablending($imagem, true);
-        imagesavealpha($imagem, true);
+    // Paleta de Cores da Resistência
+    $bgCor       = imagecolorallocate($img, 8, 12, 24);      // Azul cósmico profundo
+    $corGrade    = imagecolorallocate($img, 18, 26, 46);     // Grade orbital
+    $corVermelho = imagecolorallocate($img, 220, 38, 38);    // Vermelho Levante
+    $corDourado  = imagecolorallocate($img, 250, 204, 21);   // Dourado Soberania
+    $corCiano    = imagecolorallocate($img, 56, 189, 248);   // Ciano Tecnologia
+    $corBranco   = imagecolorallocate($img, 255, 255, 255);  // Branco puro
+    $corCinza    = imagecolorallocate($img, 148, 163, 184);  // Cinza metálico
+    $corSombra   = imagecolorallocate($img, 0, 0, 0);        // Preto sombra
 
-        // Cores da paleta da Resistência
-        $corFundoEscuro = imagecolorallocate($imagem, 10, 12, 24);    // Azul cósmico profundo
-        $corGrade       = imagecolorallocate($imagem, 24, 30, 50);    // Grade orbital
-        $corVermelho    = imagecolorallocate($imagem, 220, 38, 38);   // Vermelho Levante
-        $corDourado     = imagecolorallocate($imagem, 250, 204, 21);  // Dourado Soberania
-        $corBorda       = imagecolorallocate($imagem, 40, 50, 80);    // Borda metálica
-
-        // Preenche fundo cósmico
-        imagefilledrectangle($imagem, 0, 0, $largura, $altura, $corFundoEscuro);
-
-        // Desenha grade de radar retrô
-        for ($x = 0; $x < $largura; $x += 60) {
-            imageline($imagem, $x, 0, $x, $altura, $corGrade);
-        }
-        for ($y = 0; $y < $altura; $y += 60) {
-            imageline($imagem, 0, $y, $largura, $y, $corGrade);
-        }
-
-        // Moldura externa tecnológica
-        imagesetthickness($imagem, 6);
-        imagerectangle($imagem, 20, 20, $largura - 20, $altura - 20, $corVermelho);
-        imagesetthickness($imagem, 2);
-        imagerectangle($imagem, 30, 30, $largura - 30, $altura - 30, $corDourado);
-
-        // Faixa de cabeçalho
-        imagefilledrectangle($imagem, 40, 40, $largura - 40, 110, $corVermelho);
+    // 1. Fundo cósmico com grade de radar
+    imagefilledrectangle($img, 0, 0, $largura, $altura, $bgCor);
+    for ($x = 0; $x < $largura; $x += 40) {
+        imageline($img, $x, 0, $x, $altura, $corGrade);
+    }
+    for ($y = 0; $y < $altura; $y += 40) {
+        imageline($img, 0, $y, $largura, $y, $corGrade);
     }
 
-    // Definição de cores para os textos
-    $corBranca   = imagecolorallocate($imagem, 255, 255, 255);
-    $corAmarela  = imagecolorallocate($imagem, 250, 204, 21);
-    $corCiano    = imagecolorallocate($imagem, 56, 189, 248);
-    $corSombra   = imagecolorallocate($imagem, 0, 0, 0);
+    // 2. Moldura externa neon dupla
+    imagesetthickness($img, 4);
+    imagerectangle($img, 16, 16, $largura - 16, $altura - 16, $corVermelho);
+    imagesetthickness($img, 2);
+    imagerectangle($img, 24, 24, $largura - 24, $altura - 24, $corDourado);
 
-    $scoreFormatado = number_format($score, 0, ',', '.') . ' PONTOS';
-    $pilotoTexto    = 'PILOTO: ' . strtoupper($playerName);
-    $setorTexto     = "SETOR DEFENDIDO: FRENTE {$levelReached}";
-    $tituloPrincipal = 'LEVANTE 13: A VIRADA';
-    $subtitulo      = 'CERTIFICADO DE RESISTENCIA POPULAR';
-    $dataHoje       = 'REGISTRADO EM: ' . date('d/m/Y');
+    // 3. Cantos angulados de HUD militar
+    imagefilledrectangle($img, 10, 10, 30, 30, $corVermelho);
+    imagefilledrectangle($img, $largura - 30, 10, $largura - 10, 30, $corVermelho);
+    imagefilledrectangle($img, 10, $altura - 30, 30, $altura - 10, $corVermelho);
+    imagefilledrectangle($img, $largura - 30, $altura - 30, $largura - 10, $altura - 10, $corVermelho);
 
-    // Se houver uma fonte TrueType instalada, utiliza imagettftext para tipografia rica
-    if (file_exists(FONTE_PADRAO)) {
-        // Título Principal no Cabeçalho
-        imagettftext($imagem, 28, 0, 60, 90, $corSombra, FONTE_PADRAO, $tituloPrincipal);
-        imagettftext($imagem, 28, 0, 58, 88, $corAmarela, FONTE_PADRAO, $tituloPrincipal);
+    // 4. Faixa de Cabeçalho Superior
+    $faixaHeader = imagecolorallocate($img, 180, 24, 24);
+    imagefilledrectangle($img, 36, 36, $largura - 36, 114, $faixaHeader);
+    imagerectangle($img, 36, 36, $largura - 36, 114, $corDourado);
+
+    $temFonte = file_exists(FONTE_PADRAO);
+    $tagPiloto = strtoupper($playerName !== '' ? $playerName : 'PILOTO 13');
+    $scoreFormatado = number_format($score, 0, ',', '.') . ' PTS';
+    $frenteTexto = obterNomeFrente($levelReached);
+
+    if ($temFonte) {
+        // Título Principal com Sombra
+        imagettftext($img, 32, 0, 60, 92, $corSombra, FONTE_PADRAO, 'LEVANTE 13: A VIRADA');
+        imagettftext($img, 32, 0, 58, 90, $corDourado, FONTE_PADRAO, 'LEVANTE 13: A VIRADA');
+        imagettftext($img, 15, 0, 780, 90, $corBranco, FONTE_PADRAO, 'O JOGO DA RESISTENCIA POPULAR');
 
         // Subtítulo
-        imagettftext($imagem, 18, 0, 60, 180, $corCiano, FONTE_PADRAO, $subtitulo);
+        imagettftext($img, 18, 0, 60, 160, $corCiano, FONTE_PADRAO, '> BOLETIM OFICIAL DE COMBATE DA VANGUARDA POPULAR');
 
-        // Nome do Piloto
-        imagettftext($imagem, 34, 0, 60, 270, $corSombra, FONTE_PADRAO, $pilotoTexto);
-        imagettftext($imagem, 34, 0, 58, 268, $corBranca, FONTE_PADRAO, $pilotoTexto);
+        // Painel do Piloto e Pontuação
+        $boxBg = imagecolorallocate($img, 14, 20, 38);
+        imagefilledrectangle($img, 60, 190, $largura - 60, 440, $boxBg);
+        imagerectangle($img, 60, 190, $largura - 60, 440, $corCiano);
 
-        // Pontuação de Resistência em destaque dourado
-        imagettftext($imagem, 46, 0, 60, 380, $corSombra, FONTE_PADRAO, $scoreFormatado);
-        imagettftext($imagem, 46, 0, 58, 378, $corAmarela, FONTE_PADRAO, $scoreFormatado);
+        // Coluna 1: Piloto e Frente Defendida
+        imagettftext($img, 18, 0, 90, 235, $corCinza, FONTE_PADRAO, 'PILOTO DA RESISTENCIA:');
+        imagettftext($img, 32, 0, 90, 275, $corBranco, FONTE_PADRAO, $tagPiloto);
 
-        // Setor defendido
-        imagettftext($imagem, 22, 0, 60, 470, $corBranca, FONTE_PADRAO, $setorTexto);
+        imagettftext($img, 18, 0, 90, 345, $corCinza, FONTE_PADRAO, 'FRENTE DEFENDIDA:');
+        imagettftext($img, 24, 0, 90, 385, $corCiano, FONTE_PADRAO, $frenteTexto);
 
-        // Rodapé de Chamada
-        imagettftext($imagem, 18, 0, 60, 560, $corCiano, FONTE_PADRAO, 'DESAFIE ESTE RECORDE EM: HTTPS://LEVANTE13.ONLINE');
-        imagettftext($imagem, 14, 0, 850, 560, $corBranca, FONTE_PADRAO, $dataHoje);
+        // Coluna 2: Pontuação em Dourado Gigante e Detalhes
+        imagettftext($img, 18, 0, 520, 235, $corCinza, FONTE_PADRAO, 'PONTOS ACUMULADOS:');
+        imagettftext($img, 46, 0, 520, 290, $corDourado, FONTE_PADRAO, $scoreFormatado);
+
+        imagettftext($img, 16, 0, 520, 355, $corBranco, FONTE_PADRAO, 'DATA: ' . date('d/m/Y'));
+        imagettftext($img, 14, 0, 520, 395, $corCinza, FONTE_PADRAO, 'STATUS: RESISTENCIA ATIVA');
+
+        // Estampa do Mentor da Frente (se existir)
+        $mentorPath = LEVELS_DIR . "/level_{$levelReached}/mentor.png";
+        if (file_exists($mentorPath)) {
+            $mentorImg = @imagecreatefrompng($mentorPath);
+            if ($mentorImg) {
+                imagecopyresampled($img, $mentorImg, 930, 215, 0, 0, 200, 200, 128, 128);
+                imagerectangle($img, 928, 213, 1132, 417, $corDourado);
+                imagettftext($img, 13, 0, 955, 432, $corCinza, FONTE_PADRAO, 'MENTOR DO SETOR');
+            }
+        }
+
+        // 5. Banner de Chamada para Ação Viral (Atrair mais jogadores)
+        $ctaBg = imagecolorallocate($img, 185, 28, 28);
+        imagefilledrectangle($img, 60, 460, $largura - 60, 560, $ctaBg);
+        imagerectangle($img, 60, 460, $largura - 60, 560, $corDourado);
+
+        imagettftext($img, 24, 0, 90, 508, $corDourado, FONTE_PADRAO, '[*] VOCE CONSEGUE SUPERAR ESSA MARCA? JOGUE AGORA! [*]');
+        imagettftext($img, 20, 0, 90, 542, $corBranco, FONTE_PADRAO, 'ACESSE GRATIS NO NAVEGADOR: HTTPS://LEVANTE13.ONLINE');
+
+        // 6. Rodapé
+        imagettftext($img, 13, 0, 60, 595, $corCinza, FONTE_PADRAO, 'COMPARTILHE NO WHATSAPP E INSTAGRAM @LULAOFICIAL | DEFENDENDO A DEMOCRACIA');
+
     } else {
-        // Fallback robusto usando fontes padrão de bitmap do GD
-        imagestring($imagem, 5, 60, 60,  $tituloPrincipal, $corBranca);
-        imagestring($imagem, 4, 60, 140, $subtitulo, $corAmarela);
-        imagestring($imagem, 5, 60, 220, $pilotoTexto, $corBranca);
-        imagestring($imagem, 5, 60, 300, 'PONTOS: ' . $scoreFormatado, $corAmarela);
-        imagestring($imagem, 4, 60, 380, $setorTexto, $corCiano);
-        imagestring($imagem, 4, 60, 480, 'DESAFIE ESTE RECORDE EM: HTTPS://LEVANTE13.ONLINE', $corBranca);
+        // Fallback nativo
+        imagestring($img, 5, 60, 60,  'LEVANTE 13: A VIRADA', $corBranco);
+        imagestring($img, 5, 60, 240, "PILOTO: {$tagPiloto}", $corBranco);
+        imagestring($img, 5, 60, 320, "PONTOS: {$scoreFormatado}", $corDourado);
+        imagestring($img, 4, 60, 400, "SETOR: {$frenteTexto}", $corCiano);
+        imagestring($img, 5, 60, 490, '[*] DESAFIE ESTE RECORDE EM: HTTPS://LEVANTE13.ONLINE [*]', $corDourado);
     }
 
-    // Salva a imagem final no diretório de cards
     $caminhoDestino = CARDS_DIR . "/card_{$shareToken}.png";
-    return imagepng($imagem, $caminhoDestino, 8); // Compressão equilibrada
+    return imagepng($img, $caminhoDestino, 8);
 }
