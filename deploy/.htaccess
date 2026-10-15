@@ -1,0 +1,39 @@
+# =============================================================================
+# LEVANTE 13: A VIRADA — Configuração da Página de Espera (.htaccess)
+# =============================================================================
+
+# 1. Arquivo de entrada padrão
+DirectoryIndex index.html home.html
+
+# 2. Tipos MIME para fontes e imagens
+AddType font/ttf .ttf
+AddType image/webp .webp
+AddType image/svg+xml .svg
+
+# 3. Charset padrão
+AddDefaultCharset UTF-8
+
+# 4. Cabeçalhos de Segurança
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# 5. Compressão Gzip para carregamento instantâneo
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript font/ttf image/svg+xml
+</IfModule>
+
+# 6. Cache de recursos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# 7. Proteção de navegação em diretórios
+Options -Indexes

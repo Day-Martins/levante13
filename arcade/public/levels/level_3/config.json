@@ -1,0 +1,17 @@
+{
+  "name": "Enxame Dourado",
+  "order": 3,
+  "color": "#ffd84f",
+  "intro": "Cuidado: eles mergulham em direção à sua nave. Dois tiros cada.",
+  "enemy": {
+    "hp": 2,
+    "speed": 36,
+    "fireRate": 1.1,
+    "points": 200
+  },
+  "formation": {
+    "rows": 4,
+    "cols": 8,
+    "pattern": "dive"
+  }
+}

@@ -1,14 +1,20 @@
-# Dados gerados em tempo de execução: banco, arquivos de transação e segredo do servidor
-database/*
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Banco de dados SQLite local e logs de transação
+database/*.db
+database/*.db-wal
+database/*.db-shm
 !database/.htaccess
 
-# Cards gerados para compartilhamento
-cards/*
+# Cards gerados dinamicamente pelo backend
+cards/card_*.png
 !cards/.htaccess
 
-# macOS
-.DS_Store
+# Arquivos compactados e builds locais
+*.zip
+*.tar.gz
 
-# Editores
-.vscode/
-.idea/
+# Logs do servidor
+*.log

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Levante 13: A Virada — O Jogo da Democracia e Resistência Popular</title>
+
+    <meta name="description"
+        content="O arcade clássico da democracia brasileira. Dispute recordes no placar da resistência e fortaleça a luta pela soberania digital e tecnológica do Brasil.">
+    <meta name="keywords"
+        content="Levante 13, Lula 2026, Reeleição, Democracia, Campanha, Jogo Retro, Comitê Popular Tecnologia, Soberania Digital, Virômetro">
+
+    <!-- Open Graph / WhatsApp / Facebook Preview Card (1200x630) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://levante13.online/">
+    <meta property="og:title" content="Levante 13: A Virada — A esperança vai virar o jogo!">
+    <meta property="og:description" content="O arcade oficial da democracia popular brasileira. Convoque sua rede, dispute o placar e junte-se à luta pela soberania digital.">
+    <meta property="og:image" content="https://levante13.online/assets/img/og-preview.png">
+    <meta property="og:image:secure_url" content="https://levante13.online/assets/img/og-preview.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Levante 13: A Virada">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Levante 13: A Virada — A esperança vai virar o jogo!">
+    <meta name="twitter:description" content="O arcade oficial da democracia brasileira. Jogue no celular ou PC e fortaleça a virada popular.">
+    <meta name="twitter:image" content="https://levante13.online/assets/img/og-preview.png">
+
+    <!-- FONTE RETRÔ VCR OSD MONO (https://www.dafont.com/vcr-osd-mono.font) -->
+    <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/vcr-osd-mono">
+    <link rel="stylesheet" href="css/home.css?v=20261014_2232">
+</head>
+
+<body>
+
+    <!-- DEFINIÇÃO DOS ÍCONES PIXEL ART RETRÔ (SVG CRISP EDGES) -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="px-joystick" viewBox="0 0 16 16">
+            <rect x="4" y="1" width="4" height="4" fill="#ef4444" />
+            <rect x="5" y="5" width="2" height="4" fill="#94a3b8" />
+            <rect x="1" y="9" width="14" height="6" fill="#1e293b" />
+            <rect x="2" y="9" width="12" height="1" fill="#475569" />
+            <rect x="9" y="11" width="2" height="2" fill="#ef4444" />
+            <rect x="12" y="11" width="2" height="2" fill="#facc15" />
+        </symbol>
+
+        <symbol id="px-nave" viewBox="0 0 16 16">
+            <rect x="7" y="1" width="2" height="2" fill="#ef4444" />
+            <rect x="6" y="3" width="4" height="4" fill="#ffffff" />
+            <rect x="7" y="4" width="2" height="2" fill="#38bdf8" />
+            <rect x="5" y="7" width="6" height="3" fill="#ffffff" />
+            <rect x="3" y="9" width="10" height="2" fill="#ef4444" />
+            <rect x="2" y="11" width="12" height="2" fill="#dc2626" />
+            <rect x="1" y="9" width="1" height="4" fill="#facc15" />
+            <rect x="14" y="9" width="1" height="4" fill="#facc15" />
+            <rect x="6" y="13" width="4" height="1" fill="#facc15" />
+            <rect x="7" y="14" width="2" height="2" fill="#f97316" />
+        </symbol>
+
+        <symbol id="px-zap" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="9" fill="#22c55e" />
+            <rect x="3" y="1" width="10" height="11" fill="#22c55e" />
+            <rect x="3" y="11" width="3" height="2" fill="#22c55e" />
+            <rect x="2" y="13" width="2" height="1" fill="#22c55e" />
+            <rect x="5" y="6" width="1" height="1" fill="#ffffff" />
+            <rect x="8" y="6" width="1" height="1" fill="#ffffff" />
+            <rect x="11" y="6" width="1" height="1" fill="#ffffff" />
+        </symbol>
+
+        <symbol id="px-timer" viewBox="0 0 16 16">
+            <rect x="7" y="1" width="2" height="2" fill="#eab308" />
+            <rect x="4" y="3" width="8" height="12" fill="#475569" />
+            <rect x="3" y="4" width="10" height="10" fill="#475569" />
+            <rect x="2" y="5" width="12" height="8" fill="#475569" />
+            <rect x="4" y="5" width="8" height="8" fill="#0b0f19" />
+            <rect x="5" y="4" width="6" height="10" fill="#0b0f19" />
+            <rect x="7" y="6" width="2" height="3" fill="#eab308" />
+            <rect x="7" y="8" width="3" height="2" fill="#eab308" />
+        </symbol>
+
+        <symbol id="px-refresh" viewBox="0 0 16 16">
+            <rect x="5" y="2" width="6" height="2" fill="currentColor" />
+            <rect x="11" y="4" width="2" height="3" fill="currentColor" />
+            <rect x="13" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="11" y="1" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="12" width="6" height="2" fill="currentColor" />
+            <rect x="3" y="9" width="2" height="3" fill="currentColor" />
+            <rect x="1" y="11" width="2" height="2" fill="currentColor" />
+            <rect x="3" y="13" width="2" height="2" fill="currentColor" />
+        </symbol>
+
+        <symbol id="px-trophy" viewBox="0 0 16 16">
+            <rect x="3" y="2" width="10" height="2" fill="currentColor" />
+            <rect x="4" y="4" width="8" height="4" fill="currentColor" />
+            <rect x="5" y="8" width="6" height="2" fill="currentColor" />
+            <rect x="2" y="3" width="1" height="4" fill="currentColor" />
+            <rect x="13" y="3" width="1" height="4" fill="currentColor" />
+            <rect x="7" y="10" width="2" height="3" fill="currentColor" />
+            <rect x="4" y="13" width="8" height="2" fill="currentColor" />
+            <rect x="7" y="5" width="2" height="2" fill="#ef4444" />
+        </symbol>
+
+        <symbol id="px-terminal" viewBox="0 0 16 16">
+            <rect x="1" y="2" width="14" height="9" fill="#38bdf8" />
+            <rect x="3" y="3" width="10" height="7" fill="#0b0f19" />
+            <rect x="4" y="5" width="2" height="1" fill="#38bdf8" />
+            <rect x="5" y="6" width="1" height="1" fill="#38bdf8" />
+            <rect x="7" y="7" width="2" height="1" fill="#22c55e" />
+            <rect x="6" y="11" width="4" height="2" fill="#64748b" />
+            <rect x="2" y="13" width="12" height="2" fill="#475569" />
+        </symbol>
+
+        <symbol id="px-urna" viewBox="0 0 16 16">
+            <rect x="1" y="4" width="14" height="11" fill="#1e293b" />
+            <rect x="2" y="3" width="12" height="1" fill="#475569" />
+            <rect x="3" y="5" width="6" height="5" fill="#0f172a" />
+            <rect x="5" y="6" width="2" height="2" fill="#ef4444" />
+            <rect x="10" y="6" width="1" height="1" fill="#cbd5e1" />
+            <rect x="12" y="6" width="1" height="1" fill="#cbd5e1" />
+            <rect x="10" y="8" width="1" height="1" fill="#cbd5e1" />
+            <rect x="12" y="8" width="1" height="1" fill="#cbd5e1" />
+            <rect x="10" y="11" width="3" height="2" fill="#22c55e" />
+        </symbol>
+
+        <symbol id="px-globe" viewBox="0 0 16 16">
+            <rect x="5" y="1" width="6" height="14" fill="#38bdf8" />
+            <rect x="3" y="3" width="10" height="10" fill="#38bdf8" />
+            <rect x="1" y="5" width="14" height="6" fill="#38bdf8" />
+            <rect x="7" y="2" width="2" height="12" fill="#0b0f19" />
+            <rect x="2" y="7" width="12" height="2" fill="#0b0f19" />
+            <rect x="3" y="4" width="2" height="2" fill="#0b0f19" />
+            <rect x="11" y="4" width="2" height="2" fill="#0b0f19" />
+            <rect x="3" y="10" width="2" height="2" fill="#0b0f19" />
+            <rect x="11" y="10" width="2" height="2" fill="#0b0f19" />
+        </symbol>
+
+        <symbol id="px-moto" viewBox="0 0 16 16">
+            <rect x="3" y="3" width="4" height="4" fill="#ef4444" />
+            <rect x="10" y="4" width="2" height="1" fill="#cbd5e1" />
+            <rect x="12" y="5" width="1" height="1" fill="#facc15" />
+            <rect x="10" y="5" width="2" height="4" fill="#64748b" />
+            <rect x="5" y="7" width="6" height="3" fill="#eab308" />
+            <rect x="3" y="8" width="3" height="2" fill="#64748b" />
+            <rect x="2" y="10" width="3" height="3" fill="#0f172a" />
+            <rect x="3" y="11" width="1" height="1" fill="#cbd5e1" />
+            <rect x="11" y="10" width="3" height="3" fill="#0f172a" />
+            <rect x="12" y="11" width="1" height="1" fill="#cbd5e1" />
+            <rect x="1" y="13" width="14" height="1" fill="#334155" />
+        </symbol>
+
+        <symbol id="px-shield" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="6" fill="#cbd5e1" />
+            <rect x="3" y="8" width="10" height="3" fill="#cbd5e1" />
+            <rect x="4" y="11" width="8" height="2" fill="#cbd5e1" />
+            <rect x="6" y="13" width="4" height="1" fill="#cbd5e1" />
+            <rect x="7" y="14" width="2" height="1" fill="#cbd5e1" />
+            <rect x="4" y="3" width="8" height="5" fill="#1e293b" />
+            <rect x="5" y="8" width="6" height="2" fill="#1e293b" />
+            <rect x="6" y="10" width="4" height="2" fill="#1e293b" />
+            <rect x="7" y="4" width="2" height="4" fill="#ef4444" />
+            <rect x="5" y="5" width="6" height="2" fill="#ef4444" />
+        </symbol>
+
+        <symbol id="px-tool" viewBox="0 0 16 16">
+            <rect x="9" y="1" width="5" height="5" fill="#facc15" />
+            <rect x="11" y="3" width="3" height="3" fill="#0b0f19" />
+            <rect x="8" y="5" width="3" height="3" fill="#facc15" />
+            <rect x="6" y="7" width="3" height="3" fill="#facc15" />
+            <rect x="4" y="9" width="3" height="3" fill="#facc15" />
+            <rect x="2" y="11" width="3" height="3" fill="#facc15" />
+            <rect x="1" y="12" width="3" height="3" fill="#eab308" />
+        </symbol>
+
+        <symbol id="px-insta" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="12" fill="#e1306c" />
+            <rect x="4" y="4" width="8" height="8" fill="#0b0f19" />
+            <rect x="6" y="6" width="4" height="4" fill="#facc15" />
+            <rect x="7" y="7" width="2" height="2" fill="#0b0f19" />
+            <rect x="11" y="4" width="1" height="1" fill="#ffffff" />
+        </symbol>
+
+        <symbol id="px-twitter" viewBox="0 0 16 16">
+            <rect x="2" y="3" width="2" height="2" fill="#38bdf8" />
+            <rect x="4" y="4" width="3" height="2" fill="#38bdf8" />
+            <rect x="6" y="5" width="5" height="2" fill="#38bdf8" />
+            <rect x="12" y="3" width="2" height="2" fill="#38bdf8" />
+            <rect x="4" y="7" width="9" height="3" fill="#38bdf8" />
+            <rect x="3" y="10" width="8" height="2" fill="#38bdf8" />
+            <rect x="5" y="12" width="4" height="1" fill="#38bdf8" />
+        </symbol>
+
+        <symbol id="px-tiktok" viewBox="0 0 16 16">
+            <rect x="8" y="2" width="2" height="9" fill="#00f2fe" />
+            <rect x="10" y="2" width="4" height="2" fill="#fe2c55" />
+            <rect x="12" y="4" width="2" height="3" fill="#fe2c55" />
+            <rect x="4" y="9" width="5" height="4" fill="#fe2c55" />
+            <rect x="5" y="8" width="4" height="5" fill="#00f2fe" />
+        </symbol>
+
+        <symbol id="px-youtube" viewBox="0 0 16 16">
+            <rect x="1" y="3" width="14" height="10" fill="#dc2626" />
+            <rect x="2" y="2" width="12" height="12" fill="#dc2626" />
+            <rect x="6" y="5" width="2" height="6" fill="#ffffff" />
+            <rect x="8" y="6" width="2" height="4" fill="#ffffff" />
+            <rect x="10" y="7" width="1" height="2" fill="#ffffff" />
+        </symbol>
+
+        <symbol id="px-pt" viewBox="0 0 16 16">
+            <rect x="2" y="1" width="1" height="14" fill="#94a3b8" />
+            <rect x="3" y="2" width="11" height="7" fill="#dc2626" />
+            <rect x="7" y="4" width="3" height="3" fill="#ffffff" />
+            <rect x="6" y="5" width="5" height="1" fill="#ffffff" />
+            <rect x="8" y="3" width="1" height="5" fill="#ffffff" />
+        </symbol>
+
+        <symbol id="px-estrela" viewBox="0 0 16 16">
+            <rect x="7" y="1" width="2" height="3" fill="#facc15" />
+            <rect x="6" y="4" width="4" height="2" fill="#facc15" />
+            <rect x="1" y="6" width="14" height="2" fill="#facc15" />
+            <rect x="3" y="8" width="10" height="2" fill="#facc15" />
+            <rect x="4" y="10" width="8" height="2" fill="#facc15" />
+            <rect x="3" y="12" width="3" height="3" fill="#facc15" />
+            <rect x="10" y="12" width="3" height="3" fill="#facc15" />
+        </symbol>
+
+        <symbol id="px-download" viewBox="0 0 16 16">
+            <rect x="7" y="2" width="2" height="7" fill="currentColor" />
+            <rect x="5" y="7" width="6" height="2" fill="currentColor" />
+            <rect x="6" y="9" width="4" height="1" fill="currentColor" />
+            <rect x="7" y="10" width="2" height="1" fill="currentColor" />
+            <rect x="2" y="12" width="12" height="2" fill="currentColor" />
+        </symbol>
+    </svg>
+
+    <!-- 1. CABEÇALHO SÓBRIO -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="#inicio" class="logo">
+                <span class="logo-estrela">★</span>
+                <span>LEVANTE 13</span>
+            </a>
+
+            <nav class="nav">
+                <a href="#inicio">Início</a>
+                <a href="#placar" id="linkNavPlacar">Placar da Resistência</a>
+                <a href="#soberania">Mobilização & Soberania Digital</a>
+                <span class="btn-header btn-desativado" id="btnHeaderAcao" title="Lançamento oficial em breve!">
+                    EM BREVE <svg class="px-icon">
+                        <use href="#px-timer"></use>
+                    </svg>
+                </span>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- 2. HERO PRINCIPAL (VERSÃO EM BREVE COM BOTÃO DESATIVADO) -->
+        <section id="inicio" class="hero">
+            <div class="container">
+                <div class="hero-tag" id="heroBadgeStatus">
+                    ★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE
+                </div>
+
+                <h1 class="hero-title">
+                    A esperança vai <span>virar o jogo</span><br>
+                    nas urnas e nas ruas.
+                </h1>
+
+                <p class="hero-desc">
+                    O arcade clássico da democracia brasileira está nos ajustes finais para a decolagem! Nossos comitês
+                    populares estão afinando a Vanguarda 13 para você enfrentar os gabinetes de mentiras, disputar o
+                    placar da resistência e virar votos de coração a coração.
+                </p>
+
+                <!-- Ações do Hero: Jogar Agora Desativado + Convocação no WhatsApp Ativa -->
+                <div class="hero-actions" id="heroAcoes">
+                    <button type="button" class="btn-cta btn-desativado" id="btnHeroPrincipal" disabled
+                        title="Motores em aquecimento! Lançamento oficial nos próximos dias.">
+                        <svg class="px-icon">
+                            <use href="#px-timer"></use>
+                        </svg> JOGAR AGORA (EM BREVE)
+                    </button>
+                    <a href="https://api.whatsapp.com/send?text=Prepare-se!%20O%20jogo%20arcade%20da%20democracia%20brasileira%20est%C3%A1%20chegando%3A%20Levante%2013%3A%20A%20Virada!%20Acompanhe%20em%20https%3A%2F%2Flevante13.online"
+                        target="_blank" rel="noopener noreferrer" class="btn-sec btn-zap" id="btnHeroSecundario">
+                        <svg class="px-icon">
+                            <use href="#px-zap"></use>
+                        </svg> Convoque no WhatsApp
+                    </a>
+                </div>
+
+                <p class="hero-aviso-bloqueio">
+                    <svg class="px-icon" style="color: var(--amarelo);">
+                        <use href="#px-timer"></use>
+                    </svg> Motores em fase final de testes. Liberação 100% gratuita nos navegadores em breve!
+                </p>
+
+                <!-- Box Informativo Atraente de Pré-Lançamento (Hangar Rebelde) -->
+                <div id="boxModoEspera" class="status-box-espera">
+                    <div class="em-breve-tag">
+                        <svg class="px-icon">
+                            <use href="#px-timer"></use>
+                        </svg> FASE FINAL DE PREPARAÇÃO
+                    </div>
+                    <h3 class="em-breve-titulo">Prepare os controles: a decolagem está próxima!</h3>
+                    <p class="em-breve-texto">
+                        O <strong>Levante 13</strong> será liberado nos próximos dias para você jogar direto no
+                        navegador — sem precisar baixar nada, sem cadastros e 100% livre.
+                        Enquanto afinamos os motores da esperança, fortaleça a trincheira: registre seus votos virados
+                        no <strong>Virômetro</strong> e acompanhe o <strong>Comitê de Tecnologia</strong>!
+                    </p>
+
+                    <div class="em-breve-rodape-aviso">
+                        ★ 100% Web • Celular e Computador • Software Livre da Resistência
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PLACAR GLOBAL (LEADERBOARD DO SQLite) -->
+        <section id="placar" class="secao">
+            <div class="container">
+                <div class="secao-header"
+                    style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h2 class="secao-titulo">Placar da Resistência</h2>
+                        <p class="secao-sub">Os maiores recordes registrados pelos pilotos da democracia.</p>
+                    </div>
+                    <button id="btnAtualizarRanking" class="btn-sec" type="button"
+                        style="padding: 8px 14px; font-size: 0.8rem; cursor: pointer;">
+                        <svg class="px-icon">
+                            <use href="#px-refresh"></use>
+                        </svg> Atualizar
+                    </button>
+                </div>
+
+                <div class="tabela-ranking">
+                    <div class="tabela-header">
+                        <div>Pos.</div>
+                        <div>Piloto</div>
+                        <div style="text-align: right;">Pontos</div>
+                    </div>
+                    <div id="corpoRanking" class="tabela-corpo">
+                        <div style="padding: 24px; text-align: center; color: var(--texto-mutado); font-size: 0.9rem;">
+                            ★ Placar aberto no lançamento oficial. Prepare seu codinome!
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="button" class="btn-cta btn-desativado" id="btnPlacarAcao" disabled
+                        style="font-size: 0.9rem; padding: 10px 22px;">
+                        <svg class="px-icon">
+                            <use href="#px-timer"></use>
+                        </svg> Placar Aberto no Lançamento
+                    </button>
+                    <p style="font-size: 0.8rem; color: var(--texto-suave); margin-top: 8px;">
+                        Os pilotos da democracia poderão gravar seus codinomes assim que os motores forem liberados.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. MOBILIZAÇÃO & SOBERANIA DIGITAL (REFORÇADA) -->
+        <section id="soberania" class="secao">
+            <div class="container">
+                <div class="secao-header">
+                    <span class="secao-tag-destaque">Tecnologia Popular e Soberania Nacional</span>
+                    <h2 class="secao-titulo">Mobilização & Soberania Digital</h2>
+                    <p class="secao-sub">A tecnologia deve servir ao povo brasileiro: software livre, defesa dos
+                        trabalhadores de plataformas e enfrentamento ao oligopólio das big techs.</p>
+                </div>
+
+                <!-- CARDS DE DESTAQUE: COMITÊ DE TECNOLOGIA & VIRÔMETRO (VIRA VOTO) -->
+                <div class="grid-tecnologia-comites">
+                    <!-- CARD 1: Comitê Popular de Luta Tecnologia -->
+                    <div class="card-comite">
+                        <div class="card-comite-info">
+                            <div class="comite-tag-oficial">★ Coletivo de Base da Tecnologia Popular</div>
+                            <h3><svg class="px-icon">
+                                    <use href="#px-terminal"></use>
+                                </svg> Comitê Popular de Luta Tecnologia</h3>
+                            <p class="comite-descricao">
+                                Espaço de auto-organização de programadores, designers, pesquisadores e militantes
+                                populares. Construímos a luta pela soberania digital, tecnologias livres, IA pública e
+                                defesa dos trabalhadores de plataformas.
+                            </p>
+                        </div>
+                        <div class="card-comite-acoes">
+                            <a href="https://comitedetecnologia.com.br" target="_blank" rel="noopener noreferrer"
+                                class="btn-comite">
+                                <svg class="px-icon">
+                                    <use href="#px-globe"></use>
+                                </svg> comitedetecnologia.com.br
+                            </a>
+                            <a href="https://www.instagram.com/comitepopulartecnologia/" target="_blank"
+                                rel="noopener noreferrer" class="btn-comite-sec">
+                                <svg class="px-icon">
+                                    <use href="#px-insta"></use>
+                                </svg> Instagram @comitepopulartecnologia
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: Virômetro (Vira Voto Oficial) -->
+                    <div class="card-comite card-virometro">
+                        <div class="card-comite-info">
+                            <div class="comite-tag-oficial tag-virometro">★ Termômetro da Campanha Popular</div>
+                            <h3><svg class="px-icon">
+                                    <use href="#px-urna"></use>
+                                </svg> Virômetro — Registre seu Voto Virado</h3>
+                            <p class="comite-descricao">
+                                Virou um voto na família, no trabalho ou nas redes? Registre no Virômetro oficial e
+                                fortaleça o mapa nacional da virada popular. Cada voto consciente faz a esperança
+                                vencer!
+                            </p>
+                        </div>
+                        <div class="card-comite-acoes">
+                            <a href="https://virometro.com.br" target="_blank" rel="noopener noreferrer"
+                                class="btn-virometro">
+                                <svg class="px-icon">
+                                    <use href="#px-nave"></use>
+                                </svg> Acessar virometro.com.br
+                            </a>
+                            <span class="comite-link-sub">Marque seu voto e acompanhe o placar</span>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3: Bora Lula (Mobilização & Materiais Oficiais) -->
+                    <div class="card-comite card-boralula">
+                        <div class="card-comite-info">
+                            <div class="comite-tag-oficial tag-boralula">★ Rede de Ação & Materiais</div>
+                            <h3><svg class="px-icon">
+                                    <use href="#px-estrela"></use>
+                                </svg> Bora Lula — boralula.org</h3>
+                            <p class="comite-descricao">
+                                A plataforma participativa da militância popular. Acesse adesivos, jingles, artes
+                                digitais para redes sociais, manuais de rua e conecte-se com voluntários de todo o
+                                Brasil para multiplicar a esperança.
+                            </p>
+                        </div>
+                        <div class="card-comite-acoes">
+                            <a href="https://boralula.org" target="_blank" rel="noopener noreferrer"
+                                class="btn-boralula">
+                                <svg class="px-icon">
+                                    <use href="#px-estrela"></use>
+                                </svg> Acessar boralula.org
+                            </a>
+                            <span class="comite-link-sub">Kits de campanha, voluntariado e ações</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRADE DOS 3 PILARES DA SOBERANIA DIGITAL -->
+                <div class="grid-pilares">
+                    <div class="card-pilar">
+                        <div class="pilar-icone"><svg class="px-icon px-icon-lg">
+                                <use href="#px-globe"></use>
+                            </svg></div>
+                        <h4 class="pilar-titulo">Soberania Nacional & Dados Públicos</h4>
+                        <p class="pilar-texto">
+                            O Brasil não pode ser colônia digital. Defendemos centros de dados nacionais, nuvem pública
+                            estatal e inteligência artificial soberana para garantir que os dados da população sirvam ao
+                            desenvolvimento nacional e às políticas públicas, e não ao lucro de monopólios estrangeiros.
+                        </p>
+                    </div>
+
+                    <div class="card-pilar">
+                        <div class="pilar-icone"><svg class="px-icon px-icon-lg">
+                                <use href="#px-moto"></use>
+                            </svg></div>
+                        <h4 class="pilar-titulo">Direitos na Era das Plataformas</h4>
+                        <p class="pilar-texto">
+                            Combate intransigente à precarização e à "uberização" do trabalho. Entregadores, motoristas
+                            e trabalhadores terceirizados de plataformas merecem previdência pública, jornada com
+                            limites, remuneração digna e transparência algorítmica nas decisões de trabalho.
+                        </p>
+                    </div>
+
+                    <div class="card-pilar">
+                        <div class="pilar-icone"><svg class="px-icon px-icon-lg">
+                                <use href="#px-shield"></use>
+                            </svg></div>
+                        <h4 class="pilar-titulo">Combate à Desinformação & Inclusão</h4>
+                        <p class="pilar-texto">
+                            Democratização do acesso à internet de alta velocidade nas periferias e escolas públicas,
+                            letramento digital crítico para identificar manipulações e responsabilização das redes para
+                            desarticular os gabinetes de ódio que atentam contra a democracia.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- BOX MANIFESTO DE TECNOLOGIA LIVRE DO JOGO -->
+                <div class="box-manifesto">
+                    <div class="manifesto-conteudo">
+                        <span class="manifesto-tag"><svg class="px-icon">
+                                <use href="#px-tool"></use>
+                            </svg> Software Livre & Independente</span>
+                        <h4 class="manifesto-titulo">Tecnologia Aberta a Serviço da Cidadania</h4>
+                        <p class="manifesto-texto">
+                            O <strong>Levante 13</strong> foi desenvolvido com tecnologias web padronizadas, sem
+                            rastreamento de dados pessoais (em conformidade com a LGPD), sem publicidade comercial e sem
+                            dependência de plataformas proprietárias. É código livre feito para conscientizar, engajar e
+                            virar votos.
+                        </p>
+                    </div>
+                    <button type="button" class="btn-cta btn-desativado" id="btnManifestoAcao" disabled
+                        style="font-size: 0.88rem; padding: 12px 20px; white-space: nowrap;"
+                        title="Motores em calibração! Lançamento oficial em breve.">
+                        <svg class="px-icon">
+                            <use href="#px-timer"></use>
+                        </svg> Arcade Livre (Em Breve)
+                    </button>
+                </div>
+
+                <!-- BOX ESPECIAL: COMPARTILHAR A VIRADA (WHATSAPP & INSTAGRAM) -->
+                <div class="box-compartilhar-campanha" id="boxCompartilhar">
+                    <div class="compartilhar-header">
+                        <span class="secao-tag-destaque" style="color: var(--amarelo); border-color: var(--amarelo);">★ Mobilização Viral</span>
+                        <h3 class="compartilhar-titulo">Compartilhe a Mensagem da Democracia</h3>
+                        <p class="compartilhar-desc">
+                            Espalhe a arte oficial de campanha nos grupos de WhatsApp e nos Stories do Instagram. Cada compartilhamento fortalece a luta contra o fascismo e a desinformação.
+                        </p>
+                    </div>
+
+                    <div class="compartilhar-grid">
+                        <!-- Preview da Arte Oficial -->
+                        <div class="compartilhar-card-preview" style="max-width: 220px; width: 100%;">
+                            <div class="preview-moldura" style="width: 200px; height: 355px; max-width: 200px; max-height: 355px; aspect-ratio: 9/16; position: relative; overflow: hidden;">
+                                <img src="assets/img/card_story.png" alt="Card Oficial de Campanha - Levante 13" class="preview-img-story" id="previewStoryCard" loading="lazy" width="200" height="355" style="width: 100%; height: 100%; max-width: 200px; max-height: 355px; object-fit: cover; display: block;">
+                                <div class="preview-overlay-tag">ARTE STORIES 9:16</div>
+                            </div>
+                            <div class="preview-actions">
+                                <a href="assets/img/card_story.png" download="levante13_story.png" class="btn-sec btn-preview-baixar" id="btnBaixarCardStory">
+                                    <svg class="px-icon"><use href="#px-download"></use></svg> Baixar Arte (9:16)
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação Direta -->
+                        <div class="compartilhar-opcoes">
+                            <!-- Opção 1: WhatsApp Direto com Rich Card Preview -->
+                            <div class="opcao-share-card">
+                                <div class="opcao-share-info">
+                                    <h4><svg class="px-icon" style="color: #22c55e;"><use href="#px-zap"></use></svg> WhatsApp</h4>
+                                    <p>Envia mensagem viral pronta com link oficial e card ilustrado de pré-visualização para amigos, famílias e grupos.</p>
+                                </div>
+                                <button type="button" class="btn-share-acao btn-share-whatsapp" id="btnCompartilharZap">
+                                    <svg class="px-icon"><use href="#px-zap"></use></svg> Compartilhar no WhatsApp
+                                </button>
+                            </div>
+
+                            <!-- Opção 1: Instagram Stories via Web Share API ou Download Inteligente -->
+                            <div class="opcao-share-card">
+                                <div class="opcao-share-info">
+                                    <h4><svg class="px-icon" style="color: #e1306c;"><use href="#px-insta"></use></svg> Instagram Stories / Feed</h4>
+                                    <p>Abre diretamente os Stories do Instagram no celular com a arte oficial anexada, ou baixa a imagem vertical e copia o link no computador.</p>
+                                </div>
+                                <button type="button" class="btn-share-acao btn-share-instagram" id="btnCompartilharInsta">
+                                    <svg class="px-icon"><use href="#px-insta"></use></svg> Postar no Instagram
+                                </button>
+                            </div>
+
+                            <!-- Mini Dica de engajamento -->
+                            <div class="opcao-share-dica">
+                                ★ <em>Dica de Campanha:</em> Marque <strong>@lulaoficial</strong> e adicione a figurinha de link para <strong>levante13.online</strong> nos seus Stories!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REDES OFICIAIS DE MOBILIZAÇÃO POPULAR -->
+                <div style="margin-top: 36px;">
+                    <h3
+                        style="font-family: var(--fonte-titulo); font-size: 1.2rem; margin-bottom: 12px; color: var(--texto);">
+                        Canais Oficiais de Mobilização nas Redes
+                    </h3>
+                    <div class="redes-lista">
+                        <a href="https://www.instagram.com/lulaoficial/" target="_blank" rel="noopener noreferrer"
+                            class="rede-btn">
+                            <svg class="px-icon">
+                                <use href="#px-insta"></use>
+                            </svg> Instagram (@lulaoficial)
+                        </a>
+                        <a href="https://twitter.com/LulaOficial" target="_blank" rel="noopener noreferrer"
+                            class="rede-btn">
+                            <svg class="px-icon">
+                                <use href="#px-twitter"></use>
+                            </svg> X / Twitter Oficial
+                        </a>
+                        <a href="https://www.tiktok.com/@lulaoficial" target="_blank" rel="noopener noreferrer"
+                            class="rede-btn">
+                            <svg class="px-icon">
+                                <use href="#px-tiktok"></use>
+                            </svg> TikTok da Campanha
+                        </a>
+                        <a href="https://www.youtube.com/@lulaoficial" target="_blank" rel="noopener noreferrer"
+                            class="rede-btn">
+                            <svg class="px-icon">
+                                <use href="#px-youtube"></use>
+                            </svg> Canal no YouTube
+                        </a>
+                        <a href="https://boralula.org" target="_blank" rel="noopener noreferrer"
+                            class="rede-btn rede-btn-boralula">
+                            <svg class="px-icon">
+                                <use href="#px-estrela"></use>
+                            </svg> Bora Lula (boralula.org)
+                        </a>
+                        <a href="https://pt.org.br" target="_blank" rel="noopener noreferrer" class="rede-btn">
+                            <svg class="px-icon">
+                                <use href="#px-pt"></use>
+                            </svg> Portal do PT (pt.org.br)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 5. RODAPÉ SÓBRIO -->
+    <footer class="footer">
+        <div class="container">
+            <p style="margin-bottom: 8px;">
+                <strong>LEVANTE 13: A VIRADA</strong> — O jogo livre e aberto da democracia popular brasileira.
+            </p>
+            <p>
+                Desenvolvido com apoio da militância popular, do <a href="https://comitedetecnologia.com.br"
+                    target="_blank" rel="noopener noreferrer"
+                    style="color: var(--amarelo); text-decoration: underline;">Comitê de Tecnologia</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Toast flutuante de feedback de cópia -->
+    <div id="toast" class="toast">Aviso</div>
+
+    <script src="js/home.js?v=20261014_2232"></script>
+</body>
+
+</html>

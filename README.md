@@ -49,6 +49,29 @@ Isso barra a trapaça óbvia (editar a requisição no DevTools). Quem reescreve
 3. As pastas `database/` e `cards/` precisam ter permissão de escrita para o PHP.
 4. Use HTTPS. O WhatsApp só mostra a prévia de links públicos.
 
-## LGPD
+## Funcionalidades em Destaque
 
-O jogo guarda apenas a tag, a pontuação, a frente alcançada e as datas. Para limitar abuso, guarda um hash do IP com sal secreto que muda todo dia. Esses hashes são apagados depois de 24 h. Não há cookies, e-mail nem cadastro.
+### 🗳️ Autenticação de Codinome com Urna Eletrônica
+- Ao iniciar a partida, o jogador insere seu **Codinome** de piloto (3 a 12 caracteres).
+- **Proteção Opcional com Senha:** O jogador pode optar por registrar uma senha numérica de 4 dígitos na interface realista da **Urna Eletrônica** (display de dígitos, botões 0-9, CORRIGE e CONFIRMA com efeitos sonoros de bipes e o clássico *"Pililili... Confirma"*).
+- **Codinomes Livres:** Se optar por não proteger, o codinome permanece aberto e pode ser reutilizado por qualquer jogador.
+- **Validação Segura:** Armazenamento com hash criptográfico Bcrypt no SQLite (`players`). No envio do placar, pontuações de codinomes protegidos exigem a autenticação correspondente.
+
+### 👾 Chefes Únicos das 6 Frentes e Desmembramento Progressivo
+- Cada frente possui seu próprio Chefe de final de fase com design e paleta inspirados na temática do setor.
+- **Chefe Final (Frente 6):** Apresenta 4 fases com mecânica de **desmembramento progressivo** — perde peças da blindagem conforme sofre dano (asas laterais, núcleo e placa frontal) enquanto suas armas ganham maior cadência e poder de fogo, com surgimento de cápsulas de power-up para apoiar a resistência.
+
+### ✊ Mentores da Resistência em Pixel Art
+- Transmissões holográficas no início de cada frente com retratos em pixel art de referências históricas e contemporâneas:
+  - **Frente 1:** Ana Prestes (Historiadora e Socióloga)
+  - **Frente 2:** Jones Manoel (Educador Popular e Historiador)
+  - **Frente 3:** Pastor Henrique Vieira (Teólogo e Ativista)
+  - **Frente 4:** Sonia Guajajara (Liderança Indígena e Ministra)
+  - **Frente 5 & 6:** Presidente Lula (Liderança Popular e Soberania)
+
+### 🌊 Movimentação Errática de Manada
+- Conforme o número de invasores na grade diminui, a movimentação torna-se progressivamente mais errática e imprevisível, simulando a quebra do efeito de manada fascista.
+
+## LGPD e Privacidade
+
+O jogo segue estritamente as diretrizes da LGPD com minimização de dados: armazena apenas o codinome, a pontuação, o PIN em hash Bcrypt e a frente alcançada. Para limitar abusos, utiliza rate-limiting com hash temporário. Não há coleta de e-mail, rastreadores invasivos nem cookies de terceiros.

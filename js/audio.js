@@ -188,6 +188,73 @@ class GerenciadorAudio {
     }
 
     /**
+     * Bipe padrão de tecla pressionada na Urna Eletrônica (850 Hz).
+     */
+    tocarUrnaTecla() {
+        if (this.mutado || !this.ctx) return;
+        this.iniciar();
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const agora = this.ctx.currentTime;
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(850, agora);
+        gain.gain.setValueAtTime(0.25, agora);
+        gain.gain.exponentialRampToValueAtTime(0.01, agora + 0.07);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(agora);
+        osc.stop(agora + 0.07);
+    }
+
+    /**
+     * Tom de correção / cancelamento da Urna Eletrônica (440 Hz).
+     */
+    tocarUrnaCorrige() {
+        if (this.mutado || !this.ctx) return;
+        this.iniciar();
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const agora = this.ctx.currentTime;
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, agora);
+        gain.gain.setValueAtTime(0.28, agora);
+        gain.gain.exponentialRampToValueAtTime(0.01, agora + 0.12);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(agora);
+        osc.stop(agora + 0.12);
+    }
+
+    /**
+     * Sinal sonoro de erro ou recusa de acesso.
+     */
+    tocarErro() {
+        if (this.mutado || !this.ctx) return;
+        this.iniciar();
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const agora = this.ctx.currentTime;
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, agora);
+        osc.frequency.linearRampToValueAtTime(90, agora + 0.22);
+        gain.gain.setValueAtTime(0.3, agora);
+        gain.gain.exponentialRampToValueAtTime(0.01, agora + 0.22);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(agora);
+        osc.stop(agora + 0.22);
+    }
+
+    /**
      * Bipe curto de teletipo para a Holotransmissão dos mentores.
      */
     tocarTeletipo() {
@@ -232,6 +299,40 @@ class GerenciadorAudio {
 
         osc.start();
         osc.stop(this.ctx.currentTime + 0.2);
+    }
+
+    /**
+     * Fanfarra triunfal retrô de conclusão de setor / vitória de fase.
+     */
+    tocarVitoriaFase() {
+        if (this.mutado || !this.ctx) return;
+        this.iniciar();
+
+        const agora = this.ctx.currentTime;
+        // Acorde triunfal em arpeggio clássico arcade: C5, E5, G5, C6 com acorde sustentado
+        const notas = [
+            { freq: 523.25, tempo: 0.00, dur: 0.12, ganho: 0.25 }, // C5
+            { freq: 659.25, tempo: 0.12, dur: 0.12, ganho: 0.25 }, // E5
+            { freq: 783.99, tempo: 0.24, dur: 0.14, ganho: 0.30 }, // G5
+            { freq: 1046.50, tempo: 0.38, dur: 0.65, ganho: 0.35 } // C6 (sustentado)
+        ];
+
+        notas.forEach(({ freq, tempo, dur, ganho }) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, agora + tempo);
+
+            gain.gain.setValueAtTime(ganho, agora + tempo);
+            gain.gain.exponentialRampToValueAtTime(0.001, agora + tempo + dur);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(agora + tempo);
+            osc.stop(agora + tempo + dur);
+        });
     }
 }
 

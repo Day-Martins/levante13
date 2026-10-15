@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#07071a">
+<title>Astro Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" aria-label="Área do jogo"></canvas>
+
+  <div id="menu" class="overlay" hidden>
+    <h1>ASTRO<br>ARCADE</h1>
+    <p id="challenge" class="challenge" hidden></p>
+    <form id="nickForm" autocomplete="off">
+      <label for="nick">SEU APELIDO</label>
+      <input id="nick" maxlength="12" autocapitalize="characters" spellcheck="false" placeholder="PILOTO_99" inputmode="text">
+      <small id="nickErr" class="err" aria-live="polite"></small>
+      <button type="submit" id="btnPlay">JOGAR</button>
+    </form>
+    <section class="board">
+      <h2>RECORDES</h2>
+      <ol id="board"><li class="muted">carregando…</li></ol>
+    </section>
+    <p class="hint">← → / A D ou arraste para mover<br>tiro automático · F tela cheia</p>
+    <button type="button" id="btnFs" class="ghost small" hidden>TELA CHEIA</button>
+  </div>
+
+  <div id="over" class="overlay" hidden>
+    <h2 id="ovTitle">GAME OVER</h2>
+    <p class="big" id="ovScore">0</p>
+    <p id="ovInfo" class="muted" aria-live="polite"></p>
+    <img id="ovCard" alt="Card da sua pontuação" hidden>
+    <button id="btnShare" hidden>COMPARTILHAR</button>
+    <button id="btnAgain">JOGAR DE NOVO</button>
+    <button id="btnMenu" class="ghost">RECORDES</button>
+  </div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>

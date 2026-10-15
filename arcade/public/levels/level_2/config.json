@@ -1,0 +1,17 @@
+{
+  "name": "Nebulosa Vermelha",
+  "order": 2,
+  "color": "#ff5a6e",
+  "intro": "A formação ondula. Antecipe o movimento antes de atirar.",
+  "enemy": {
+    "hp": 1,
+    "speed": 42,
+    "fireRate": 0.9,
+    "points": 150
+  },
+  "formation": {
+    "rows": 4,
+    "cols": 7,
+    "pattern": "zigzag"
+  }
+}

@@ -5,6 +5,16 @@
    Proporção Vertical 9:16, Estética Space Opera Retrô, Efeito CRT e Responsividade.
    ============================================================================= */
 
+@import url('https://fonts.cdnfonts.com/css/vcr-osd-mono');
+
+@font-face {
+    font-family: 'VCR OSD Mono';
+    src: url('../assets/fonts/vcr_osd_mono.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --cor-fundo: #050813;
     --cor-gabinete: #0d1326;
@@ -14,21 +24,36 @@
     --cor-verde: #22c55e;
     --cor-texto: #ffffff;
     --cor-texto-mutado: #94a3b8;
+
+    /* Fonte Oficial Retrô de Campanha: VCR OSD Mono */
+    --fonte-pixel: 'VCR OSD Mono', monospace;
+    --fonte-titulo: 'VCR OSD Mono', monospace, sans-serif;
+    --fonte-tech: 'VCR OSD Mono', monospace, sans-serif;
+    --fonte-corpo: 'VCR OSD Mono', monospace, sans-serif;
 }
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    /* Aspecto Pixel Perfect: Desabilita qualquer arredondamento suave */
+    border-radius: 0;
+    font-family: inherit;
 }
 
 body {
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--fonte-pixel);
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -36,15 +61,17 @@ body {
     overflow: hidden;
 }
 
+input, button, select, textarea {
+    font-family: var(--fonte-pixel);
+}
+
 /* Moldura do Fliperama Retrô (Gabinete Arcade no Desktop) */
 .arcade-container {
     position: relative;
-    /* Ocupa a altura toda da janela e calcula a largura pela proporção 9:16 da tela de jogo
-       (+38px do letreiro). Cresce em monitores grandes em vez de travar em 480x853. */
+    width: 100vw;
     height: 100vh;
-    height: 100dvh;
-    width: min(100vw, calc((100vh - 38px) * 9 / 16));
-    width: min(100vw, calc((100dvh - 38px) * 9 / 16));
+    max-width: 480px;
+    max-height: 853px; /* Proporção 9:16 */
     background: var(--cor-gabinete);
     border: 3px solid var(--cor-borda);
     box-shadow: 0 0 30px rgba(220, 38, 38, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.8);
@@ -80,6 +107,44 @@ body {
     font-size: 1rem;
     cursor: pointer;
     padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icone:hover {
+    color: var(--cor-dourado);
+}
+
+/* =============================================================================
+   ÍCONES PIXEL ART RETRÔ (SVG CRISP EDGES)
+   ============================================================================= */
+.px-icon {
+    display: inline-block;
+    vertical-align: -0.15em;
+    width: 1.15em;
+    height: 1.15em;
+    flex-shrink: 0;
+    shape-rendering: crispEdges;
+    image-rendering: pixelated;
+}
+
+.px-icon-heart {
+    width: 1.1em;
+    height: 1.1em;
+    vertical-align: -0.15em;
+    margin-right: 3px;
+    shape-rendering: crispEdges;
+    image-rendering: pixelated;
+}
+
+.px-icon-shield {
+    width: 1.1em;
+    height: 1.1em;
+    vertical-align: -0.15em;
+    margin-right: 3px;
+    shape-rendering: crispEdges;
+    image-rendering: pixelated;
 }
 
 /* Área de Tela do Jogo */
@@ -130,7 +195,7 @@ body {
 }
 
 .hud-timer {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: var(--fonte-pixel);
     font-size: 0.85rem;
     font-weight: 900;
     color: #38bdf8 !important;
@@ -224,7 +289,7 @@ body {
     line-height: 1.35;
     color: #f8fafc;
     min-height: 50px;
-    font-family: monospace;
+    font-family: var(--fonte-pixel);
 }
 
 .holo-instrucao {
@@ -378,6 +443,499 @@ body {
     to { opacity: 1; }
 }
 
+/* =============================================================================
+   TELA DE TRANSIÇÃO ENTRE FASES (MENSAGEM MOTIVACIONAL & RESISTÊNCIA)
+   ============================================================================= */
+#transicaoFaseModal {
+    z-index: 60;
+}
+
+.modal-transicao {
+    max-width: 380px;
+    background: #090e1d;
+    border: 3px solid var(--cor-dourado);
+    box-shadow: 
+        0 0 35px rgba(250, 204, 21, 0.4),
+        inset 0 0 20px rgba(0, 0, 0, 0.9);
+    padding: 22px 18px;
+    animation: zoomEntrada 0.28s ease-out;
+}
+
+@keyframes zoomEntrada {
+    from {
+        transform: scale(0.85);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.transicao-badge {
+    display: inline-block;
+    background: #dc2626;
+    color: #fef08a;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border: 1px solid #facc15;
+    margin-bottom: 8px;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.transicao-titulo {
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin-bottom: 4px;
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
+}
+
+.transicao-sub {
+    font-size: 0.78rem;
+    color: var(--cor-ciano);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.transicao-cartao-frase {
+    background: rgba(15, 23, 42, 0.95);
+    border: 2px solid #27354a;
+    border-left: 4px solid #ef4444;
+    padding: 14px 12px;
+    margin-bottom: 14px;
+    text-align: left;
+    position: relative;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.transicao-cartao-frase .transicao-icone-estrela {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    color: #facc15;
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.transicao-frase {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: #f1f5f9;
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+.transicao-autor {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--cor-dourado);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: right;
+}
+
+.transicao-bonus {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #050813;
+    border: 1px dashed var(--cor-ciano);
+    padding: 8px 12px;
+    margin-bottom: 14px;
+}
+
+.transicao-bonus .bonus-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 800;
+}
+
+.transicao-bonus .bonus-valor {
+    font-size: 0.95rem;
+    color: #22c55e;
+    font-weight: 900;
+    text-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+.btn-transicao {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: #ffffff;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 0 #14532d;
+    cursor: pointer;
+    transition: transform 0.08s ease, filter 0.1s ease;
+}
+
+.btn-transicao:hover {
+    filter: brightness(1.15);
+}
+
+.btn-transicao:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #14532d;
+}
+
+.transicao-auto-timer {
+    font-size: 0.68rem;
+    color: var(--cor-texto-mutado);
+    margin-top: 10px;
+    animation: pulsar 1.2s infinite alternate;
+}
+
+/* =============================================================================
+   MODAL DO MANUAL DE POWER-UPS (TUTORIAL DA VANGUARDA 13)
+   ============================================================================= */
+.modal-powerups {
+    max-width: 340px;
+    padding: 16px 14px;
+    background: #090e1f;
+    border: 2px solid var(--cor-ciano);
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+}
+
+.powerups-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px 0;
+    max-height: 340px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Scrollbar fina para o grid no arcade */
+.powerups-grid::-webkit-scrollbar {
+    width: 4px;
+}
+.powerups-grid::-webkit-scrollbar-thumb {
+    background: var(--cor-ciano);
+}
+
+.powerup-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    padding: 7px 8px;
+    text-align: left;
+    transition: transform 0.1s ease, border-color 0.1s ease;
+}
+
+.powerup-card:hover {
+    border-color: var(--cor-dourado);
+    transform: translateX(2px);
+}
+
+.powerup-icon-wrap {
+    width: 32px;
+    height: 32px;
+    background: #050813;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.powerup-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.powerup-nome {
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.powerup-desc {
+    font-size: 0.65rem;
+    color: #cbd5e1;
+    line-height: 1.25;
+}
+
+/* =============================================================================
+   SISTEMA DE IDENTIFICAÇÃO E TECLADO DA URNA ELETRÔNICA
+   ============================================================================= */
+
+.modal-credencial {
+    max-width: 340px;
+    padding: 20px 16px;
+    background: #090d16;
+    border: 2px solid var(--cor-ciano);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+}
+
+.credencial-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    color: var(--cor-dourado);
+    background: rgba(250, 204, 21, 0.12);
+    border: 1px solid var(--cor-dourado);
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.credencial-sub {
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+    line-height: 1.35;
+}
+
+.credencial-status-msg {
+    font-size: 0.75rem;
+    min-height: 18px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.escolha-icone {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+}
+
+.escolha-pergunta {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--cor-dourado);
+    margin-bottom: 8px;
+    line-height: 1.35;
+}
+
+.escolha-desc {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin-bottom: 16px;
+    line-height: 1.35;
+}
+
+.escolha-botoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.btn-sucesso {
+    background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+    border-color: #4ade80;
+    color: #ffffff;
+}
+
+.btn-sucesso:hover {
+    background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+}
+
+.btn-link {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 6px;
+    margin-top: 6px;
+}
+
+.btn-link:hover {
+    color: #ffffff;
+}
+
+/* --- MÓDULO DA URNA ELETRÔNICA --- */
+
+.urna-cabecalho {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.urna-subtitulo {
+    font-size: 0.62rem;
+    font-weight: 900;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.urna-instrucao {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--cor-dourado);
+    letter-spacing: 0.5px;
+}
+
+/* Visor de 4 Slots da Urna */
+.urna-display {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 12px 0 6px 0;
+}
+
+.urna-slot {
+    width: 44px;
+    height: 52px;
+    background: #020617;
+    border: 2px solid #334155;
+    border-radius: 4px;
+    color: #22c55e;
+    font-size: 1.6rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.urna-slot.ativo {
+    border-color: #22c55e;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+    animation: piscarCursorUrna 0.8s infinite;
+}
+
+@keyframes piscarCursorUrna {
+    0%, 100% { border-color: #22c55e; }
+    50% { border-color: #38bdf8; }
+}
+
+.urna-erro-msg {
+    font-size: 0.72rem;
+    color: #ef4444;
+    min-height: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Teclado da Urna Eletrônica */
+.urna-teclado {
+    background: #18181b;
+    border: 2px solid #27272a;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.urna-teclado-numeros {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.tecla-num {
+    background: #27272a;
+    border: 1px solid #3f3f46;
+    border-radius: 4px;
+    color: #f8fafc;
+    font-family: inherit;
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding: 10px 0;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #09090b;
+    transition: transform 0.05s ease, background 0.05s ease;
+}
+
+.tecla-num:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #09090b;
+    background: #3f3f46;
+}
+
+.tecla-espaco {
+    visibility: hidden;
+}
+
+.urna-teclado-acoes {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 8px;
+}
+
+.tecla-acao {
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 900;
+    padding: 12px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5);
+    transition: transform 0.05s ease;
+    border: none;
+}
+
+.tecla-corrige {
+    background: linear-gradient(180deg, #f97316 0%, #c2410c 100%);
+    color: #ffffff;
+}
+
+.tecla-corrige:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.tecla-confirma {
+    background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+    color: #ffffff;
+    font-size: 0.88rem;
+    letter-spacing: 0.5px;
+}
+
+.tecla-confirma:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Caixa de piloto confirmado no Game Over */
+.identidade-confirmada-box {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid var(--cor-ciano);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.ident-label {
+    display: block;
+    font-size: 0.65rem;
+    color: #94a3b8;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+}
+
+.ident-nome {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--cor-dourado);
+    letter-spacing: 1px;
+    margin-right: 6px;
+}
+
+.ident-badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    font-weight: 800;
+    vertical-align: middle;
+}
+
 /* Responsividade Mobile: tela cheia real */
 @media (max-width: 480px) {
     .arcade-container {
@@ -387,3 +945,4 @@ body {
         box-shadow: none;
     }
 }
+
