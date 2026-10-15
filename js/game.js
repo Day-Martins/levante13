@@ -127,9 +127,15 @@ class MotorLevante13 {
      */
     configurarEventos() {
         window.addEventListener('keydown', (e) => {
-            // Se o modal de credencial/Urna estiver aberto, ignora atalhos globais do jogo
+            // Se qualquer modal estiver aberto (credencial/Urna, ajuda/power-ups, placar), ignora atalhos de disparo/início
             const modalCredencial = document.getElementById('modalCredencial');
-            if (modalCredencial && modalCredencial.style.display === 'flex') {
+            const modalPowerups = document.getElementById('powerupsModal');
+            const modalRanking = document.getElementById('leaderboardModal');
+            if (
+                (modalCredencial && modalCredencial.style.display === 'flex') ||
+                (modalPowerups && modalPowerups.style.display === 'flex') ||
+                (modalRanking && modalRanking.style.display === 'flex')
+            ) {
                 return;
             }
 
@@ -438,19 +444,50 @@ class MotorLevante13 {
     }
 
     /**
-     * Exibe o Manual de Power-ups da Vanguarda 13 antes do início do combate
+     * Exibe o Manual de Power-ups da Vanguarda 13.
+     * Se invocado durante o fluxo normal de início da Fase 1, atua como tutorial de partida.
+     * Se invocado pelo botão de ajuda '?', atua como consulta e preserva o estado anterior.
+     * @param {boolean} modoConsultaManual - true se foi acionado via botão de ajuda '?'
      */
-    exibirManualPowerups() {
-        this.estado = 'TUTORIAL_POWERUPS';
-        this.manualPowerupsExibido = true;
+    exibirManualPowerups(modoConsultaManual = false) {
+        this.modoConsultaManual = modoConsultaManual;
+        this.estadoAnteriorManual = this.estado;
+
+        // Se for o tutorial obrigatório inicial da fase 1
+        if (!modoConsultaManual && this.estado === 'HOLOTRANSMISSAO') {
+            this.estado = 'TUTORIAL_POWERUPS';
+            this.manualPowerupsExibido = true;
+        }
+
         const modal = document.getElementById('powerupsModal');
+        const btnEntendido = document.getElementById('btnEntendidoPowerups');
+        const subtexto = document.getElementById('subtextoManualPowerups');
+
+        if (btnEntendido && subtexto) {
+            // Se está em tela de Game Over, placar ou se foi apenas uma consulta da barra superior
+            const emGameOver = this.estado === 'FIM_DE_JOGO' || this.estadoAnteriorManual === 'FIM_DE_JOGO';
+            const apenasConsulta = modoConsultaManual || emGameOver || this.estadoAnteriorManual === 'JOGANDO' || this.estadoAnteriorManual === 'CHEFE';
+
+            if (apenasConsulta && !(!this.manualPowerupsExibido && this.indiceFaseAtual === 0 && !modoConsultaManual)) {
+                btnEntendido.innerHTML = 'FECHAR MANUAL <svg class="px-icon"><use href="#px-close"/></svg>';
+                btnEntendido.className = 'btn-acao btn-secundario';
+                subtexto.textContent = 'Clique para fechar o manual e retornar à tela anterior';
+            } else {
+                btnEntendido.innerHTML = 'ENTENDIDO! ÀS ARMAS <svg class="px-icon"><use href="#px-play"/></svg>';
+                btnEntendido.className = 'btn-acao btn-transicao';
+                subtexto.textContent = 'Clique no botão acima para iniciar a batalha';
+            }
+        }
+
         if (modal) {
             modal.style.display = 'flex';
         }
     }
 
     /**
-     * Fecha o Manual de Power-ups e inicia o combate da fase
+     * Fecha o Manual de Power-ups.
+     * Se for o tutorial inicial da Fase 1, inicia o combate.
+     * Se for consulta (ou se estava em Game Over / tela de score), apenas fecha e restaura o estado.
      */
     fecharManualPowerups() {
         const modal = document.getElementById('powerupsModal');
@@ -458,9 +495,16 @@ class MotorLevante13 {
             modal.style.display = 'none';
         }
 
-        if (this.estado === 'TUTORIAL_POWERUPS') {
+        // Se era o tutorial inicial que estava esperando para iniciar o jogo
+        if (!this.modoConsultaManual && this.estado === 'TUTORIAL_POWERUPS') {
             this.montarGradeInimigos();
             this.estado = 'JOGANDO';
+            return;
+        }
+
+        // Se foi apenas uma consulta manual, restaura o estado anterior sem reiniciar ou disparar jogo
+        if (this.estadoAnteriorManual) {
+            this.estado = this.estadoAnteriorManual;
         }
     }
 
