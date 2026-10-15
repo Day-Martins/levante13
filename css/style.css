@@ -389,6 +389,8 @@ input, button, select, textarea {
 }
 
 .btn-whatsapp {
+    display: inline-flex;
+    box-sizing: border-box;
     background: linear-gradient(135deg, #22c55e, #16a34a);
     color: #ffffff;
     text-decoration: none;
@@ -404,6 +406,8 @@ input, button, select, textarea {
 }
 
 .btn-instagram {
+    display: inline-flex;
+    box-sizing: border-box;
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
     color: #ffffff;
     text-decoration: none;

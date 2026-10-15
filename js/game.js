@@ -310,16 +310,23 @@ class MotorLevante13 {
         const modalTransicao = document.getElementById('transicaoFaseModal');
         if (modalTransicao) modalTransicao.style.display = 'none';
 
-        // Reseta formulário de recorde
+        // Reseta formulário de recorde e caixas de compartilhamento
         const formScore = document.getElementById('formSalvarScore');
         const btnSalvar = document.getElementById('btnSalvarScore');
+        const boxCompartilhamento = document.getElementById('boxCompartilhamento');
+        const boxCard = document.getElementById('boxCardGameOver');
         const btnWhatsApp = document.getElementById('btnWhatsAppShare');
+        const btnInstagram = document.getElementById('btnInstagramShare');
+
         if (formScore) formScore.style.display = 'block';
         if (btnSalvar) {
             btnSalvar.disabled = false;
             btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> REGISTRAR RECORDE';
         }
-        if (btnWhatsApp) btnWhatsApp.style.display = 'none';
+        if (boxCompartilhamento) boxCompartilhamento.style.display = 'none';
+        if (boxCard) boxCard.style.display = 'none';
+        if (btnWhatsApp) btnWhatsApp.style.display = 'inline-flex';
+        if (btnInstagram) btnInstagram.style.display = 'inline-flex';
     }
 
     /**

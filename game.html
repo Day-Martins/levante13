@@ -716,11 +716,15 @@
                         // Ativa botões de compartilhamento (WhatsApp & Instagram)
                         if (boxCompartilhamento) boxCompartilhamento.style.display = 'flex';
 
-                        if (btnWhatsApp && json.whatsapp_url) {
-                            btnWhatsApp.href = json.whatsapp_url;
+                        if (btnWhatsApp) {
+                            if (json.whatsapp_url) {
+                                btnWhatsApp.href = json.whatsapp_url;
+                            }
+                            btnWhatsApp.style.display = 'inline-flex';
                         }
 
                         if (btnInstagram) {
+                            btnInstagram.style.display = 'inline-flex';
                             btnInstagram.onclick = async () => {
                                 const legenda = json.instagram_legenda || `🚀 Pilotei a Vanguarda 13 e registrei ${window.jogo.pontos.toLocaleString('pt-BR')} pts! Jogue em https://levante13.online`;
 
