@@ -81,10 +81,22 @@ function processarConsultaLeaderboard(PDO $pdo): void
         ];
     }
 
+    // Contagem de codinomes cadastrados / pilotos mobilizados (Urna + Leaderboard)
+    $sqlTotalCodinomes = <<<SQL
+    SELECT COUNT(DISTINCT codename) AS total FROM (
+        SELECT codename FROM players
+        UNION
+        SELECT player_name AS codename FROM leaderboard WHERE player_name IS NOT NULL AND player_name != ''
+    )
+    SQL;
+    $stmtCount = $pdo->query($sqlTotalCodinomes);
+    $totalCodinomes = (int)($stmtCount->fetchColumn() ?: 0);
+
     echo json_encode([
-        'sucesso' => true,
-        'total'   => count($ranking),
-        'ranking' => $ranking
+        'sucesso'         => true,
+        'total'           => count($ranking),
+        'total_codinomes' => $totalCodinomes,
+        'ranking'         => $ranking
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
 

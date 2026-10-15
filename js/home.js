@@ -44,6 +44,9 @@ function inicializarModoSite() {
             if (boxEspera) boxEspera.classList.remove('escondido');
             if (heroBadge) heroBadge.textContent = '★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE';
 
+            const boxContadorHero = document.getElementById('boxContadorPilotosHero');
+            if (boxContadorHero) boxContadorHero.style.display = 'none';
+
             // Botão Principal do Hero: DESATIVADO
             if (btnHeroPrincipal) {
                 btnHeroPrincipal.outerHTML = `
@@ -99,6 +102,9 @@ function inicializarModoSite() {
             // --- MODO PUBLICADO (JOGO NO AR) ---
             if (boxEspera) boxEspera.classList.add('escondido');
             if (heroBadge) heroBadge.textContent = '★ Mobilização Popular Permanente';
+
+            const boxContadorHero = document.getElementById('boxContadorPilotosHero');
+            if (boxContadorHero) boxContadorHero.style.display = 'inline-flex';
 
             if (btnHeroPrincipal) {
                 btnHeroPrincipal.outerHTML = `
@@ -169,11 +175,34 @@ function inicializarModoSite() {
    ============================================================================= */
 async function carregarRanking() {
     const corpo = document.getElementById('corpoRanking');
-    if (!corpo) return;
+    const boxContadorPlacar = document.getElementById('boxContadorPilotosPlacar');
+    const numContadorPlacar = document.getElementById('numContadorPilotosPlacar');
+    const boxContadorHero = document.getElementById('boxContadorPilotosHero');
+    const numContadorHero = document.getElementById('numContadorPilotosHero');
 
     try {
         const res = await fetch('api/leaderboard.php?limit=10');
         const dados = await res.json();
+
+        // Atualiza contador de codinomes / usuários cadastrados
+        if (dados.sucesso && typeof dados.total_codinomes === 'number') {
+            const totalFormatado = dados.total_codinomes.toLocaleString('pt-BR');
+            if (numContadorPlacar) numContadorPlacar.textContent = totalFormatado;
+            if (boxContadorPlacar) boxContadorPlacar.style.display = 'inline-flex';
+
+            if (numContadorHero) numContadorHero.textContent = totalFormatado;
+
+            // No Hero, se o site estiver no modo publicado, exibe o contador com destaque
+            const modoEspera = localStorage.getItem('levante13_modo_espera') !== 'false';
+            const params = new URLSearchParams(window.location.search);
+            const forcarPublicado = params.get('publicado') === '1' || params.get('modo') === 'jogar';
+
+            if (boxContadorHero && (!modoEspera || forcarPublicado)) {
+                boxContadorHero.style.display = 'inline-flex';
+            }
+        }
+
+        if (!corpo) return;
 
         if (dados.sucesso && Array.isArray(dados.ranking) && dados.ranking.length > 0) {
             corpo.innerHTML = dados.ranking.map((item, idx) => {
@@ -208,11 +237,13 @@ async function carregarRanking() {
             `;
         }
     } catch (err) {
-        corpo.innerHTML = `
-            <div style="padding: 24px; text-align: center; color: var(--texto-mutado); font-size: 0.9rem;">
-                ★ Placar aberto no lançamento oficial. Prepare seu codinome!
-            </div>
-        `;
+        if (corpo) {
+            corpo.innerHTML = `
+                <div style="padding: 24px; text-align: center; color: var(--texto-mutado); font-size: 0.9rem;">
+                    ★ Placar aberto no lançamento oficial. Prepare seu codinome!
+                </div>
+            `;
+        }
     }
 }
 
