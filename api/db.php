@@ -93,19 +93,21 @@ function inicializarEstruturaBanco(PDO $pdo): void
     );
     SQL;
 
-    // Partidas abertas por api/start.php: o token vale para um único registro de recorde
-    $sqlPartidas = <<<SQL
-    CREATE TABLE IF NOT EXISTS partidas (
-        token TEXT PRIMARY KEY,
-        iniciada_em INTEGER NOT NULL,
-        finalizada_em INTEGER,
-        ip_hash TEXT
+    // Tabela de Codinomes Protegidos com PIN numérico de 4 dígitos (Urna)
+    $sqlPlayers = <<<SQL
+    CREATE TABLE IF NOT EXISTS players (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        codename TEXT UNIQUE COLLATE NOCASE NOT NULL,
+        pin_hash TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        last_played DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+    CREATE INDEX IF NOT EXISTS idx_players_codename 
+    ON players (codename COLLATE NOCASE);
     SQL;
 
     $pdo->exec($sqlTabela);
     $pdo->exec($sqlIndice);
     $pdo->exec($sqlRateLimit);
-    $pdo->exec($sqlPartidas);
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_partidas_ip ON partidas (ip_hash, iniciada_em)');
+    $pdo->exec($sqlPlayers);
 }

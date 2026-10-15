@@ -3,6 +3,54 @@
 // Arquivo: js/game.js
 // =============================================================================
 
+// =============================================================================
+// REPOSITÓRIO DE MENSAGENS MOTIVACIONAIS E SOBERANIA POPULAR (TRANSIÇÃO DE FASES)
+// =============================================================================
+const MENSAGENS_MOTIVACIONAIS_FASE = [
+    {
+        fase: 1,
+        titulo: "SETOR DAS REDES LIBERTADO!",
+        sub: "A verdade venceu o Gabinete do Ódio",
+        frase: "A verdade sempre desmonta a mentira! Cada rede clandestina derrubada devolve a consciência e a dignidade ao povo trabalhador.",
+        autor: "ANA ELISA • GUERRA DIGITAL"
+    },
+    {
+        fase: 2,
+        titulo: "FRENTE DO CAMPO CONQUISTADA!",
+        sub: "Soberania Alimentar e Terra para Quem Produz",
+        frase: "Comida de verdade no prato e justiça no campo! O Brasil avança quando quem planta com amor colhe com respeito e dignidade.",
+        autor: "VANGUARDA POPULAR AGRÁRIA"
+    },
+    {
+        fase: 3,
+        titulo: "RESERVA DA FLORESTA PROTEGIDA!",
+        sub: "A Amazônia e os Povos Originários Resistiram",
+        frase: "Nunca mais um Brasil sem nós! A floresta em pé garante a vida e o futuro do planeta. A luta indígena é a luta pela humanidade!",
+        autor: "SÔNIA GUAJAJARA • MINISTRA DOS POVOS INDÍGENAS"
+    },
+    {
+        fase: 4,
+        titulo: "BASTIÃO DA EDUCAÇÃO ERGUIDO!",
+        sub: "Conhecimento Libertador e Ciência Pública",
+        frase: "Como ensinou Paulo Freire: a educação não transforma o mundo, ela muda as pessoas que vão transformar o mundo!",
+        autor: "BRIGADA PAULO FREIRE"
+    },
+    {
+        fase: 5,
+        titulo: "DEFESA DA VIDA CONSOLIDADA!",
+        sub: "O SUS e a Solidariedade Salvaram o Brasil",
+        frase: "A força da ciência pública e dos direitos sociais é invencível diante do obscurantismo. A democracia resiste e avança!",
+        autor: "GUARDA DA SAÚDE E CIÊNCIA"
+    },
+    {
+        fase: 6,
+        titulo: "GRANDE VIRADA CONQUISTADA!",
+        sub: "A Democracia Triunfou no Brasil!",
+        frase: "A esperança venceu o medo e a soberania popular é soberana. O Brasil voltou a sorrir com dignidade e justiça social!",
+        autor: "LULA • COMANDO SUPREMO DA DEMOCRACIA"
+    }
+];
+
 class MotorLevante13 {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
@@ -12,8 +60,13 @@ class MotorLevante13 {
         this.canvas.width = this.cw;
         this.canvas.height = this.ch;
 
-        // Estados do Jogo: 'INICIO', 'HOLOTRANSMISSAO', 'JOGANDO', 'CHEFE', 'VITORIA_FASE', 'FIM_DE_JOGO'
+        // Estados do Jogo: 'INICIO', 'HOLOTRANSMISSAO', 'JOGANDO', 'CHEFE', 'TRANSICAO_FASE', 'FIM_DE_JOGO'
         this.estado = 'INICIO';
+
+        // Sistema de Transição de Fases com Mensagem Motivacional
+        this.intervaloContagemTransicao = null;
+        this.segundosRestantesTransicao = 5;
+        this.proximaFaseIndice = 0;
 
         // Entidades e Listas
         this.jogador = new Jogador(this.cw, this.ch);
@@ -23,6 +76,10 @@ class MotorLevante13 {
         this.itens = [];
         this.particulas = [];
         this.chefe = null;
+        this.spriteChefe = null;
+        this.temporizadorSuprimentoChefe = 0;
+        this.textoAlertaChefe = '';
+        this.tempoAlertaChefe = 0;
 
         // Fases e Níveis Dinâmicos
         this.fases = [];
@@ -55,12 +112,6 @@ class MotorLevante13 {
         this.touchX = null;
         this.disparoAutomaticoMobile = true;
 
-        // Partida no servidor (antitrapaça): token de uso único e registro de abates por fase
-        this.fasesCarregadas = false;
-        this.tokenPartida = null;
-        this.promessaToken = null;
-        this.registro = [];
-
         // Sistema de Diálogos / Holotransmissão
         this.dialogoIndice = 0;
         this.textoAtualExibido = '';
@@ -76,6 +127,12 @@ class MotorLevante13 {
      */
     configurarEventos() {
         window.addEventListener('keydown', (e) => {
+            // Se o modal de credencial/Urna estiver aberto, ignora atalhos globais do jogo
+            const modalCredencial = document.getElementById('modalCredencial');
+            if (modalCredencial && modalCredencial.style.display === 'flex') {
+                return;
+            }
+
             // Previne a rolagem padrão da página ao pressionar a barra de espaço
             if (e.code === 'Space') {
                 e.preventDefault();
@@ -84,9 +141,9 @@ class MotorLevante13 {
             this.teclas[e.code] = true;
             audio.iniciar();
 
-            // 1. Iniciar partida a partir da tela inicial via teclado
+            // 1. Iniciar partida a partir da tela inicial via teclado (solicita codinome/urna)
             if ((e.code === 'Space' || e.code === 'Enter') && this.estado === 'INICIO') {
-                this.iniciarPartida();
+                this.solicitarInicioPartida();
                 return;
             }
 
@@ -96,13 +153,32 @@ class MotorLevante13 {
                 return;
             }
 
-            // 3. Reiniciar partida se estiver em tela de fim de jogo e não estiver digitando a tag
+            // Nota: Em TUTORIAL_POWERUPS e TRANSICAO_FASE não usamos mais a barra de espaço,
+            // para evitar que o jogador feche a tela acidentalmente enquanto atirava ao final da partida.
+            // O avanço nesses modais é feito exclusivamente pelo clique intencional no botão.
+
+            // Atalho de desenvolvimento / teste da Transição de Fase (Tecla 'T')
+            if (e.key === 't' || e.key === 'T') {
+                this.exibirTransicaoFase(this.indiceFaseAtual, this.indiceFaseAtual + 1);
+                return;
+            }
+
+            // Atalhos de desenvolvimento / teste para frentes 1 a 6 (Teclas '1' a '6')
+            if (['1', '2', '3', '4', '5', '6'].includes(e.key)) {
+                const faseNum = parseInt(e.key, 10) - 1;
+                this.iniciarFase(faseNum);
+                return;
+            }
+
+            // 4. Reiniciar partida se estiver em tela de fim de jogo
             if ((e.code === 'Space' || e.code === 'Enter') && this.estado === 'FIM_DE_JOGO') {
-                const inputNome = document.getElementById('inputPlayerName');
-                if (document.activeElement !== inputNome) {
-                    this.iniciarPartida();
+                const modalGameOver = document.getElementById('gameOverModal');
+                if (modalGameOver && modalGameOver.style.display === 'flex') {
+                    // Não reinicia via espaço se modal de fim de jogo estiver ativo
                     return;
                 }
+                this.iniciarPartida();
+                return;
             }
         });
 
@@ -114,7 +190,7 @@ class MotorLevante13 {
         this.canvas.addEventListener('click', () => {
             audio.iniciar();
             if (this.estado === 'INICIO') {
-                this.iniciarPartida();
+                this.solicitarInicioPartida();
             }
         });
 
@@ -124,6 +200,18 @@ class MotorLevante13 {
                 audio.iniciar();
                 if (this.estado === 'HOLOTRANSMISSAO') {
                     this.avancarHolotransmissao();
+                }
+            });
+        }
+
+        // Suporte a avanço da Transição de Fase exclusivamente via clique no botão (desktop e mobile)
+        const btnAvancarFase = document.getElementById('btnAvancarFase');
+        if (btnAvancarFase) {
+            btnAvancarFase.addEventListener('click', (e) => {
+                e.stopPropagation();
+                audio.iniciar();
+                if (this.estado === 'TRANSICAO_FASE') {
+                    this.concluirTransicaoFase();
                 }
             });
         }
@@ -144,7 +232,7 @@ class MotorLevante13 {
             if (this.estado === 'HOLOTRANSMISSAO') {
                 this.avancarHolotransmissao();
             } else if (this.estado === 'INICIO') {
-                this.iniciarPartida();
+                this.solicitarInicioPartida();
             }
         }, { passive: false });
 
@@ -177,31 +265,6 @@ class MotorLevante13 {
             console.error('Falha ao conectar com api/levels.php:', erro);
             this.fases = [this.obterFaseFallback()];
         }
-        this.fasesCarregadas = true;
-    }
-
-    /**
-     * Abre a partida no servidor. O token é exigido para registrar o recorde.
-     * Roda em paralelo: o jogo começa na hora, mesmo que a rede esteja lenta.
-     */
-    abrirPartidaNoServidor() {
-        this.tokenPartida = null;
-        this.promessaToken = fetch('api/start.php', { method: 'POST' })
-            .then((r) => r.json())
-            .then((json) => {
-                if (json.sucesso && json.token) this.tokenPartida = json.token;
-                return this.tokenPartida;
-            })
-            .catch(() => null);
-    }
-
-    /**
-     * Conta um abate no registro da fase atual (o servidor recalcula a pontuação a partir disto).
-     */
-    registrarAbate(idTipo) {
-        const atual = this.registro[this.registro.length - 1];
-        if (!atual) return;
-        atual.abates[idTipo] = (atual.abates[idTipo] || 0) + 1;
     }
 
     /**
@@ -227,7 +290,6 @@ class MotorLevante13 {
         this.temporizadorSegundo = 0;
         this.tempoFaseRestante = 180;
         this.indiceFaseAtual = 0;
-        this.registro = [];
 
         // Limpa a tela imediatamente com o fundo escuro do espaço
         this.ctx.fillStyle = '#070b19';
@@ -240,6 +302,14 @@ class MotorLevante13 {
         const modalRanking = document.getElementById('leaderboardModal');
         if (modalRanking) modalRanking.style.display = 'none';
 
+        // Fecha modal de transição de fase e limpa intervalo ativo
+        if (this.intervaloContagemTransicao) {
+            clearInterval(this.intervaloContagemTransicao);
+            this.intervaloContagemTransicao = null;
+        }
+        const modalTransicao = document.getElementById('transicaoFaseModal');
+        if (modalTransicao) modalTransicao.style.display = 'none';
+
         // Reseta formulário de recorde
         const formScore = document.getElementById('formSalvarScore');
         const btnSalvar = document.getElementById('btnSalvarScore');
@@ -247,17 +317,28 @@ class MotorLevante13 {
         if (formScore) formScore.style.display = 'block';
         if (btnSalvar) {
             btnSalvar.disabled = false;
-            btnSalvar.textContent = '💾 REGISTRAR RECORDE';
+            btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> REGISTRAR RECORDE';
         }
         if (btnWhatsApp) btnWhatsApp.style.display = 'none';
     }
 
+    /**
+     * Solicita autenticação de codinome / urna antes de dar a partida.
+     */
+    solicitarInicioPartida() {
+        audio.iniciar();
+        if (window.authUrna) {
+            window.authUrna.abrirModal(() => {
+                this.iniciarPartida();
+            });
+        } else {
+            this.iniciarPartida();
+        }
+    }
+
     iniciarPartida() {
-        // Evita começar antes de as fases chegarem do servidor (senão a campanha "termina" na hora)
-        if (!this.fasesCarregadas) return;
         audio.iniciar();
         this.resetarJogo();
-        this.abrirPartidaNoServidor();
         this.iniciarFase(0);
     }
 
@@ -272,7 +353,6 @@ class MotorLevante13 {
         }
 
         this.dadosFaseAtual = this.fases[indice];
-        this.registro.push({ pasta: this.dadosFaseAtual.pasta, abates: {}, chefe: false });
 
         // Limpa imediatamente todas as entidades e tiros do setor anterior
         this.inimigos = [];
@@ -298,6 +378,13 @@ class MotorLevante13 {
 
         this.spriteInimigo = new Image();
         this.spriteInimigo.src = this.dadosFaseAtual.assets.inimigo;
+
+        if (this.dadosFaseAtual.assets && this.dadosFaseAtual.assets.chefe) {
+            this.spriteChefe = new Image();
+            this.spriteChefe.src = this.dadosFaseAtual.assets.chefe;
+        } else {
+            this.spriteChefe = null;
+        }
 
         // Configura a Holotransmissão
         this.estado = 'HOLOTRANSMISSAO';
@@ -331,8 +418,40 @@ class MotorLevante13 {
         if (this.dialogoIndice < dialogos.length) {
             this.prepararLinhaDialogo();
         } else {
-            // Fim dos diálogos: inicia combate espacial
+            // Fim dos diálogos: verifica se deve exibir tutorial de power-ups na Fase 1
             this.fecharHolotransmissao();
+
+            if (this.indiceFaseAtual === 0 && !this.manualPowerupsExibido) {
+                this.exibirManualPowerups();
+            } else {
+                this.montarGradeInimigos();
+                this.estado = 'JOGANDO';
+            }
+        }
+    }
+
+    /**
+     * Exibe o Manual de Power-ups da Vanguarda 13 antes do início do combate
+     */
+    exibirManualPowerups() {
+        this.estado = 'TUTORIAL_POWERUPS';
+        this.manualPowerupsExibido = true;
+        const modal = document.getElementById('powerupsModal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    /**
+     * Fecha o Manual de Power-ups e inicia o combate da fase
+     */
+    fecharManualPowerups() {
+        const modal = document.getElementById('powerupsModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+
+        if (this.estado === 'TUTORIAL_POWERUPS') {
             this.montarGradeInimigos();
             this.estado = 'JOGANDO';
         }
@@ -392,6 +511,9 @@ class MotorLevante13 {
                 this.inimigos.push(new Inimigo(posX, posY, configTipo, this.spriteInimigo, r, c));
             }
         }
+
+        // Armazena a contagem inicial da tropa para medir a quebra da formação de manada
+        this.totalInimigosFase = this.inimigos.length;
     }
 
     /**
@@ -500,13 +622,41 @@ class MotorLevante13 {
                 this.tirosInimigos.push(...tirosChefe);
             }
 
+            // Suprimentos periódicos da resistência popular durante a batalha com o chefe
+            this.temporizadorSuprimentoChefe = (this.temporizadorSuprimentoChefe || 0) + 1;
+            if (this.temporizadorSuprimentoChefe >= 720) { // a cada ~12 segundos
+                this.temporizadorSuprimentoChefe = 0;
+                this.soltarSuprimentoResistencia('📦 RESISTÊNCIA POPULAR: SUPRIMENTO ENTREGUE!');
+            }
+
             // Colisão dos tiros amigos com o Chefe
             for (let i = this.tirosAmigos.length - 1; i >= 0; i--) {
                 const t = this.tirosAmigos[i];
                 if (this.verificarColisao(t, this.chefe)) {
                     if (!t.perfurante) this.tirosAmigos.splice(i, 1);
-                    this.chefe.hp--;
                     this.gerarParticulas(t.x, t.y, '#facc15', 3);
+
+                    const evDano = this.chefe.receberDano(1);
+                    if (evDano.mudouFase) {
+                        this.shakeTela = 22;
+                        audio.tocarExplosao();
+                        this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#ef4444', 35);
+                        this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#facc15', 25);
+
+                        const titulosFase = [
+                            '',
+                            'BLINDAGEM TOTAL',
+                            'ASA ESQUERDA ARRANCADA!',
+                            'NÚCLEO EXPOSTO & SOBRECARGA!',
+                            'SOBRECARGA CRÍTICA DESESPERADA!'
+                        ];
+                        this.textoAlertaChefe = `💥 DANO CRÍTICO: ${titulosFase[evDano.faseAtual] || 'RUPTURA DE CASCO!'}`;
+                        this.tempoAlertaChefe = 150;
+                    }
+
+                    if (evDano.soltarPowerUp) {
+                        this.soltarSuprimentoResistencia('📦 REFORÇO DA RESISTÊNCIA: POWER-UP ENTREGUE!');
+                    }
 
                     if (this.chefe.hp <= 0) {
                         this.derrotarChefe();
@@ -530,6 +680,9 @@ class MotorLevante13 {
 
         // Atualiza painel HUD em tempo real
         this.atualizarHUD();
+
+        // Decrementa temporizador do alerta tático do chefe
+        if (this.tempoAlertaChefe > 0) this.tempoAlertaChefe--;
     }
 
     /**
@@ -544,8 +697,9 @@ class MotorLevante13 {
     calcularOffsetInimigo(inimigo, padrao, tempo, totalCols, totalRows) {
         switch (padrao) {
             case 'zigzag': {
-                const ox = Math.sin(tempo * 0.055 + inimigo.linha * 0.9) * 16;
-                const oy = Math.cos(tempo * 0.055 + inimigo.coluna * 0.5) * 6;
+                // Onda serpenteante suave, rítmica e cadenciada
+                const ox = Math.sin(tempo * 0.028 + inimigo.linha * 0.7) * 8;
+                const oy = Math.cos(tempo * 0.028 + inimigo.coluna * 0.4) * 3;
                 return { x: ox, y: oy };
             }
             case 'orbit': {
@@ -602,13 +756,40 @@ class MotorLevante13 {
         const totalCols = (this.dadosFaseAtual.grade && this.dadosFaseAtual.grade.cols) ? this.dadosFaseAtual.grade.cols : 8;
         const totalRows = (this.dadosFaseAtual.grade && this.dadosFaseAtual.grade.rows) ? this.dadosFaseAtual.grade.rows : 4;
 
+        // Mede a quebra da formação da manada:
+        // totalInicial completo = 0 (disciplina máxima em bloco)
+        // Poucos sobreviventes restantes = até 1.0 (pânico, desordem e trajetórias caóticas erráticas)
+        const totalInicial = this.totalInimigosFase || (totalCols * totalRows);
+        const proporcaoVivos = this.inimigos.length / Math.max(1, totalInicial);
+        const fatorErratica = Math.pow(1 - proporcaoVivos, 1.6); // Cresce exponencialmente quando restam poucos
+
         for (const inimigo of this.inimigos) {
             if (inimigo.emMergulho) {
                 inimigo.atualizarMergulho();
             } else {
                 const offset = this.calcularOffsetInimigo(inimigo, padrao, this.temporizadorAnimacao, totalCols, totalRows);
-                inimigo.offsetX = offset.x;
-                inimigo.offsetY = offset.y;
+
+                // Componente caótico individual de quebra de manada:
+                // Cada nave começa a oscilar descompassada de forma irregular e trêmula
+                const t = this.temporizadorAnimacao * (inimigo.velocidadeErrata || 1.0);
+                const faseX = (inimigo.faseErrataX || 0);
+                const faseY = (inimigo.faseErrataY || 0);
+                const freqJitter = (inimigo.frequenciaJitter || 1.4);
+
+                // Vibração e desvio caótico que rompe a grade linear
+                const erraticoX = (
+                    Math.sin(t * 0.08 * freqJitter + faseX) * 16 +
+                    Math.cos(t * 0.15 + faseY) * 9 +
+                    (Math.sin(t * 0.3 + faseX * 2) * 4)
+                ) * fatorErratica;
+
+                const erraticoY = (
+                    Math.cos(t * 0.07 * freqJitter + faseY) * 10 +
+                    Math.sin(t * 0.18 + faseX) * 6
+                ) * fatorErratica;
+
+                inimigo.offsetX = offset.x + erraticoX;
+                inimigo.offsetY = offset.y + erraticoY;
 
                 inimigo.x = inimigo.baseX + this.gradeX + inimigo.offsetX;
                 inimigo.y = inimigo.baseY + this.gradeY + inimigo.offsetY;
@@ -627,13 +808,15 @@ class MotorLevante13 {
                 }
             }
 
-            // Invasores aleatórios disparam contra o jogador
-            if (Math.random() < 0.0016 * fatorVelocidade) {
+            // Invasores aleatórios disparam contra o jogador (cadência aumenta no desespero)
+            const chanceTiroBase = 0.0016;
+            const chanceTiro = (chanceTiroBase + fatorErratica * 0.004) * fatorVelocidade;
+            if (Math.random() < chanceTiro) {
                 this.tirosInimigos.push(new Projetil(
                     inimigo.x + inimigo.largura / 2 - 2,
                     inimigo.y + inimigo.altura,
-                    (Math.random() - 0.5) * 0.8,
-                    3.2,
+                    (Math.random() - 0.5) * (0.8 + fatorErratica * 1.6),
+                    3.2 + fatorErratica * 0.8,
                     'inimigo',
                     '#ef4444',
                     false,
@@ -641,9 +824,11 @@ class MotorLevante13 {
                 ));
             }
 
-            // Chance de mergulho rasante tático
-            const diveChance = (this.dadosFaseAtual.grade && this.dadosFaseAtual.grade.diveChance) ? this.dadosFaseAtual.grade.diveChance : 0.05;
-            if (!inimigo.emMergulho && Math.random() < (diveChance * 0.0006 * fatorVelocidade)) {
+            // Chance de mergulho rasante tático:
+            // Aumenta drasticamente conforme a manada se desfaz, simulando ataques suicidas de naves isoladas
+            const diveChanceBase = (this.dadosFaseAtual.grade && this.dadosFaseAtual.grade.diveChance) ? this.dadosFaseAtual.grade.diveChance : 0.05;
+            const diveChanceFinal = (diveChanceBase + fatorErratica * 0.35) * 0.0006 * fatorVelocidade;
+            if (!inimigo.emMergulho && Math.random() < diveChanceFinal) {
                 inimigo.iniciarMergulho(this.jogador.x);
             }
         }
@@ -651,6 +836,7 @@ class MotorLevante13 {
         // Se a grade bater na borda da tela na direção do movimento, desce um passo suave e inverte
         if (tocarParede) {
             this.gradeDirecao *= -1;
+            this.gradePassoY = (this.dadosFaseAtual.grade && this.dadosFaseAtual.grade.stepY) ? this.dadosFaseAtual.grade.stepY : 4.0;
             this.gradeY += this.gradePassoY;
         }
 
@@ -677,7 +863,6 @@ class MotorLevante13 {
 
                     if (inimigo.hp <= 0) {
                         this.pontos += inimigo.pontos;
-                        this.registrarAbate(inimigo.id);
                         audio.tocarExplosao();
                         this.gerarParticulas(inimigo.x + 14, inimigo.y + 12, inimigo.cor, 14);
 
@@ -738,17 +923,35 @@ class MotorLevante13 {
                 this.tirosInimigos = [];
                 for (const inimigo of this.inimigos) {
                     this.pontos += inimigo.pontos;
-                    this.registrarAbate(inimigo.id);
                     this.gerarParticulas(inimigo.x + 14, inimigo.y + 12, '#22c55e', 10);
                 }
                 this.inimigos = [];
-                if (this.chefe) this.chefe.hp -= 15;
+                if (this.chefe) {
+                    const ev = this.chefe.receberDano(15);
+                    if (ev.mudouFase) {
+                        this.shakeTela = 22;
+                        audio.tocarExplosao();
+                    }
+                    if (ev.soltarPowerUp) {
+                        this.soltarSuprimentoResistencia('📦 REFORÇO DA RESISTÊNCIA: POWER-UP ENTREGUE!');
+                    }
+                    if (this.chefe.hp <= 0) {
+                        this.derrotarChefe();
+                    }
+                }
                 break;
             case 'sus': // Cápsula do SUS: +1 Vigor
                 this.jogador.vidas = Math.min(this.jogador.vidas + 1, 4);
                 audio.tocarPowerup();
                 break;
         }
+    }
+
+    soltarSuprimentoResistencia(mensagem = '📦 SUPRIMENTO POPULAR A CAMINHO!') {
+        const dropX = Math.max(30, Math.min(this.cw - 50, this.cw / 2 + (Math.random() - 0.5) * 160));
+        this.droparItemEspecial(dropX, 40);
+        this.textoAlertaChefe = mensagem;
+        this.tempoAlertaChefe = 140;
     }
 
     invocarChefe() {
@@ -758,30 +961,134 @@ class MotorLevante13 {
         }
 
         this.estado = 'CHEFE';
-        this.chefe = new ChefeSetor(this.cw, this.dadosFaseAtual.chefe);
-        this.shakeTela = 15;
+        this.chefe = new ChefeSetor(this.cw, this.dadosFaseAtual.chefe, this.spriteChefe, this.indiceFaseAtual + 1);
+        this.shakeTela = 18;
+        this.temporizadorSuprimentoChefe = 0;
+        this.textoAlertaChefe = `⚠️ CAPITÂNIA AUTORITÁRIA: ${this.chefe.nome.toUpperCase()}`;
+        this.tempoAlertaChefe = 180;
     }
 
     derrotarChefe() {
         audio.tocarExplosao();
         this.pontos += this.chefe.pontos;
-        if (this.registro.length) this.registro[this.registro.length - 1].chefe = true;
-        this.gerarParticulas(this.chefe.x + 36, this.chefe.y + 24, '#facc15', 30);
+        this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#facc15', 50);
+        this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#ef4444', 40);
+        this.shakeTela = 25;
         this.chefe = null;
+        this.textoAlertaChefe = '⭐ NAVE CAPITÂNIA DESTRUÍDA! O POVO AVANÇA!';
+        this.tempoAlertaChefe = 120;
         this.avancarParaProximaFase();
     }
 
     avancarParaProximaFase() {
-        this.indiceFaseAtual++;
-        if (this.indiceFaseAtual < this.fases.length) {
-            this.iniciarFase(this.indiceFaseAtual);
+        const faseConcluida = this.indiceFaseAtual;
+        const proximaFase = this.indiceFaseAtual + 1;
+
+        if (proximaFase < this.fases.length) {
+            this.exibirTransicaoFase(faseConcluida, proximaFase);
         } else {
             this.exibirFimDeJogo(true);
         }
     }
 
+    /**
+     * Exibe a tela de transição entre fases com mensagem motivacional e bônus de resistência.
+     */
+    exibirTransicaoFase(faseConcluida, proximaFase) {
+        this.estado = 'TRANSICAO_FASE';
+        this.proximaFaseIndice = proximaFase;
+
+        // Bônus comemorativo de pontuação por setor conquistado (+5.000 PTS)
+        const bonusPontos = 5000;
+        this.pontos += bonusPontos;
+        this.atualizarHUD();
+
+        // Toca fanfarra triunfal retrô sintetizada
+        audio.tocarVitoriaFase();
+
+        // Identifica mensagem motivacional correspondente
+        const numFase = faseConcluida + 1;
+        const msgConfig = MENSAGENS_MOTIVACIONAIS_FASE.find(m => m.fase === numFase) || {
+            titulo: `FRENTE ${numFase} CONCLUÍDA!`,
+            sub: this.dadosFaseAtual?.nome || 'Setor da Resistência Libertado',
+            frase: "A democracia é a força viva do povo brasileiro! Nenhum passo atrás: a virada se constrói em cada trincheira!",
+            autor: "VANGUARDA POPULAR 13"
+        };
+
+        const modal = document.getElementById('transicaoFaseModal');
+        const tituloEl = document.getElementById('transicaoTituloFase');
+        const nomeFaseEl = document.getElementById('transicaoNomeFase');
+        const fraseEl = document.getElementById('transicaoFraseMotivacional');
+        const autorEl = document.getElementById('transicaoAutorFrase');
+        const bonusEl = document.getElementById('transicaoBonusPontos');
+        const segundosEl = document.getElementById('transicaoSegundos');
+
+        if (tituloEl) tituloEl.textContent = msgConfig.titulo;
+        if (nomeFaseEl) nomeFaseEl.textContent = msgConfig.sub;
+        if (fraseEl) fraseEl.textContent = `"${msgConfig.frase}"`;
+        if (autorEl) autorEl.textContent = `— ${msgConfig.autor}`;
+        if (bonusEl) bonusEl.textContent = `+${bonusPontos.toLocaleString('pt-BR')} PTS`;
+
+        const holoOverlay = document.getElementById('holoOverlay');
+        if (holoOverlay) {
+            holoOverlay.style.display = 'none';
+        }
+
+        const gameOverModal = document.getElementById('gameOverModal');
+        if (gameOverModal) {
+            gameOverModal.style.display = 'none';
+        }
+
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+
+        // Contador regressivo de avanço automático (5 segundos)
+        this.segundosRestantesTransicao = 5;
+        if (segundosEl) segundosEl.textContent = this.segundosRestantesTransicao;
+
+        if (this.intervaloContagemTransicao) clearInterval(this.intervaloContagemTransicao);
+        this.intervaloContagemTransicao = setInterval(() => {
+            this.segundosRestantesTransicao--;
+            if (segundosEl) segundosEl.textContent = Math.max(0, this.segundosRestantesTransicao);
+
+            if (this.segundosRestantesTransicao <= 0) {
+                this.concluirTransicaoFase();
+            }
+        }, 1000);
+    }
+
+    /**
+     * Finaliza a transição e inicia a Holotransmissão da próxima fase.
+     */
+    concluirTransicaoFase() {
+        if (this.intervaloContagemTransicao) {
+            clearInterval(this.intervaloContagemTransicao);
+            this.intervaloContagemTransicao = null;
+        }
+
+        const modal = document.getElementById('transicaoFaseModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+
+        // Avança de fato para o próximo setor e inicia Holotransmissão
+        const prox = this.proximaFaseIndice !== undefined ? this.proximaFaseIndice : this.indiceFaseAtual + 1;
+        this.indiceFaseAtual = prox;
+        this.iniciarFase(this.indiceFaseAtual);
+    }
+
     exibirFimDeJogo(vitoria, motivo = '') {
         this.estado = 'FIM_DE_JOGO';
+
+        // Fecha modal de transição se estivesse aberto e cancela contagem
+        if (this.intervaloContagemTransicao) {
+            clearInterval(this.intervaloContagemTransicao);
+            this.intervaloContagemTransicao = null;
+        }
+        const modalTransicao = document.getElementById('transicaoFaseModal');
+        if (modalTransicao) modalTransicao.style.display = 'none';
+
         const modal = document.getElementById('gameOverModal');
         const titulo = document.getElementById('gameOverTitulo');
         const motivoEl = document.getElementById('gameOverMotivo');
@@ -820,7 +1127,23 @@ class MotorLevante13 {
             }
         }
         if (pontosEl) pontosEl.textContent = this.pontos.toLocaleString('pt-BR');
-        if (inputNome) inputNome.focus();
+
+        // Atualiza a exibição da identidade do piloto
+        if (window.authUrna) {
+            const piloto = window.authUrna.obterPiloto();
+            const elNome = document.getElementById('identGameOverNome');
+            const elStatus = document.getElementById('identGameOverStatus');
+            if (elNome) elNome.textContent = piloto.codename || 'PILOTO 13';
+            if (elStatus) {
+                if (piloto.protegido) {
+                    elStatus.className = 'ident-badge ident-badge-protegido';
+                    elStatus.textContent = '🛡️ PROTEGIDO';
+                } else {
+                    elStatus.className = 'ident-badge ident-badge-publico';
+                    elStatus.textContent = '🌐 PÚBLICO';
+                }
+            }
+        }
     }
 
     gerarParticulas(x, y, cor, quantidade) {
@@ -854,10 +1177,14 @@ class MotorLevante13 {
 
         if (elPontos) elPontos.textContent = this.pontos.toLocaleString('pt-BR');
         if (elVidas) {
-            let coracoes = '';
-            for (let v = 0; v < this.jogador.vidas; v++) coracoes += '❤️ ';
-            for (let e = 0; e < this.jogador.escudos; e++) coracoes += '🛡️ ';
-            elVidas.textContent = coracoes || '💔';
+            let coracoesHtml = '';
+            for (let v = 0; v < this.jogador.vidas; v++) {
+                coracoesHtml += '<svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg>';
+            }
+            for (let e = 0; e < this.jogador.escudos; e++) {
+                coracoesHtml += '<svg class="px-icon px-icon-shield"><use href="#px-shield"/></svg>';
+            }
+            elVidas.innerHTML = coracoesHtml || '<svg class="px-icon px-icon-heart" style="opacity:0.35;"><use href="#px-heart-broken"/></svg>';
         }
         if (elFase && this.dadosFaseAtual) {
             elFase.textContent = `FRENTE ${this.dadosFaseAtual.id}`;
@@ -907,17 +1234,75 @@ class MotorLevante13 {
             inimigo.desenhar(this.ctx);
         }
 
-        // Desenha Chefe
+        // Desenha Chefe e Barra de Vida Épica
         if (this.chefe) {
             this.chefe.desenhar(this.ctx);
-            // Barra de vida do Chefe no topo
+
+            // Barra de vida do Chefe no topo com visual arcade
             const pctHp = Math.max(0, this.chefe.hp / this.chefe.hpMax);
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-            this.ctx.fillRect(40, 24, this.cw - 80, 8);
-            this.ctx.fillStyle = '#ef4444';
-            this.ctx.fillRect(40, 24, (this.cw - 80) * pctHp, 8);
+            const barW = this.cw - 60;
+            const barX = 30;
+            const barY = 22;
+
+            // Fundo da barra
+            this.ctx.fillStyle = 'rgba(7, 10, 19, 0.88)';
+            this.ctx.fillRect(barX - 2, barY - 14, barW + 4, 25);
+
+            // Título e Fase do Chefe
+            this.ctx.font = '8px "Press Start 2P", "Courier New", monospace';
+            this.ctx.fillStyle = '#facc15';
+            this.ctx.textAlign = 'left';
+            let labelChefe = this.chefe.nome.toUpperCase();
+            if (this.chefe.idFase === 6) {
+                const nomesFasesFinal = ['[FASE 1/4: BLINDAGEM]', '[FASE 2/4: ASA CORTADA]', '[FASE 3/4: NÚCLEO EXPOSTO]', '[FASE 4/4: CRÍTICO!]'];
+                labelChefe = `A HIDRA ${nomesFasesFinal[this.chefe.faseDano - 1] || ''}`;
+            }
+            this.ctx.fillText(labelChefe, barX, barY - 4);
+
+            // Indicador numérico de HP
+            this.ctx.textAlign = 'right';
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillText(`${this.chefe.hp}/${this.chefe.hpMax}`, barX + barW, barY - 4);
+            this.ctx.textAlign = 'left';
+
+            // Fundo da barra de vida
+            this.ctx.fillStyle = '#1e293b';
+            this.ctx.fillRect(barX, barY, barW, 6);
+
+            // Cor da barra de vida varia com a fase/perigo
+            let corHp = '#ef4444';
+            if (this.chefe.idFase === 6) {
+                if (this.chefe.faseDano === 2) corHp = '#f97316';
+                else if (this.chefe.faseDano === 3) corHp = '#facc15';
+                else if (this.chefe.faseDano === 4) {
+                    corHp = (Math.floor(Date.now() / 150) % 2 === 0) ? '#ffffff' : '#ef4444';
+                }
+            }
+            this.ctx.fillStyle = corHp;
+            this.ctx.fillRect(barX, barY, barW * pctHp, 6);
+
+            // Borda dourada
             this.ctx.strokeStyle = '#facc15';
-            this.ctx.strokeRect(40, 24, this.cw - 80, 8);
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(barX, barY, barW, 6);
+        }
+
+        // Alerta Tático da Batalha (Power-ups ou Dano Crítico)
+        if (this.tempoAlertaChefe > 0 && this.textoAlertaChefe) {
+            const alphaAlerta = Math.min(1, this.tempoAlertaChefe / 20);
+            this.ctx.save();
+            this.ctx.globalAlpha = alphaAlerta;
+            this.ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+            this.ctx.strokeStyle = '#38bdf8';
+            this.ctx.lineWidth = 1;
+            this.ctx.fillRect(20, 50, this.cw - 40, 20);
+            this.ctx.strokeRect(20, 50, this.cw - 40, 20);
+
+            this.ctx.font = '7px "Press Start 2P", "Courier New", monospace';
+            this.ctx.fillStyle = '#fef08a';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(this.textoAlertaChefe, this.cw / 2, 63);
+            this.ctx.restore();
         }
 
         // Desenha Itens Especiais
@@ -945,12 +1330,12 @@ class MotorLevante13 {
 
     desenharTelaInicial() {
         this.ctx.fillStyle = '#facc15';
-        this.ctx.font = '900 24px sans-serif';
+        this.ctx.font = '700 24px "VCR OSD Mono", monospace';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('LEVANTE 13: A VIRADA', this.cw / 2, 220);
 
         this.ctx.fillStyle = '#38bdf8';
-        this.ctx.font = '12px sans-serif';
+        this.ctx.font = '13px "VCR OSD Mono", monospace';
         this.ctx.fillText('A RESISTÊNCIA POPULAR CONTRA O FASCISMO', this.cw / 2, 248);
 
         // Estrela central brilhante
@@ -960,23 +1345,19 @@ class MotorLevante13 {
         this.ctx.fill();
 
         this.ctx.fillStyle = '#ffffff';
-        this.ctx.font = '24px sans-serif';
+        this.ctx.font = '24px "VCR OSD Mono", monospace';
         this.ctx.fillText('★', this.cw / 2, 338);
 
         // Instrução para iniciar
         const piscar = Math.floor(Date.now() / 400) % 2 === 0;
-        if (!this.fasesCarregadas) {
-            this.ctx.fillStyle = '#94a3b8';
-            this.ctx.font = 'bold 14px sans-serif';
-            this.ctx.fillText('CARREGANDO FRENTES...', this.cw / 2, 450);
-        } else if (piscar) {
+        if (piscar) {
             this.ctx.fillStyle = '#ffffff';
-            this.ctx.font = 'bold 14px sans-serif';
+            this.ctx.font = '700 15px "VCR OSD Mono", monospace';
             this.ctx.fillText('TOQUE OU ESPAÇO PARA JOGAR', this.cw / 2, 450);
         }
 
         this.ctx.fillStyle = '#94a3b8';
-        this.ctx.font = '11px sans-serif';
+        this.ctx.font = '12px "VCR OSD Mono", monospace';
         this.ctx.fillText('← → ou Arraste para mover', this.cw / 2, 490);
         this.ctx.fillText('https://levante13.online', this.cw / 2, 600);
     }
@@ -1003,25 +1384,8 @@ class MotorLevante13 {
 window.addEventListener('DOMContentLoaded', () => {
     window.jogo = new MotorLevante13();
 
-    // Passo fixo de 60 atualizações por segundo, independente da taxa da tela.
-    // Toda a física e o cronômetro foram calibrados em quadros de 60 Hz; sem isto,
-    // telas de 120 Hz (MacBook Pro, iPhone Pro) rodam o jogo e o relógio duas vezes mais rápido.
-    const PASSO_MS = 1000 / 60;
-    let acumulado = 0;
-    let ultimoInstante = performance.now();
-
-    function loop(agora) {
-        acumulado += Math.min(agora - ultimoInstante, 250); // limita o salto ao voltar de outra aba
-        ultimoInstante = agora;
-
-        let passos = 0;
-        while (acumulado >= PASSO_MS && passos < 5) {
-            window.jogo.atualizar();
-            acumulado -= PASSO_MS;
-            passos++;
-        }
-        if (passos === 5) acumulado = 0; // máquina lenta: descarta o atraso em vez de acelerar
-
+    function loop() {
+        window.jogo.atualizar();
         window.jogo.desenhar();
         requestAnimationFrame(loop);
     }

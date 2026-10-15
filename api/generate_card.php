@@ -132,66 +132,19 @@ function gerarCardResistencia(
         imagettftext($imagem, 22, 0, 60, 470, $corBranca, FONTE_PADRAO, $setorTexto);
 
         // Rodapé de Chamada
-        imagettftext($imagem, 18, 0, 60, 560, $corCiano, FONTE_PADRAO, 'DESAFIE ESTE RECORDE EM: ' . dominioDoJogo());
+        imagettftext($imagem, 18, 0, 60, 560, $corCiano, FONTE_PADRAO, 'DESAFIE ESTE RECORDE EM: HTTPS://LEVANTE13.ONLINE');
         imagettftext($imagem, 14, 0, 850, 560, $corBranca, FONTE_PADRAO, $dataHoje);
     } else {
-        // Sem fonte TrueType: usa a fonte de bitmap do GD ampliada pixel a pixel (visual de fliperama)
-        textoPixelado($imagem, $tituloPrincipal, 60, 47, 4, $corAmarela);
-        textoPixelado($imagem, $subtitulo, 60, 140, 3, $corCiano);
-        textoPixelado($imagem, $pilotoTexto, 60, 205, 5, $corBranca);
-        textoPixelado($imagem, $scoreFormatado, 60, 300, 7, $corAmarela);
-        textoPixelado($imagem, $setorTexto, 60, 440, 3, $corBranca);
-        textoPixelado($imagem, $dataHoje, 60, 494, 2, $corBranca);
-        textoPixelado($imagem, 'DESAFIE ESTE RECORDE EM: ' . dominioDoJogo(), 60, 540, 2, $corCiano);
+        // Fallback robusto usando fontes padrão de bitmap do GD
+        imagestring($imagem, 5, 60, 60,  $tituloPrincipal, $corBranca);
+        imagestring($imagem, 4, 60, 140, $subtitulo, $corAmarela);
+        imagestring($imagem, 5, 60, 220, $pilotoTexto, $corBranca);
+        imagestring($imagem, 5, 60, 300, 'PONTOS: ' . $scoreFormatado, $corAmarela);
+        imagestring($imagem, 4, 60, 380, $setorTexto, $corCiano);
+        imagestring($imagem, 4, 60, 480, 'DESAFIE ESTE RECORDE EM: HTTPS://LEVANTE13.ONLINE', $corBranca);
     }
 
     // Salva a imagem final no diretório de cards
     $caminhoDestino = CARDS_DIR . "/card_{$shareToken}.png";
     return imagepng($imagem, $caminhoDestino, 8); // Compressão equilibrada
-}
-
-/**
- * Domínio do jogo em maiúsculas, sem protocolo (ex.: LEVANTE13.ONLINE), para imprimir no card.
- */
-function dominioDoJogo(): string
-{
-    $base = function_exists('urlBase') ? urlBase() : 'https://levante13.online';
-    return strtoupper((string) preg_replace('#^https?://#i', '', $base));
-}
-
-/**
- * Escreve texto com a fonte 5 do GD ampliada $escala vezes, com sombra preta.
- * Só funciona com ASCII (a fonte de bitmap não tem acentos), por isso os textos do card não usam acento.
- */
-function textoPixelado(\GdImage $imagem, string $texto, int $x, int $y, int $escala, int $cor, bool $alinharDireita = false): void
-{
-    $fonte = 5;
-    $larguraChar = imagefontwidth($fonte);
-    $alturaChar = imagefontheight($fonte);
-    $larguraTexto = $larguraChar * strlen($texto);
-    if ($larguraTexto === 0) {
-        return;
-    }
-
-    // Desenha o texto em tamanho original numa imagem temporária e copia cada pixel ampliado
-    $temp = imagecreate($larguraTexto, $alturaChar);
-    imagecolorallocate($temp, 0, 0, 0);
-    $tinta = imagecolorallocate($temp, 255, 255, 255);
-    imagestring($temp, $fonte, 0, 0, $texto, $tinta);
-
-    $x0 = $alinharDireita ? $x - $larguraTexto * $escala : $x;
-    $sombra = imagecolorallocate($imagem, 0, 0, 0);
-    $deslocamento = max(2, intdiv($escala, 2));
-
-    foreach ([[$deslocamento, $sombra], [0, $cor]] as [$d, $c]) {
-        for ($py = 0; $py < $alturaChar; $py++) {
-            for ($px = 0; $px < $larguraTexto; $px++) {
-                if (imagecolorat($temp, $px, $py) === $tinta) {
-                    $X = $x0 + $px * $escala + $d;
-                    $Y = $y + $py * $escala + $d;
-                    imagefilledrectangle($imagem, $X, $Y, $X + $escala - 1, $Y + $escala - 1, $c);
-                }
-            }
-        }
-    }
 }

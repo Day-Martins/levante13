@@ -8,7 +8,7 @@
     "role": "Comandante da Frente Operária",
     "avatar": "levels/level_2/mentor.png",
     "dialogue": [
-      "Atenção camaradas da resistência! Jones Manoel na escuta da Vanguarda 13.",
+      "Salve camaradas da resistência! Jones Manoel na voz da Vanguarda 13.",
       "O capital financeiro e as grandes plataformas querem sepultar a CLT e chamar exploração sem limites de 'empreendedorismo'.",
       "Eles pensam que o trabalhador é engrenagem descartável. Mostrem a força da classe trabalhadora organizada. Pela CLT e pela dignidade, avancem!"
     ]
@@ -20,10 +20,10 @@
     "spacingY": 38,
     "pattern": "zigzag",
     "duration": 180,
-    "initialSpeed": 0.75,
-    "stepY": 4.2,
-    "speedMultiplierPerKill": 1.018,
-    "diveChance": 0.06
+    "initialSpeed": 0.52,
+    "stepY": 3.0,
+    "speedMultiplierPerKill": 1.008,
+    "diveChance": 0.02
   },
   "enemyTypes": [
     {

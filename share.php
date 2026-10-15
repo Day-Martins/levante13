@@ -13,7 +13,6 @@ declare(strict_types=1);
  * - Fornece botão de chamada para ação direta: [JOGAR AGORA E RESISTIR].
  */
 
-require_once __DIR__ . '/api/config.php';
 require_once __DIR__ . '/api/db.php';
 
 $token = trim((string)($_GET['id'] ?? ''));
@@ -33,7 +32,7 @@ if (!empty($token) && preg_match('/^[a-fA-F0-9]{6,16}$/', $token)) {
 }
 
 // Configuração dos textos e dados para as redes sociais
-$dominioBase = urlBase();
+$dominioBase = 'https://levante13.online';
 
 if ($partida) {
     $nomePiloto = htmlspecialchars((string)$partida['player_name'], ENT_QUOTES, 'UTF-8');
@@ -46,7 +45,7 @@ if ($partida) {
 } else {
     $tituloOg = "Levante 13: A Virada — O Jogo da Resistência Popular";
     $descricaoOg = "Junte-se à aliança popular e pilote a Vanguarda 13 para defender o Brasil contra o fascismo! Jogue grátis direto no navegador.";
-    $imagemOg = "{$dominioBase}/assets/og_capa.png";
+    $imagemOg = "{$dominioBase}/assets/card_template.png";
 }
 ?>
 <!DOCTYPE html>
@@ -73,17 +72,31 @@ if ($partida) {
     <meta name="twitter:description" content="<?= htmlspecialchars($descricaoOg, ENT_QUOTES, 'UTF-8') ?>">
     <meta name="twitter:image" content="<?= htmlspecialchars($imagemOg, ENT_QUOTES, 'UTF-8') ?>">
 
+    <!-- FONTE RETRÔ VCR OSD MONO (https://www.dafont.com/vcr-osd-mono.font) -->
+    <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/vcr-osd-mono">
+
     <style>
+        @font-face {
+            font-family: 'VCR OSD Mono';
+            src: url('assets/fonts/vcr_osd_mono.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'VCR OSD Mono', monospace, sans-serif;
+            border-radius: 0;
         }
 
         body {
             background-color: #0a0d1a;
             color: #ffffff;
+            font-family: 'VCR OSD Mono', monospace, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -91,6 +104,8 @@ if ($partida) {
             min-height: 100vh;
             padding: 20px;
             text-align: center;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
@@ -98,7 +113,7 @@ if ($partida) {
             width: 100%;
             background: #121829;
             border: 2px solid #dc2626;
-            border-radius: 12px;
+            border-radius: 0;
             padding: 28px 20px;
             box-shadow: 0 10px 30px rgba(220, 38, 38, 0.25);
         }
@@ -170,7 +185,7 @@ if ($partida) {
              alt="Certificado de Resistência do Piloto" 
              class="card-preview">
 
-        <a href="index.html" class="btn-jogar">
+        <a href="game.html" class="btn-jogar">
             🚀 ENTRAR NO LEVANTE E JOGAR AGORA
         </a>
 

@@ -1,0 +1,17 @@
+{
+  "name": "Cinturão de Órion",
+  "order": 1,
+  "color": "#7dff8a",
+  "intro": "Eles marcham em bloco. Acerte as pontas para ganhar tempo.",
+  "enemy": {
+    "hp": 1,
+    "speed": 32,
+    "fireRate": 0.6,
+    "points": 100
+  },
+  "formation": {
+    "rows": 3,
+    "cols": 7,
+    "pattern": "grid"
+  }
+}

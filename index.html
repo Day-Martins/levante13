@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Levante 13: A Virada — O Jogo da Resistência Popular</title>
 
-    <meta name="description" content="Pilote a Vanguarda 13 e defenda o Brasil contra as forças do obscurantismo em um arcade vertical retrô épico!">
+    <!-- FONTE RETRÔ VCR OSD MONO (https://www.dafont.com/vcr-osd-mono.font) -->
+    <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/vcr-osd-mono">
     <link rel="stylesheet" href="css/style.css">
 
     <!-- Open Graph Básico -->
@@ -13,18 +15,157 @@
     <meta property="og:url" content="https://levante13.online">
     <meta property="og:title" content="Levante 13: A Virada">
     <meta property="og:description" content="A Resistência Popular contra o Fascismo. Jogue direto no navegador!">
-    <meta property="og:image" content="https://levante13.online/assets/og_capa.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="https://levante13.online/assets/card_template.png">
 </head>
 <body>
+    <!-- Símbolos SVG Pixel Art Retrô (Crisp Edges) -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <!-- Ícone Coração Pixel Art 16x16 -->
+        <symbol id="px-heart" viewBox="0 0 16 16">
+            <rect x="2" y="3" width="4" height="2" fill="#ef4444" />
+            <rect x="10" y="3" width="4" height="2" fill="#ef4444" />
+            <rect x="1" y="5" width="6" height="4" fill="#ef4444" />
+            <rect x="9" y="5" width="6" height="4" fill="#ef4444" />
+            <rect x="2" y="9" width="12" height="2" fill="#dc2626" />
+            <rect x="4" y="11" width="8" height="2" fill="#dc2626" />
+            <rect x="6" y="13" width="4" height="2" fill="#b91c1c" />
+            <rect x="3" y="5" width="2" height="2" fill="#ffffff" opacity="0.6" />
+        </symbol>
+
+        <!-- Ícone Coração Partido / Vazio 16x16 -->
+        <symbol id="px-heart-broken" viewBox="0 0 16 16">
+            <rect x="2" y="3" width="4" height="2" fill="#475569" />
+            <rect x="10" y="3" width="4" height="2" fill="#475569" />
+            <rect x="1" y="5" width="5" height="4" fill="#334155" />
+            <rect x="10" y="5" width="5" height="4" fill="#334155" />
+            <rect x="3" y="9" width="4" height="2" fill="#1e293b" />
+            <rect x="9" y="9" width="4" height="2" fill="#1e293b" />
+            <rect x="6" y="11" width="4" height="3" fill="#0f172a" />
+        </symbol>
+
+        <!-- Ícone Escudo Pixel Art 16x16 -->
+        <symbol id="px-shield" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="6" fill="#cbd5e1" />
+            <rect x="3" y="8" width="10" height="3" fill="#cbd5e1" />
+            <rect x="4" y="11" width="8" height="2" fill="#cbd5e1" />
+            <rect x="6" y="13" width="4" height="1" fill="#cbd5e1" />
+            <rect x="7" y="14" width="2" height="1" fill="#cbd5e1" />
+            <rect x="4" y="3" width="8" height="5" fill="#1e293b" />
+            <rect x="5" y="8" width="6" height="2" fill="#1e293b" />
+            <rect x="6" y="10" width="4" height="2" fill="#1e293b" />
+            <rect x="7" y="4" width="2" height="4" fill="#38bdf8" />
+            <rect x="5" y="5" width="6" height="2" fill="#38bdf8" />
+        </symbol>
+
+        <!-- Ícone Casa / Portal 16x16 -->
+        <symbol id="px-home" viewBox="0 0 16 16">
+            <rect x="7" y="1" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="3" width="6" height="2" fill="currentColor" />
+            <rect x="3" y="5" width="10" height="2" fill="currentColor" />
+            <rect x="1" y="7" width="14" height="2" fill="currentColor" />
+            <rect x="2" y="9" width="12" height="6" fill="currentColor" />
+            <rect x="6" y="10" width="4" height="5" fill="#050813" />
+            <rect x="11" y="3" width="2" height="4" fill="currentColor" />
+        </symbol>
+
+        <!-- Ícone Troféu 16x16 -->
+        <symbol id="px-trophy" viewBox="0 0 16 16">
+            <rect x="3" y="2" width="10" height="2" fill="currentColor" />
+            <rect x="4" y="4" width="8" height="4" fill="currentColor" />
+            <rect x="5" y="8" width="6" height="2" fill="currentColor" />
+            <rect x="2" y="3" width="1" height="4" fill="currentColor" />
+            <rect x="13" y="3" width="1" height="4" fill="currentColor" />
+            <rect x="7" y="10" width="2" height="3" fill="currentColor" />
+            <rect x="4" y="13" width="8" height="2" fill="currentColor" />
+            <rect x="7" y="5" width="2" height="2" fill="#ef4444" />
+        </symbol>
+
+        <!-- Ícone Som Ligado 16x16 -->
+        <symbol id="px-sound" viewBox="0 0 16 16">
+            <rect x="1" y="6" width="3" height="4" fill="currentColor" />
+            <rect x="4" y="4" width="2" height="8" fill="currentColor" />
+            <rect x="6" y="2" width="2" height="12" fill="currentColor" />
+            <rect x="10" y="4" width="1" height="8" fill="currentColor" />
+            <rect x="12" y="2" width="1" height="12" fill="currentColor" />
+            <rect x="14" y="1" width="1" height="14" fill="currentColor" opacity="0.6" />
+        </symbol>
+
+        <!-- Ícone Som Desligado / Mudo 16x16 -->
+        <symbol id="px-mute" viewBox="0 0 16 16">
+            <rect x="1" y="6" width="3" height="4" fill="currentColor" />
+            <rect x="4" y="4" width="2" height="8" fill="currentColor" />
+            <rect x="6" y="2" width="2" height="12" fill="currentColor" />
+            <rect x="10" y="5" width="2" height="2" fill="#ef4444" />
+            <rect x="13" y="5" width="2" height="2" fill="#ef4444" />
+            <rect x="11" y="7" width="3" height="2" fill="#ef4444" />
+            <rect x="10" y="9" width="2" height="2" fill="#ef4444" />
+            <rect x="13" y="9" width="2" height="2" fill="#ef4444" />
+        </symbol>
+
+        <!-- Ícone Disquete / Salvar 16x16 -->
+        <symbol id="px-disk" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="11" height="12" fill="currentColor" />
+            <rect x="13" y="3" width="1" height="11" fill="currentColor" />
+            <rect x="4" y="2" width="7" height="5" fill="#ffffff" />
+            <rect x="9" y="3" width="1" height="3" fill="#0f172a" />
+            <rect x="4" y="9" width="8" height="4" fill="#0f172a" />
+            <rect x="5" y="10" width="6" height="2" fill="#38bdf8" />
+        </symbol>
+
+        <!-- Ícone WhatsApp / Mensagem 16x16 -->
+        <symbol id="px-whatsapp" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="9" fill="currentColor" />
+            <rect x="3" y="1" width="10" height="11" fill="currentColor" />
+            <rect x="3" y="11" width="3" height="2" fill="currentColor" />
+            <rect x="2" y="13" width="2" height="1" fill="currentColor" />
+            <rect x="5" y="6" width="1" height="1" fill="#ffffff" />
+            <rect x="8" y="6" width="1" height="1" fill="#ffffff" />
+            <rect x="11" y="6" width="1" height="1" fill="#ffffff" />
+        </symbol>
+
+        <!-- Ícone Reiniciar / Refresh 16x16 -->
+        <symbol id="px-refresh" viewBox="0 0 16 16">
+            <rect x="5" y="2" width="6" height="2" fill="currentColor" />
+            <rect x="11" y="4" width="2" height="3" fill="currentColor" />
+            <rect x="13" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="11" y="1" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="12" width="6" height="2" fill="currentColor" />
+            <rect x="3" y="9" width="2" height="3" fill="currentColor" />
+            <rect x="1" y="11" width="2" height="2" fill="currentColor" />
+            <rect x="3" y="13" width="2" height="2" fill="currentColor" />
+        </symbol>
+
+        <!-- Ícone Play / Seta Pixel 16x16 -->
+        <symbol id="px-play" viewBox="0 0 16 16">
+            <rect x="4" y="2" width="2" height="12" fill="currentColor" />
+            <rect x="6" y="4" width="2" height="8" fill="currentColor" />
+            <rect x="8" y="6" width="2" height="4" fill="currentColor" />
+            <rect x="10" y="7" width="2" height="2" fill="currentColor" />
+        </symbol>
+
+        <!-- Ícone Checkmark / Confirmado 16x16 -->
+        <symbol id="px-check" viewBox="0 0 16 16">
+            <rect x="2" y="8" width="2" height="2" fill="#22c55e" />
+            <rect x="4" y="10" width="2" height="2" fill="#22c55e" />
+            <rect x="6" y="12" width="2" height="2" fill="#22c55e" />
+            <rect x="8" y="10" width="2" height="2" fill="#22c55e" />
+            <rect x="10" y="8" width="2" height="2" fill="#22c55e" />
+            <rect x="12" y="6" width="2" height="2" fill="#22c55e" />
+            <rect x="14" y="4" width="2" height="2" fill="#22c55e" />
+        </symbol>
+    </svg>
+
     <div class="arcade-container">
         <!-- Topo do Gabinete Arcade -->
         <header class="arcade-header">
             <span class="marquee-titulo">★ LEVANTE 13: A VIRADA ★</span>
-            <div>
-                <button id="btnRanking" class="btn-icone" title="Ver Placar Global">🏆</button>
-                <button id="btnSom" class="btn-icone" title="Ativar/Desativar Som">🔊</button>
+            <div style="display: flex; align-items: center; gap: 4px;">
+                <button id="btnRanking" class="btn-icone" title="Ver Placar Global">
+                    <svg class="px-icon" style="color: var(--cor-dourado);"><use href="#px-trophy"/></svg>
+                </button>
+                <button id="btnSom" class="btn-icone" title="Ativar/Desativar Som">
+                    <svg class="px-icon"><use href="#px-sound"/></svg>
+                </button>
             </div>
         </header>
 
@@ -32,7 +173,7 @@
         <main class="game-screen">
             <!-- Painel HUD Superior -->
             <div class="hud-overlay">
-                <div class="hud-item"><span id="hudVidas">❤️❤️❤️</span></div>
+                <div class="hud-item"><span id="hudVidas" style="display: inline-flex; align-items: center;"><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg></span></div>
                 <div class="hud-item"><span id="hudFase">FRENTE 1</span></div>
                 <div class="hud-item"><span id="hudTempo" class="hud-timer">03:00</span></div>
                 <div class="hud-item">PTS: <span id="hudPontos">0</span></div>
@@ -53,7 +194,36 @@
                     </div>
                 </div>
                 <div id="holoTexto" class="holo-texto">Carregando transmissão...</div>
-                <span class="holo-instrucao">TOQUE OU ESPAÇO PARA AVANÇAR ▶</span>
+                <span class="holo-instrucao">TOQUE OU ESPAÇO PARA AVANÇAR <svg class="px-icon"><use href="#px-play"/></svg></span>
+            </div>
+
+            <!-- Modal de Transição de Fase / Mensagem Motivacional da Resistência -->
+            <div id="transicaoFaseModal" class="modal-overlay">
+                <div class="modal-caixa modal-transicao">
+                    <div class="transicao-badge">★ SETOR LIBERTADO! ★</div>
+                    <h2 id="transicaoTituloFase" class="modal-titulo transicao-titulo">FRENTE 1 CONCLUÍDA</h2>
+                    <div id="transicaoNomeFase" class="transicao-sub">Gabinete do Ódio Derrubado</div>
+
+                    <div class="transicao-cartao-frase">
+                        <div class="transicao-icone-estrela">★</div>
+                        <p id="transicaoFraseMotivacional" class="transicao-frase">
+                            "A verdade sempre desmonta a mentira! Cada rede clandestina derrubada devolve a consciência e a dignidade ao povo trabalhador."
+                        </p>
+                        <div id="transicaoAutorFrase" class="transicao-autor">— ANA ELISA • GUERRA DIGITAL</div>
+                    </div>
+
+                    <div class="transicao-bonus">
+                        <span class="bonus-label">BÔNUS DE RESISTÊNCIA:</span>
+                        <span id="transicaoBonusPontos" class="bonus-valor">+5.000 PTS</span>
+                    </div>
+
+                    <button id="btnAvancarFase" class="btn-acao btn-transicao" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                        AVANÇAR PARA A PRÓXIMA FRENTE <svg class="px-icon"><use href="#px-play"/></svg>
+                    </button>
+                    <div class="transicao-auto-timer">
+                        Avanço automático em <span id="transicaoSegundos">5</span>s... (ou pressione ESPAÇO)
+                    </div>
+                </div>
             </div>
 
             <!-- Modal de Fim de Jogo (Game Over / Vitória) -->
@@ -66,28 +236,28 @@
 
                     <form id="formSalvarScore">
                         <input type="text" 
-                               id="inputPlayerName" 
-                               class="input-tag" 
-                               placeholder="SUA TAG (3-12)" 
-                               maxlength="12" 
-                               autocomplete="off" 
-                               required>
+                                id="inputPlayerName" 
+                                class="input-tag" 
+                                placeholder="SUA TAG (3-12)" 
+                                maxlength="12" 
+                                autocomplete="off" 
+                                required>
                         <p class="aviso-lgpd">
                             Utilize apenas um apelido fictício de arcade.<br>
                             Em conformidade com a LGPD: nenhum dado pessoal é coletado.
                         </p>
-                        <button type="submit" id="btnSalvarScore" class="btn-acao">
-                            💾 REGISTRAR RECORDE
+                        <button type="submit" id="btnSalvarScore" class="btn-acao" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                            <svg class="px-icon"><use href="#px-disk"/></svg> REGISTRAR RECORDE
                         </button>
                     </form>
 
                     <!-- Botão de Compartilhamento WhatsApp 1-Toque -->
-                    <a id="btnWhatsAppShare" href="#" target="_blank" class="btn-acao btn-whatsapp">
-                        📲 COMPARTILHAR NO WHATSAPP
+                    <a id="btnWhatsAppShare" href="#" target="_blank" class="btn-acao btn-whatsapp" style="align-items: center; justify-content: center; gap: 8px;">
+                        <svg class="px-icon"><use href="#px-whatsapp"/></svg> COMPARTILHAR NO WHATSAPP
                     </a>
 
-                    <button id="btnJogarNovamente" class="btn-acao btn-secundario" style="margin-top: 10px;">
-                        🔄 REINICIAR MISSÃO
+                    <button id="btnJogarNovamente" class="btn-acao btn-secundario" style="margin-top: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg class="px-icon"><use href="#px-refresh"/></svg> REINICIAR MISSÃO
                     </button>
                 </div>
             </div>
@@ -95,7 +265,9 @@
             <!-- Modal de Placar Global (Leaderboard) -->
             <div id="leaderboardModal" class="modal-overlay">
                 <div class="modal-caixa">
-                    <h2 class="modal-titulo">🏆 PLACAR DO LEVANTE</h2>
+                    <h2 class="modal-titulo" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <svg class="px-icon" style="color: var(--cor-dourado);"><use href="#px-trophy"/></svg> PLACAR DO LEVANTE
+                    </h2>
                     <p style="font-size: 0.75rem; color: #38bdf8; margin-bottom: 8px;">TOP 10 PILOTOS DA RESISTÊNCIA</p>
                     
                     <div id="listaRanking" class="ranking-lista">
@@ -122,7 +294,9 @@
         if (btnSom) {
             btnSom.addEventListener('click', () => {
                 const mutado = audio.alternarMudo();
-                btnSom.textContent = mutado ? '🔇' : '🔊';
+                btnSom.innerHTML = mutado 
+                    ? '<svg class="px-icon"><use href="#px-mute"/></svg>' 
+                    : '<svg class="px-icon"><use href="#px-sound"/></svg>';
             });
         }
 
@@ -180,20 +354,10 @@
                 btnSalvar.textContent = 'REGISTRANDO...';
 
                 try {
-                    // O token da partida é pedido ao servidor no início do jogo
-                    const token = window.jogo.tokenPartida || await window.jogo.promessaToken;
-                    if (!token) {
-                        alert('Não foi possível falar com o servidor no início desta partida, então o recorde não pode ser registrado. Verifique a conexão e jogue novamente.');
-                        btnSalvar.disabled = false;
-                        btnSalvar.textContent = '💾 TENTAR NOVAMENTE';
-                        return;
-                    }
-
                     const payload = {
                         player_name: tag,
                         score: window.jogo.pontos,
-                        token,
-                        registro: window.jogo.registro
+                        level_reached: (window.jogo.indiceFaseAtual || 0) + 1
                     };
 
                     const res = await fetch('api/leaderboard.php', {
@@ -205,7 +369,7 @@
                     const json = await res.json();
 
                     if (json.sucesso) {
-                        btnSalvar.textContent = '✅ REGISTRADO!';
+                        btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-check"/></svg> REGISTRADO!';
                         formScore.style.display = 'none';
 
                         // Ativa botão de compartilhamento com WhatsApp
@@ -216,12 +380,12 @@
                     } else {
                         alert(json.erro || 'Falha ao registrar pontuação.');
                         btnSalvar.disabled = false;
-                        btnSalvar.textContent = '💾 TENTAR NOVAMENTE';
+                        btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> TENTAR NOVAMENTE';
                     }
                 } catch (err) {
                     alert('Erro de conexão ao salvar recorde.');
                     btnSalvar.disabled = false;
-                    btnSalvar.textContent = '💾 TENTAR NOVAMENTE';
+                    btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> TENTAR NOVAMENTE';
                 }
             });
         }
@@ -231,7 +395,7 @@
                 document.getElementById('gameOverModal').style.display = 'none';
                 formScore.style.display = 'block';
                 btnSalvar.disabled = false;
-                btnSalvar.textContent = '💾 REGISTRAR RECORDE';
+                btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> REGISTRAR RECORDE';
                 btnWhatsApp.style.display = 'none';
                 window.jogo.iniciarPartida();
             });

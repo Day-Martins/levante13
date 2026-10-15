@@ -1,0 +1,104 @@
+================================================================================
+                    PITCH: LEVANTE 13: A VIRADA
+================================================================================
+
+TÍTULO OFICIAL: LEVANTE 13: A VIRADA
+DOMÍNIO OFICIAL: https://levante13.online
+GÊNERO:         Arcade / Shoot 'em up vertical retrô (Estilo Space Invaders / Galaga)
+AMBIENTAÇÃO:    Space Opera popular brasileira (Inspirado em Star Wars e Fundação)
+PLATAFORMA:     Web (Navegadores em Dispositivos Móveis e Computadores)
+PÚBLICO-ALVO:   Militância, movimentos sociais, coletivos populares e jogadores casuais
+
+--------------------------------------------------------------------------------
+1. VISÃO GERAL (O CONCEITO EM UMA FRASE)
+--------------------------------------------------------------------------------
+Um jogo arcade vertical épico e satírico, jogável instantaneamente no celular
+ou computador sem downloads, onde o jogador pilota a fragata "Vanguarda 13" em
+uma aliança rebelde inspirada em Star Wars e Fundação para defender o Brasil das
+forças do obscurantismo, expandindo fases por pastas e disputando o placar global.
+
+
+--------------------------------------------------------------------------------
+2. O PROBLEMA VS. A SOLUÇÃO
+--------------------------------------------------------------------------------
+- FRICÇÃO DE ENTRADA:
+  * Problema: Jogos tradicionais exigem download de app, criação de conta ou login.
+  * Solução:  Zero cadastro. O piloto acessa o link, digita apenas sua Arcade Tag
+              (ex: PILOTO_13, REBELDE_SP) e entra em combate em 2 segundos.
+
+- CUSTO DE ATUALIZAÇÃO:
+  * Problema: Criar ou atualizar fases exige desenvolvedor, deploy e novo código.
+  * Solução:  Drop-in Levels. Designers e criadores sobem apenas uma pasta com
+              imagens e regras; o servidor reconhece e entrega o setor na hora.
+
+- DIVULGAÇÃO PASSIVA:
+  * Problema: Dependência de tráfego pago ou indicação manual desinteressante.
+  * Solução:  Viralidade Ativa. Cada Game Over gera um "Certificado de Resistência"
+              personalizado via PHP GD, pronto para viralizar no WhatsApp e redes.
+
+
+--------------------------------------------------------------------------------
+3. OS TRÊS PILARES CENTRAIS
+--------------------------------------------------------------------------------
+
+[PILAR 1] EXPANSAO DE NÍVEIS POR PASTAS (AS 6 FRENTES DO LEVANTE)
+* Como funciona:
+  Para adicionar um novo setor de combate, basta subir uma pasta "level_N"
+  contendo os sprites inimigos, fundo estelar, foto do líder e regras (config.json).
+
+* Holotransmissões da Resistência (Storytelling Sci-Fi):
+  Antes de cada batalha, uma holotransmissão com efeito de linhas de varredura
+  conecta o jogador a um líder da Aliança Rebelde (Lula, Jones Manoel, Pastor
+  Henrique Vieira, Ana Elisa) para orientar os ataques contra o obscurantismo.
+
+* Frentes de Batalha Iniciais:
+  - Nível 1: Setor das Redes (Ana Elisa - Guerra da Informação e Fake News)
+  - Nível 2: Setor Fabril (Jones Manoel - Combate à Uberização e Defesa da CLT)
+  - Nível 3: Reserva Planetária (Guardiã Indígena - Defesa da Amazônia)
+  - Nível 4: Complexo da Vida (Comando da Saúde - Defesa do SUS e da Ciência)
+  - Nível 5: Santuário da Fé (Pastor Henrique Vieira - Liberdade Religiosa e Estado Laico)
+  - Nível 6: Fortaleza Soberana (Lula - Defesa da Democracia na Esplanada)
+
+[PILAR 2] LOOP VIRAL DE COMPARTILHAMENTO (CERTIFICADO DE RESISTÊNCIA)
+* Como funciona:
+  Ao terminar uma missão, o servidor (via PHP GD) gera na hora uma imagem
+  personalizada no formato de card colecionável espacial com o codinome do piloto,
+  os Pontos de Resistência e o setor defendido.
+* Mecânica de Viralização:
+  - Gera um link com pré-visualização completa no WhatsApp, Telegram, X ou Discord:
+    "PILOTO_13 garantiu 68.400 pts e defendeu a CLT no Nível 2! Bate esse recorde?"
+  - O amigo clica e cai direto na partida pelo botão [JOGAR AGORA E RESISTIR].
+
+[PILAR 3] LEADERBOARD COMPETITIVO & ÉTICO (100% LGPD)
+* Como funciona:
+  Um ranking global em tempo real onde a comunidade disputa as melhores posições
+  da tabela de recordes do Levante 13.
+* Diferenciais:
+  - Resgata a emoção clássica dos arcades com estética de Space Opera popular.
+  - Minimização Total de Dados (Privacy by Design): Sem e-mails, sem senhas, sem
+    rastreadores comerciais invasivos.
+  - 100% aderente à LGPD e livre de pop-ups irritantes de cookies.
+
+
+--------------------------------------------------------------------------------
+4. EFICIÊNCIA TÉCNICA E BAIXO CUSTO
+--------------------------------------------------------------------------------
+- FRONTEND: HTML5 Canvas 2D + CSS + JavaScript puro.
+  * Proporção vertical 9:16 adaptável a celulares e computadores.
+  * 60 FPS contínuos e leves, sem dependência de motores pesados.
+
+- BACKEND: PHP puro + Banco de Dados SQLite.
+  * Arquitetura ultraleve e sem dependências externas.
+  * Custo de servidor próximo de zero (funciona em VPS básicas ou hospedagem web).
+
+
+--------------------------------------------------------------------------------
+5. RESUMO DA PROPOSTA DE VALOR
+--------------------------------------------------------------------------------
+1. RETENÇÃO:       Placar global constante estimulando os pilotos rebeldes a
+                   superarem suas próprias marcas e as de seus amigos.
+2. AQUISIÇÃO:      O compartilhamento visual do card transforma cada jogador em
+                   um embaixador orgânico do jogo no WhatsApp e redes sociais.
+3. ESCALABILIDADE: Conteúdo infinito através de pastas modulares adicionadas
+                   a qualquer momento sem precisar encostar no código-fonte.
+================================================================================
