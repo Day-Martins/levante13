@@ -344,6 +344,34 @@ body {
         5px 5px 0 0 #000000;
 }
 
+.btn-insta {
+    border-color: #e1306c;
+    color: #f43f5e;
+    box-shadow: 
+        inset -2px -2px 0 0 #831843,
+        inset 2px 2px 0 0 #fbcfe8,
+        4px 4px 0 0 #000000;
+}
+
+.btn-insta:hover {
+    background: #2a1420;
+    border-color: #fb7185;
+    color: #fda4af;
+    transform: translate(-1px, -1px);
+    box-shadow: 
+        inset -2px -2px 0 0 #831843,
+        inset 2px 2px 0 0 #ffe4e6,
+        5px 5px 0 0 #000000;
+}
+
+.btn-insta .px-icon {
+    color: #e1306c;
+}
+
+.btn-insta:hover .px-icon {
+    color: #fb7185;
+}
+
 /* Estado Desativado Retrô Pixel Perfect */
 .btn-desativado,
 button.btn-desativado,

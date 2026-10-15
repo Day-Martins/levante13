@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Levante 13: A Virada — O Jogo da Resistência Popular</title>
+
+    <!-- FONTE RETRÔ VCR OSD MONO (https://www.dafont.com/vcr-osd-mono.font) -->
+    <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/vcr-osd-mono">
+    <link rel="stylesheet" href="css/style.css?v=20261015_1617">
+
+    <!-- Open Graph Básico -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://levante13.online">
+    <meta property="og:title" content="Levante 13: A Virada">
+    <meta property="og:description" content="A Resistência Popular contra o Fascismo. Jogue direto no navegador!">
+    <meta property="og:image" content="https://levante13.online/assets/card_template.png">
+</head>
+<body>
+    <!-- Símbolos SVG Pixel Art Retrô (Crisp Edges) -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <!-- Ícone Coração Pixel Art 16x16 -->
+        <symbol id="px-heart" viewBox="0 0 16 16">
+            <rect x="2" y="3" width="4" height="2" fill="#ef4444" />
+            <rect x="10" y="3" width="4" height="2" fill="#ef4444" />
+            <rect x="1" y="5" width="6" height="4" fill="#ef4444" />
+            <rect x="9" y="5" width="6" height="4" fill="#ef4444" />
+            <rect x="2" y="9" width="12" height="2" fill="#dc2626" />
+            <rect x="4" y="11" width="8" height="2" fill="#dc2626" />
+            <rect x="6" y="13" width="4" height="2" fill="#b91c1c" />
+            <rect x="3" y="5" width="2" height="2" fill="#ffffff" opacity="0.6" />
+        </symbol>
+
+        <!-- Ícone Coração Partido / Vazio 16x16 -->
+        <symbol id="px-heart-broken" viewBox="0 0 16 16">
+            <rect x="2" y="3" width="4" height="2" fill="#475569" />
+            <rect x="10" y="3" width="4" height="2" fill="#475569" />
+            <rect x="1" y="5" width="5" height="4" fill="#334155" />
+            <rect x="10" y="5" width="5" height="4" fill="#334155" />
+            <rect x="3" y="9" width="4" height="2" fill="#1e293b" />
+            <rect x="9" y="9" width="4" height="2" fill="#1e293b" />
+            <rect x="6" y="11" width="4" height="3" fill="#0f172a" />
+        </symbol>
+
+        <!-- Ícone Escudo Pixel Art 16x16 -->
+        <symbol id="px-shield" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="6" fill="#cbd5e1" />
+            <rect x="3" y="8" width="10" height="3" fill="#cbd5e1" />
+            <rect x="4" y="11" width="8" height="2" fill="#cbd5e1" />
+            <rect x="6" y="13" width="4" height="1" fill="#cbd5e1" />
+            <rect x="7" y="14" width="2" height="1" fill="#cbd5e1" />
+            <rect x="4" y="3" width="8" height="5" fill="#1e293b" />
+            <rect x="5" y="8" width="6" height="2" fill="#1e293b" />
+            <rect x="6" y="10" width="4" height="2" fill="#1e293b" />
+            <rect x="7" y="4" width="2" height="4" fill="#38bdf8" />
+            <rect x="5" y="5" width="6" height="2" fill="#38bdf8" />
+        </symbol>
+
+        <!-- Ícone Casa / Portal 16x16 -->
+        <symbol id="px-home" viewBox="0 0 16 16">
+            <rect x="7" y="1" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="3" width="6" height="2" fill="currentColor" />
+            <rect x="3" y="5" width="10" height="2" fill="currentColor" />
+            <rect x="1" y="7" width="14" height="2" fill="currentColor" />
+            <rect x="2" y="9" width="12" height="6" fill="currentColor" />
+            <rect x="6" y="10" width="4" height="5" fill="#050813" />
+            <rect x="11" y="3" width="2" height="4" fill="currentColor" />
+        </symbol>
+
+        <!-- Ícone Troféu 16x16 -->
+        <symbol id="px-trophy" viewBox="0 0 16 16">
+            <rect x="3" y="2" width="10" height="2" fill="currentColor" />
+            <rect x="4" y="4" width="8" height="4" fill="currentColor" />
+            <rect x="5" y="8" width="6" height="2" fill="currentColor" />
+            <rect x="2" y="3" width="1" height="4" fill="currentColor" />
+            <rect x="13" y="3" width="1" height="4" fill="currentColor" />
+            <rect x="7" y="10" width="2" height="3" fill="currentColor" />
+            <rect x="4" y="13" width="8" height="2" fill="currentColor" />
+            <rect x="7" y="5" width="2" height="2" fill="#ef4444" />
+        </symbol>
+
+        <!-- Ícone Som Ligado 16x16 -->
+        <symbol id="px-sound" viewBox="0 0 16 16">
+            <rect x="1" y="6" width="3" height="4" fill="currentColor" />
+            <rect x="4" y="4" width="2" height="8" fill="currentColor" />
+            <rect x="6" y="2" width="2" height="12" fill="currentColor" />
+            <rect x="10" y="4" width="1" height="8" fill="currentColor" />
+            <rect x="12" y="2" width="1" height="12" fill="currentColor" />
+            <rect x="14" y="1" width="1" height="14" fill="currentColor" opacity="0.6" />
+        </symbol>
+
+        <!-- Ícone Som Desligado / Mudo 16x16 -->
+        <symbol id="px-mute" viewBox="0 0 16 16">
+            <rect x="1" y="6" width="3" height="4" fill="currentColor" />
+            <rect x="4" y="4" width="2" height="8" fill="currentColor" />
+            <rect x="6" y="2" width="2" height="12" fill="currentColor" />
+            <rect x="10" y="5" width="2" height="2" fill="#ef4444" />
+            <rect x="13" y="5" width="2" height="2" fill="#ef4444" />
+            <rect x="11" y="7" width="3" height="2" fill="#ef4444" />
+            <rect x="10" y="9" width="2" height="2" fill="#ef4444" />
+            <rect x="13" y="9" width="2" height="2" fill="#ef4444" />
+        </symbol>
+
+        <!-- Ícone Disquete / Salvar 16x16 -->
+        <symbol id="px-disk" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="11" height="12" fill="currentColor" />
+            <rect x="13" y="3" width="1" height="11" fill="currentColor" />
+            <rect x="4" y="2" width="7" height="5" fill="#ffffff" />
+            <rect x="9" y="3" width="1" height="3" fill="#0f172a" />
+            <rect x="4" y="9" width="8" height="4" fill="#0f172a" />
+            <rect x="5" y="10" width="6" height="2" fill="#38bdf8" />
+        </symbol>
+
+        <!-- Ícone WhatsApp / Mensagem 16x16 -->
+        <symbol id="px-whatsapp" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="9" fill="currentColor" />
+            <rect x="3" y="1" width="10" height="11" fill="currentColor" />
+            <rect x="3" y="11" width="3" height="2" fill="currentColor" />
+            <rect x="2" y="13" width="2" height="1" fill="currentColor" />
+            <rect x="5" y="6" width="1" height="1" fill="#ffffff" />
+            <rect x="8" y="6" width="1" height="1" fill="#ffffff" />
+            <rect x="11" y="6" width="1" height="1" fill="#ffffff" />
+        </symbol>
+
+        <!-- Ícone Reiniciar / Refresh 16x16 -->
+        <symbol id="px-refresh" viewBox="0 0 16 16">
+            <rect x="5" y="2" width="6" height="2" fill="currentColor" />
+            <rect x="11" y="4" width="2" height="3" fill="currentColor" />
+            <rect x="13" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="11" y="1" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="12" width="6" height="2" fill="currentColor" />
+            <rect x="3" y="9" width="2" height="3" fill="currentColor" />
+            <rect x="1" y="11" width="2" height="2" fill="currentColor" />
+            <rect x="3" y="13" width="2" height="2" fill="currentColor" />
+        </symbol>
+
+        <!-- Ícone Play / Seta Pixel 16x16 -->
+        <symbol id="px-play" viewBox="0 0 16 16">
+            <rect x="4" y="2" width="2" height="12" fill="currentColor" />
+            <rect x="6" y="4" width="2" height="8" fill="currentColor" />
+            <rect x="8" y="6" width="2" height="4" fill="currentColor" />
+            <rect x="10" y="7" width="2" height="2" fill="currentColor" />
+        </symbol>
+
+        <!-- Ícone Checkmark / Confirmado 16x16 -->
+        <symbol id="px-check" viewBox="0 0 16 16">
+            <rect x="2" y="8" width="2" height="2" fill="#22c55e" />
+            <rect x="4" y="10" width="2" height="2" fill="#22c55e" />
+            <rect x="6" y="12" width="2" height="2" fill="#22c55e" />
+            <rect x="8" y="10" width="2" height="2" fill="#22c55e" />
+            <rect x="10" y="8" width="2" height="2" fill="#22c55e" />
+            <rect x="12" y="6" width="2" height="2" fill="#22c55e" />
+            <rect x="14" y="4" width="2" height="2" fill="#22c55e" />
+        </symbol>
+        <!-- Ícone Ajuda / Interrogação 16x16 -->
+        <symbol id="px-help" viewBox="0 0 16 16">
+            <rect x="5" y="2" width="6" height="2" fill="currentColor" />
+            <rect x="3" y="4" width="3" height="3" fill="currentColor" />
+            <rect x="10" y="4" width="3" height="4" fill="currentColor" />
+            <rect x="7" y="8" width="3" height="3" fill="currentColor" />
+            <rect x="7" y="12" width="3" height="2" fill="currentColor" />
+        </symbol>
+
+        <!-- Ícones Pixel Art dos Power-Ups (16x16) -->
+        <!-- Tomo de Freire (Laser Perfurante) -->
+        <symbol id="px-tomo" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="12" fill="#0284c7" />
+            <rect x="4" y="3" width="9" height="10" fill="#38bdf8" />
+            <rect x="3" y="2" width="2" height="12" fill="#0369a1" />
+            <rect x="6" y="5" width="5" height="1" fill="#ffffff" />
+            <rect x="6" y="7" width="5" height="1" fill="#ffffff" />
+            <rect x="6" y="9" width="3" height="1" fill="#ffffff" />
+        </symbol>
+
+        <!-- Escudo da CLT -->
+        <symbol id="px-clt" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="6" fill="#3b82f6" />
+            <rect x="3" y="8" width="10" height="3" fill="#2563eb" />
+            <rect x="4" y="11" width="8" height="2" fill="#1d4ed8" />
+            <rect x="6" y="13" width="4" height="1" fill="#1e40af" />
+            <rect x="7" y="14" width="2" height="1" fill="#1e3a8a" />
+            <rect x="5" y="4" width="6" height="2" fill="#ffffff" />
+            <rect x="7" y="6" width="2" height="5" fill="#ffffff" />
+        </symbol>
+
+        <!-- Megafone Popular (Tiro Triplo) -->
+        <symbol id="px-megafone" viewBox="0 0 16 16">
+            <rect x="2" y="6" width="4" height="4" fill="#ca8a04" />
+            <rect x="6" y="5" width="2" height="6" fill="#eab308" />
+            <rect x="8" y="4" width="2" height="8" fill="#facc15" />
+            <rect x="10" y="3" width="2" height="10" fill="#fef08a" />
+            <rect x="4" y="10" width="2" height="3" fill="#ca8a04" />
+            <rect x="13" y="5" width="1" height="2" fill="#facc15" />
+            <rect x="14" y="7" width="1" height="2" fill="#facc15" />
+            <rect x="13" y="9" width="1" height="2" fill="#facc15" />
+        </symbol>
+
+        <!-- Manto da Diversidade (Lentidão) -->
+        <symbol id="px-manto" viewBox="0 0 16 16">
+            <rect x="2" y="3" width="12" height="2" fill="#ef4444" />
+            <rect x="2" y="5" width="12" height="2" fill="#f97316" />
+            <rect x="2" y="7" width="12" height="2" fill="#facc15" />
+            <rect x="2" y="9" width="12" height="2" fill="#22c55e" />
+            <rect x="2" y="11" width="12" height="2" fill="#38bdf8" />
+            <rect x="2" y="13" width="12" height="2" fill="#a855f7" />
+        </symbol>
+
+        <!-- Urna Soberana (Limpeza Total / Nuke) -->
+        <symbol id="px-urna-power" viewBox="0 0 16 16">
+            <rect x="1" y="3" width="14" height="11" fill="#1e293b" />
+            <rect x="2" y="2" width="12" height="1" fill="#475569" />
+            <rect x="3" y="4" width="5" height="5" fill="#0f172a" />
+            <rect x="4" y="5" width="3" height="3" fill="#ef4444" />
+            <rect x="9" y="5" width="1" height="1" fill="#cbd5e1" />
+            <rect x="11" y="5" width="1" height="1" fill="#cbd5e1" />
+            <rect x="13" y="5" width="1" height="1" fill="#cbd5e1" />
+            <rect x="9" y="7" width="1" height="1" fill="#cbd5e1" />
+            <rect x="11" y="7" width="1" height="1" fill="#cbd5e1" />
+            <rect x="13" y="7" width="1" height="1" fill="#cbd5e1" />
+            <rect x="9" y="10" width="4" height="2" fill="#22c55e" />
+        </symbol>
+
+        <!-- Cápsula do SUS (Vigor / +1 Vida) -->
+        <symbol id="px-sus" viewBox="0 0 16 16">
+            <rect x="6" y="2" width="4" height="12" fill="#ec4899" />
+            <rect x="2" y="6" width="12" height="4" fill="#ec4899" />
+            <rect x="7" y="3" width="2" height="10" fill="#ffffff" />
+            <rect x="3" y="7" width="10" height="2" fill="#ffffff" />
+        </symbol>
+
+        <!-- Cadeado Pixel Art (Segurança / Senha) -->
+        <symbol id="px-lock" viewBox="0 0 16 16">
+            <rect x="5" y="2" width="6" height="6" fill="#facc15" />
+            <rect x="7" y="4" width="2" height="4" fill="#050813" />
+            <rect x="3" y="7" width="10" height="8" fill="#eab308" />
+            <rect x="7" y="10" width="2" height="3" fill="#050813" />
+        </symbol>
+
+        <!-- Instagram Pixel Art -->
+        <symbol id="px-instagram" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="12" rx="3" fill="#e1306c" />
+            <rect x="4" y="4" width="8" height="8" rx="2" fill="none" stroke="#ffffff" stroke-width="1.2" />
+            <circle cx="8" cy="8" r="2.2" fill="none" stroke="#ffffff" stroke-width="1.2" />
+            <circle cx="10.8" cy="5.2" r="0.8" fill="#ffffff" />
+        </symbol>
+
+        <!-- Close / Fechar Pixel Art -->
+        <symbol id="px-close" viewBox="0 0 16 16">
+            <rect x="3" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="5" width="2" height="2" fill="currentColor" />
+            <rect x="7" y="7" width="2" height="2" fill="currentColor" />
+            <rect x="9" y="9" width="2" height="2" fill="currentColor" />
+            <rect x="11" y="11" width="2" height="2" fill="currentColor" />
+            <rect x="11" y="3" width="2" height="2" fill="currentColor" />
+            <rect x="9" y="5" width="2" height="2" fill="currentColor" />
+            <rect x="5" y="9" width="2" height="2" fill="currentColor" />
+            <rect x="3" y="11" width="2" height="2" fill="currentColor" />
+        </symbol>
+    </svg>
+
+    <div class="arcade-container">
+        <header class="arcade-header">
+            <a href="index.php" style="color: var(--cor-dourado); text-decoration: none; font-size: 0.85rem; font-weight: 800; display: flex; align-items: center; gap: 6px;" title="Voltar ao Portal Oficial de Campanha">
+                <svg class="px-icon" style="color: var(--cor-dourado);"><use href="#px-home"/></svg> PORTAL
+            </a>
+            <span class="marquee-titulo">★ LEVANTE 13: A VIRADA ★</span>
+            <div style="display: flex; align-items: center; gap: 4px;">
+                <button id="btnPowerupsManual" class="btn-icone" title="Manual de Power-ups da Resistência">
+                    <svg class="px-icon" style="color: var(--cor-ciano);"><use href="#px-help"/></svg>
+                </button>
+                <button id="btnRanking" class="btn-icone" title="Ver Placar Global">
+                    <svg class="px-icon" style="color: var(--cor-dourado);"><use href="#px-trophy"/></svg>
+                </button>
+                <button id="btnSom" class="btn-icone" title="Ativar/Desativar Som">
+                    <svg class="px-icon"><use href="#px-sound"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Área de Tela com Canvas -->
+        <main class="game-screen">
+            <!-- Painel HUD Superior -->
+            <div class="hud-overlay">
+                <div class="hud-item"><span id="hudVidas" style="display: inline-flex; align-items: center;"><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg></span></div>
+                <div class="hud-item"><span id="hudFase">FRENTE 1</span></div>
+                <div class="hud-item"><span id="hudTempo" class="hud-timer">03:00</span></div>
+                <div class="hud-item">PTS: <span id="hudPontos">0</span></div>
+            </div>
+
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- Linhas de Varredura CRT -->
+            <div class="scanlines"></div>
+
+            <!-- Caixa de Holotransmissão Sci-Fi (Mentores) -->
+            <div id="holoOverlay" class="holo-overlay">
+                <div class="holo-cabecalho">
+                    <img id="holoMentorAvatar" src="assets/images/mentor_padrao.png" alt="Retrato do Mentor" class="holo-avatar">
+                    <div class="holo-identidade">
+                        <h3 id="holoMentorNome">ANA ELISA</h3>
+                        <p id="holoMentorCargo">OFICIAL DE GUERRA DIGITAL</p>
+                    </div>
+                </div>
+                <div id="holoTexto" class="holo-texto">Carregando transmissão...</div>
+                <span class="holo-instrucao">TOQUE OU ESPAÇO PARA AVANÇAR <svg class="px-icon"><use href="#px-play"/></svg></span>
+            </div>
+
+            <!-- Modal de Transição de Fase / Mensagem Motivacional da Resistência -->
+            <div id="transicaoFaseModal" class="modal-overlay">
+                <div class="modal-caixa modal-transicao">
+                    <div class="transicao-badge">★ SETOR LIBERTADO! ★</div>
+                    <h2 id="transicaoTituloFase" class="modal-titulo transicao-titulo">FRENTE 1 CONCLUÍDA</h2>
+                    <div id="transicaoNomeFase" class="transicao-sub">Gabinete do Ódio Derrubado</div>
+
+                    <div class="transicao-cartao-frase">
+                        <div class="transicao-icone-estrela">★</div>
+                        <p id="transicaoFraseMotivacional" class="transicao-frase">
+                            "A verdade sempre desmonta a mentira! Cada rede clandestina derrubada devolve a consciência e a dignidade ao povo trabalhador."
+                        </p>
+                        <div id="transicaoAutorFrase" class="transicao-autor">— ANA ELISA • GUERRA DIGITAL</div>
+                    </div>
+
+                    <div class="transicao-bonus">
+                        <span class="bonus-label">BÔNUS DE RESISTÊNCIA:</span>
+                        <span id="transicaoBonusPontos" class="bonus-valor">+5.000 PTS</span>
+                    </div>
+
+                    <button id="btnAvancarFase" class="btn-acao btn-transicao" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                        AVANÇAR PARA A PRÓXIMA FRENTE <svg class="px-icon"><use href="#px-play"/></svg>
+                    </button>
+                    <div class="transicao-auto-timer">
+                        Avanço automático em <span id="transicaoSegundos">5</span>s... (ou clique no botão acima)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Identificação da Vanguarda 13 (Codinome & Teclado da Urna) -->
+            <div id="modalCredencial" class="modal-overlay" style="display: none;">
+                <div class="modal-caixa modal-credencial">
+                    <div class="credencial-badge">★ ALISTAMENTO DA VANGUARDA 13 ★</div>
+                    <h2 id="credencialTitulo" class="modal-titulo">CREDENCIAL DO PILOTO</h2>
+
+                    <!-- Etapa 1: Digitar Codinome -->
+                    <div id="etapaCodename">
+                        <p class="credencial-sub">Informe seu Codinome de batalha para os registros da resistência popular:</p>
+                        <input type="text" 
+                               id="inputCodenameIdent" 
+                               class="input-tag" 
+                               placeholder="SEU CODINOME (3-12)" 
+                               maxlength="12" 
+                               autocomplete="off">
+                        <div id="credencialStatusMsg" class="credencial-status-msg"></div>
+                        <button type="button" id="btnAvancarCodename" class="btn-acao" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                            AVANÇAR <svg class="px-icon"><use href="#px-play"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Etapa 2: Escolha de Proteção (se codinome livre) -->
+                    <div id="etapaEscolhaProtecao" style="display: none;">
+                        <div class="escolha-icone">🛡️</div>
+                        <p class="escolha-pergunta">Deseja proteger este Codinome para uso futuro com uma senha de 4 números?</p>
+                        <p class="escolha-desc">
+                            Se optar por <strong>SIM</strong>, criará uma senha na Urna e apenas você poderá usá-lo.<br>
+                            Se optar por <strong>NÃO</strong>, o codinome poderá ser reutilizado livremente por outros pilotos.
+                        </p>
+                        <div class="escolha-botoes">
+                            <button type="button" id="btnOptarSim" class="btn-acao btn-sucesso" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                                <svg class="px-icon"><use href="#px-lock"/></svg> SIM, PROTEGER COM SENHA
+                            </button>
+                            <button type="button" id="btnOptarNao" class="btn-acao btn-secundario" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                                <svg class="px-icon"><use href="#px-play"/></svg> NÃO, JOGAR SEM SENHA
+                            </button>
+                        </div>
+                        <button type="button" id="btnVoltarCodename" class="btn-link">← Trocar Codinome</button>
+                    </div>
+
+                    <!-- Etapa 3: Teclado da Urna Eletrônica (4 Dígitos) -->
+                    <div id="etapaTecladoUrna" style="display: none;">
+                        <div class="urna-cabecalho">
+                            <span class="urna-subtitulo">JUSTIÇA ELEITORAL DA RESISTÊNCIA</span>
+                            <p id="urnaInstrucao" class="urna-instrucao">DIGITE SEU PIN DE 4 NÚMEROS</p>
+                        </div>
+
+                        <!-- Visor de 4 Slots da Urna -->
+                        <div class="urna-display">
+                            <div class="urna-slot ativo" id="urnaSlot0">_</div>
+                            <div class="urna-slot" id="urnaSlot1">_</div>
+                            <div class="urna-slot" id="urnaSlot2">_</div>
+                            <div class="urna-slot" id="urnaSlot3">_</div>
+                        </div>
+                        <div id="urnaMensagemErro" class="urna-erro-msg"></div>
+
+                        <!-- Teclado da Urna -->
+                        <div class="urna-teclado">
+                            <div class="urna-teclado-numeros">
+                                <button type="button" class="tecla-num" data-num="1">1</button>
+                                <button type="button" class="tecla-num" data-num="2">2</button>
+                                <button type="button" class="tecla-num" data-num="3">3</button>
+                                <button type="button" class="tecla-num" data-num="4">4</button>
+                                <button type="button" class="tecla-num" data-num="5">5</button>
+                                <button type="button" class="tecla-num" data-num="6">6</button>
+                                <button type="button" class="tecla-num" data-num="7">7</button>
+                                <button type="button" class="tecla-num" data-num="8">8</button>
+                                <button type="button" class="tecla-num" data-num="9">9</button>
+                                <div class="tecla-espaco"></div>
+                                <button type="button" class="tecla-num" data-num="0">0</button>
+                                <div class="tecla-espaco"></div>
+                            </div>
+                            <div class="urna-teclado-acoes">
+                                <button type="button" id="btnUrnaCorrige" class="tecla-acao tecla-corrige">CORRIGE</button>
+                                <button type="button" id="btnUrnaConfirma" class="tecla-acao tecla-confirma">CONFIRMA</button>
+                            </div>
+                        </div>
+                        <button type="button" id="btnCancelarUrna" class="btn-link">← Cancelar / Trocar Codinome</button>
+                    </div>
+
+                    <!-- Disclaimer Ético e Legal sobre os Mentores -->
+                    <div style="margin-top: 10px; border-top: 1px solid rgba(220, 38, 38, 0.25); padding-top: 6px; font-size: 0.58rem; color: #64748b; line-height: 1.3; text-align: center;">
+                        ★ <em>Homenagem Cultural:</em> O uso de imagens e nomes dos mentores no jogo é um tributo de admiração e respeito. As personalidades não possuem envolvimento institucional com o projeto.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Fim de Jogo (Game Over / Vitória) -->
+            <div id="gameOverModal" class="modal-overlay">
+                <div class="modal-caixa">
+                    <h2 id="gameOverTitulo" class="modal-titulo">MISSÃO INTERROMPIDA</h2>
+                    <p id="gameOverMotivo" style="font-size: 0.82rem; margin-bottom: 8px; font-weight: bold;"></p>
+                    <p style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Pontos de Resistência</p>
+                    <div id="gameOverPontos" class="modal-pontos">0</div>
+
+                    <!-- Identidade Registrada do Piloto -->
+                    <div id="boxPilotoGameOver" class="identidade-confirmada-box">
+                        <span class="ident-label">PILOTO REGISTRADO NA MISSÃO</span>
+                        <span id="identGameOverNome" class="ident-nome">PILOTO</span>
+                        <span id="identGameOverStatus" class="ident-badge">🌐 PÚBLICO</span>
+                    </div>
+
+                    <form id="formSalvarScore">
+                        <button type="submit" id="btnSalvarScore" class="btn-acao" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                            <svg class="px-icon"><use href="#px-disk"/></svg> REGISTRAR RECORDE
+                        </button>
+                        <button type="button" id="btnTrocarPilotoGameOver" class="btn-link" style="display: block; width: 100%; text-align: center; margin-top: 6px;">
+                            ← Trocar de Codinome
+                        </button>
+                    </form>
+
+                    <!-- Card Comemorativo do Recorde (Arte Padrão Oficial) -->
+                    <div id="boxCardGameOver" style="display: none; margin: 12px 0 6px 0; text-align: center;">
+                        <span style="font-size: 0.68rem; color: #facc15; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
+                            ★ ARTE OFICIAL DE CONVOCAÇÃO DA RESISTÊNCIA ★
+                        </span>
+                        <div style="margin-top: 6px; border: 1px solid rgba(250, 204, 21, 0.4); border-radius: 4px; overflow: hidden; box-shadow: 0 0 12px rgba(220, 38, 38, 0.35);">
+                            <img id="imgCardGameOver" src="" alt="Arte Comemorativa do Levante 13" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+
+                    <!-- Bloco de Compartilhamento Viral (WhatsApp & Instagram) -->
+                    <div id="boxCompartilhamento" style="display: none; margin-top: 10px; flex-direction: column; gap: 8px;">
+                        <a id="btnWhatsAppShare" href="#" target="_blank" class="btn-acao btn-whatsapp">
+                            <svg class="px-icon"><use href="#px-whatsapp"/></svg> COMPARTILHAR NO WHATSAPP
+                        </a>
+
+                        <button id="btnInstagramShare" type="button" class="btn-acao btn-instagram">
+                            <svg class="px-icon"><use href="#px-instagram"/></svg> COMPARTILHAR NO INSTAGRAM
+                        </button>
+
+                        <a id="btnBaixarCard" href="#" download="levante13_recorde.png" class="btn-link" style="display: block; text-align: center; margin-top: 4px; font-size: 0.72rem; color: #38bdf8; text-decoration: none;">
+                            ⬇ Baixar Arte do Recorde (PNG)
+                        </a>
+                    </div>
+
+                    <button id="btnJogarNovamente" class="btn-acao btn-secundario" style="margin-top: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg class="px-icon"><use href="#px-refresh"/></svg> REINICIAR MISSÃO
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal de Placar Global (Leaderboard) -->
+            <div id="leaderboardModal" class="modal-overlay">
+                <div class="modal-caixa">
+                    <h2 class="modal-titulo" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <svg class="px-icon" style="color: var(--cor-dourado);"><use href="#px-trophy"/></svg> PLACAR DO LEVANTE
+                    </h2>
+                    <p style="font-size: 0.75rem; color: #38bdf8; margin-bottom: 8px;">TOP 10 PILOTOS DA RESISTÊNCIA</p>
+                    
+                    <div id="listaRanking" class="ranking-lista">
+                        <p style="color: #94a3b8; text-align: center;">Carregando recordes...</p>
+                    </div>
+
+                    <button id="btnFecharRanking" class="btn-acao btn-secundario">
+                        FECHAR
+                    </button>
+                </div>
+            </div>
+            <!-- Modal de Manual de Power-ups (Tutorial Inicial / Ajuda) -->
+            <div id="powerupsModal" class="modal-overlay">
+                <div class="modal-caixa modal-powerups">
+                    <div class="transicao-badge">★ ARTEFATOS DA RESISTÊNCIA ★</div>
+                    <h2 class="modal-titulo" style="font-size: 1.15rem; margin-bottom: 4px; color: var(--cor-dourado);">
+                        CÁPSULAS DA VANGUARDA 13
+                    </h2>
+                    <p style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 12px; text-transform: uppercase;">
+                        Colete os itens liberados pelos inimigos derrotados
+                    </p>
+
+                    <div class="powerups-grid">
+                        <div class="powerup-card">
+                            <div class="powerup-icon-wrap" style="border-color: #38bdf8; box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);">
+                                <svg class="px-icon" style="color: #38bdf8; width: 1.6em; height: 1.6em;"><use href="#px-tomo"/></svg>
+                            </div>
+                            <div class="powerup-info">
+                                <div class="powerup-nome" style="color: #38bdf8;">TOMO DE FREIRE</div>
+                                <div class="powerup-desc">Feixe Laser Perfurante contínuo por 8s que pulveriza colunas de inimigos.</div>
+                            </div>
+                        </div>
+
+                        <div class="powerup-card">
+                            <div class="powerup-icon-wrap" style="border-color: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);">
+                                <svg class="px-icon" style="color: #3b82f6; width: 1.6em; height: 1.6em;"><use href="#px-clt"/></svg>
+                            </div>
+                            <div class="powerup-info">
+                                <div class="powerup-nome" style="color: #60a5fa;">ESCUDO DA CLT</div>
+                                <div class="powerup-desc">Ergue barreira defletora que bloqueia até 2 tiros sem perder vigor.</div>
+                            </div>
+                        </div>
+
+                        <div class="powerup-card">
+                            <div class="powerup-icon-wrap" style="border-color: #facc15; box-shadow: 0 0 8px rgba(250, 204, 21, 0.4);">
+                                <svg class="px-icon" style="color: #facc15; width: 1.6em; height: 1.6em;"><use href="#px-megafone"/></svg>
+                            </div>
+                            <div class="powerup-info">
+                                <div class="powerup-nome" style="color: #facc15;">MEGAFONE POPULAR</div>
+                                <div class="powerup-desc">Disparo Triplo em leque por 10s, varrendo o quadrante estelar.</div>
+                            </div>
+                        </div>
+
+                        <div class="powerup-card">
+                            <div class="powerup-icon-wrap" style="border-color: #a855f7; box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);">
+                                <svg class="px-icon" style="color: #f472b6; width: 1.6em; height: 1.6em;"><use href="#px-manto"/></svg>
+                            </div>
+                            <div class="powerup-info">
+                                <div class="powerup-nome" style="color: #e879f9;">MANTO DIVERSIDADE</div>
+                                <div class="powerup-desc">Onda do Estado Laico que desacelera todos os invasores em 50% por 8s.</div>
+                            </div>
+                        </div>
+
+                        <div class="powerup-card">
+                            <div class="powerup-icon-wrap" style="border-color: #22c55e; box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);">
+                                <svg class="px-icon" style="color: #22c55e; width: 1.6em; height: 1.6em;"><use href="#px-urna-power"/></svg>
+                            </div>
+                            <div class="powerup-info">
+                                <div class="powerup-nome" style="color: #4ade80;">URNA SOBERANA</div>
+                                <div class="powerup-desc">Sinal sonoro PILILI: Limpeza total de todos os projéteis e frotas da tela!</div>
+                            </div>
+                        </div>
+
+                        <div class="powerup-card">
+                            <div class="powerup-icon-wrap" style="border-color: #ec4899; box-shadow: 0 0 8px rgba(236, 72, 153, 0.4);">
+                                <svg class="px-icon" style="color: #ec4899; width: 1.6em; height: 1.6em;"><use href="#px-sus"/></svg>
+                            </div>
+                            <div class="powerup-info">
+                                <div class="powerup-nome" style="color: #f472b6;">CÁPSULA DO SUS</div>
+                                <div class="powerup-desc">Biorregeneração pública que restaura +1 Ponto de Vida/Vigor da nave.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btnEntendidoPowerups" class="btn-acao btn-transicao" type="button" style="margin-top: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                        ENTENDIDO! ÀS ARMAS <svg class="px-icon"><use href="#px-play"/></svg>
+                    </button>
+                    <div id="subtextoManualPowerups" style="font-size: 0.68rem; color: #94a3b8; margin-top: 6px;">
+                        Clique no botão acima para iniciar a batalha
+                    </div>
+
+                    <!-- Disclaimer Ético e Legal sobre os Mentores -->
+                    <div style="margin-top: 10px; border-top: 1px solid rgba(56, 189, 248, 0.2); padding-top: 6px; font-size: 0.58rem; color: #64748b; line-height: 1.3; text-align: center;">
+                        ★ <em>Homenagem Cultural:</em> O uso de imagens e referências aos mentores homenageados constitui um tributo de admiração à defesa da democracia. As personalidades retratadas não possuem envolvimento institucional com o jogo.
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts do Jogo em JavaScript Puro -->
+    <script src="js/audio.js?v=20261015_1838"></script>
+    <script src="js/auth.js?v=20261015_1838"></script>
+    <script src="js/entities.js?v=20261015_1838"></script>
+    <script src="js/game.js?v=20261015_1838"></script>
+
+    <!-- Script de Integração com as APIs Backend -->
+    <script>
+        // Controle de Som no Marquee
+        const btnSom = document.getElementById('btnSom');
+        if (btnSom) {
+            btnSom.addEventListener('click', () => {
+                const mutado = audio.alternarMudo();
+                btnSom.innerHTML = mutado 
+                    ? '<svg class="px-icon"><use href="#px-mute"/></svg>' 
+                    : '<svg class="px-icon"><use href="#px-sound"/></svg>';
+                if (!mutado) {
+                    audio.tocarUrnaTecla();
+                }
+            });
+        }
+
+        // Manual de Power-ups (Ajuda & Tutorial)
+        const btnPowerupsManual = document.getElementById('btnPowerupsManual');
+        const modalPowerups = document.getElementById('powerupsModal');
+        const btnEntendidoPowerups = document.getElementById('btnEntendidoPowerups');
+
+        if (btnPowerupsManual) {
+            btnPowerupsManual.addEventListener('click', () => {
+                if (window.jogo) {
+                    window.jogo.exibirManualPowerups(true);
+                } else if (modalPowerups) {
+                    modalPowerups.style.display = 'flex';
+                }
+            });
+        }
+
+        if (btnEntendidoPowerups) {
+            btnEntendidoPowerups.addEventListener('click', () => {
+                if (window.jogo) {
+                    window.jogo.fecharManualPowerups();
+                } else if (modalPowerups) {
+                    modalPowerups.style.display = 'none';
+                }
+            });
+        }
+
+        // Modal de Placar Global
+        const btnRanking = document.getElementById('btnRanking');
+        const modalRanking = document.getElementById('leaderboardModal');
+        const btnFecharRanking = document.getElementById('btnFecharRanking');
+        const listaRanking = document.getElementById('listaRanking');
+
+        async function abrirRanking() {
+            modalRanking.style.display = 'flex';
+            listaRanking.innerHTML = '<p style="color: #94a3b8; text-align: center;">Buscando dados no SQLite...</p>';
+
+            try {
+                const res = await fetch('api/leaderboard.php?limit=10');
+                const dados = await res.json();
+
+                if (dados.sucesso && dados.ranking && dados.ranking.length > 0) {
+                    listaRanking.innerHTML = dados.ranking.map(item => `
+                        <div class="ranking-item">
+                            <span class="ranking-pos">${item.posicao}º</span>
+                            <span class="ranking-nome">${item.piloto}</span>
+                            <span class="ranking-pontos">${item.pontos.toLocaleString('pt-BR')}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    listaRanking.innerHTML = '<p style="color: #94a3b8; text-align: center;">Nenhum recorde registrado ainda. Seja o primeiro!</p>';
+                }
+            } catch (err) {
+                listaRanking.innerHTML = '<p style="color: #ef4444; text-align: center;">Falha ao carregar ranking.</p>';
+            }
+        }
+
+        if (btnRanking) btnRanking.addEventListener('click', abrirRanking);
+        if (btnFecharRanking) btnFecharRanking.addEventListener('click', () => modalRanking.style.display = 'none');
+
+        // Submissão de Score para o Backend
+        const formScore = document.getElementById('formSalvarScore');
+        const btnSalvar = document.getElementById('btnSalvarScore');
+        const btnWhatsApp = document.getElementById('btnWhatsAppShare');
+        const btnInstagram = document.getElementById('btnInstagramShare');
+        const btnBaixarCard = document.getElementById('btnBaixarCard');
+        const boxCardGameOver = document.getElementById('boxCardGameOver');
+        const imgCardGameOver = document.getElementById('imgCardGameOver');
+        const boxCompartilhamento = document.getElementById('boxCompartilhamento');
+        const btnRestart = document.getElementById('btnJogarNovamente');
+        const btnTrocarPilotoGameOver = document.getElementById('btnTrocarPilotoGameOver');
+
+        if (btnTrocarPilotoGameOver) {
+            btnTrocarPilotoGameOver.addEventListener('click', () => {
+                if (window.authUrna) {
+                    window.authUrna.abrirModal((piloto) => {
+                        const elNome = document.getElementById('identGameOverNome');
+                        const elStatus = document.getElementById('identGameOverStatus');
+                        if (elNome) elNome.textContent = piloto.codename;
+                        if (elStatus) {
+                            if (piloto.protegido) {
+                                elStatus.className = 'ident-badge ident-badge-protegido';
+                                elStatus.textContent = '🛡️ PROTEGIDO';
+                            } else {
+                                elStatus.className = 'ident-badge ident-badge-publico';
+                                elStatus.textContent = '🌐 PÚBLICO';
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        if (formScore) {
+            formScore.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const piloto = window.authUrna ? window.authUrna.obterPiloto() : { codename: 'PILOTO 13', pin: '', protegido: false };
+                const tag = (piloto.codename || '').trim().toUpperCase();
+
+                if (!tag || tag.length < 3) {
+                    alert('Nenhum codinome válido configurado para o piloto.');
+                    if (window.authUrna) window.authUrna.abrirModal();
+                    return;
+                }
+
+                btnSalvar.disabled = true;
+                btnSalvar.textContent = 'REGISTRANDO...';
+
+                try {
+                    const payload = {
+                        player_name: tag,
+                        pin: piloto.pin || '',
+                        score: window.jogo.pontos,
+                        level_reached: (window.jogo.indiceFaseAtual || 0) + 1
+                    };
+
+                    const res = await fetch('api/leaderboard.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const json = await res.json();
+
+                    if (json.sucesso) {
+                        btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-check"/></svg> REGISTRADO!';
+                        formScore.style.display = 'none';
+
+                        // Exibe a Arte Padrão Oficial do Recorde
+                        const cardUrl = json.card_path || json.card_imagem;
+                        if (cardUrl && imgCardGameOver) {
+                            imgCardGameOver.src = cardUrl;
+                            if (boxCardGameOver) boxCardGameOver.style.display = 'block';
+                            if (btnBaixarCard) btnBaixarCard.href = cardUrl;
+                        }
+
+                        // Ativa botões de compartilhamento (WhatsApp & Instagram)
+                        if (boxCompartilhamento) boxCompartilhamento.style.display = 'flex';
+
+                        if (btnWhatsApp) {
+                            if (json.whatsapp_url) {
+                                btnWhatsApp.href = json.whatsapp_url;
+                            }
+                            btnWhatsApp.style.display = 'inline-flex';
+                        }
+
+                        if (btnInstagram) {
+                            btnInstagram.style.display = 'inline-flex';
+                            btnInstagram.onclick = async () => {
+                                const legenda = json.instagram_legenda || `🚀 Pilotei a Vanguarda 13 e registrei ${window.jogo.pontos.toLocaleString('pt-BR')} pts! Jogue em https://levante13.online`;
+
+                                // Tenta compartilhamento nativo em smartphones (Instagram Stories / Feed)
+                                if (navigator.share && cardUrl) {
+                                    try {
+                                        const blobRes = await fetch(cardUrl);
+                                        const blob = await blobRes.blob();
+                                        const file = new File([blob], 'levante13_recorde.png', { type: 'image/png' });
+                                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                                            await navigator.share({
+                                                title: 'Levante 13: A Virada',
+                                                text: legenda,
+                                                files: [file]
+                                            });
+                                            return;
+                                        }
+                                    } catch (err) {
+                                        // Continua para o fluxo web se usuário cancelar
+                                    }
+                                }
+
+                                // Fluxo Desktop / Web padrão:
+                                // 1. Copia a legenda oficial com a chamada para ação
+                                if (navigator.clipboard && navigator.clipboard.writeText) {
+                                    try {
+                                        await navigator.clipboard.writeText(legenda);
+                                    } catch (err) {
+                                        console.warn('Erro ao copiar para clipboard:', err);
+                                    }
+                                }
+
+                                // 2. Dispara download da arte do recorde
+                                if (btnBaixarCard) btnBaixarCard.click();
+
+                                // 3. Abre o Instagram
+                                window.open('https://www.instagram.com/', '_blank');
+
+                                // 4. Feedback visual no botão
+                                const textoOriginal = btnInstagram.innerHTML;
+                                btnInstagram.innerHTML = '<svg class="px-icon"><use href="#px-check"/></svg> ARTE BAIXADA E LEGENDA COPIADA!';
+                                setTimeout(() => {
+                                    btnInstagram.innerHTML = textoOriginal;
+                                }, 3500);
+                            };
+                        }
+                    } else {
+                        alert(json.erro || 'Falha ao registrar pontuação.');
+                        btnSalvar.disabled = false;
+                        btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> TENTAR NOVAMENTE';
+                    }
+                } catch (err) {
+                    alert('Erro de conexão ao salvar recorde.');
+                    btnSalvar.disabled = false;
+                    btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> TENTAR NOVAMENTE';
+                }
+            });
+        }
+
+        if (btnRestart) {
+            btnRestart.addEventListener('click', () => {
+                document.getElementById('gameOverModal').style.display = 'none';
+                formScore.style.display = 'block';
+                if (boxCardGameOver) boxCardGameOver.style.display = 'none';
+                if (boxCompartilhamento) boxCompartilhamento.style.display = 'none';
+                btnSalvar.disabled = false;
+                btnSalvar.innerHTML = '<svg class="px-icon"><use href="#px-disk"/></svg> REGISTRAR RECORDE';
+                window.jogo.iniciarPartida();
+            });
+        }
+    </script>
+</body>
+</html>

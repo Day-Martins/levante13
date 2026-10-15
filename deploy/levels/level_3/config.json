@@ -1,0 +1,67 @@
+{
+  "id": 3,
+  "name": "Reserva Planetária: Chamas na Floresta",
+  "subtitle": "Defesa da Amazônia e Preservação dos Povos Originários",
+  "theme": "forest_fire",
+  "holotransmission": {
+    "mentor": "Sônia Guajajara",
+    "role": "Ministra dos Povos Originários e Guardiã da Floresta",
+    "avatar": "levels/level_3/mentor.png",
+    "dialogue": [
+      "Saudações dos povos da terra! Aqui quem fala é Sônia Guajajara.",
+      "Grileiros, garimpeiros ilegais e madeireiros clandestinos avançam com máquinas blindadas de destruição para queimar nosso futuro.",
+      "A floresta em pé é a vida do planeta. Expulsem os invasores das terras demarcadas e protejam as águas sagradas da humanidade!"
+    ]
+  },
+  "grid": {
+    "rows": 5,
+    "cols": 7,
+    "spacingX": 46,
+    "spacingY": 38,
+    "pattern": "orbit",
+    "duration": 180,
+    "initialSpeed": 0.85,
+    "stepY": 4.5,
+    "speedMultiplierPerKill": 1.02,
+    "diveChance": 0.08
+  },
+  "enemyTypes": [
+    {
+      "id": "motosserra_voadora",
+      "name": "Motosserra Clandestina",
+      "hp": 1,
+      "points": 70,
+      "color": "#a1a1aa",
+      "behavior": "march"
+    },
+    {
+      "id": "balsa_garimpo",
+      "name": "Balsa do Mercúrio",
+      "hp": 2,
+      "points": 160,
+      "color": "#eab308",
+      "behavior": "dive"
+    },
+    {
+      "id": "trator_desmate",
+      "name": "Trator de Grilagem",
+      "hp": 4,
+      "points": 350,
+      "color": "#ca8a04",
+      "behavior": "tank"
+    }
+  ],
+  "boss": {
+    "id": "correntao_devastacao",
+    "name": "O Correntão da Devastação",
+    "title": "Fortaleza Mecânica do Desmatamento",
+    "hp": 40,
+    "points": 2500,
+    "attackPattern": "spiral_flame"
+  },
+  "palette": {
+    "primary": "#22c55e",
+    "secondary": "#eab308",
+    "background": "#052e16"
+  }
+}

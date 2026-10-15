@@ -1,0 +1,67 @@
+{
+  "id": 2,
+  "name": "Setor Fabril: O Desmonte do Trabalho",
+  "subtitle": "Uberização, Precarização e a Resistência da CLT",
+  "theme": "industrial_dark",
+  "holotransmission": {
+    "mentor": "Jones Manoel",
+    "role": "Comandante da Frente Operária",
+    "avatar": "levels/level_2/mentor.png",
+    "dialogue": [
+      "Atenção, pilotos da resistência! Jones Manoel na escuta dos setores produtivos.",
+      "As frotas da especulação transformaram direitos históricos em cinzas: querem converter todo trabalhador em engrenagem descartável de aplicativo sem aposentadoria.",
+      "Nossa bandeira é a Carteira de Trabalho, o salário digno e a jornada justa. Reestruturem as linhas de defesa operária e abatam as naves corporativas!"
+    ]
+  },
+  "grid": {
+    "rows": 4,
+    "cols": 8,
+    "spacingX": 42,
+    "spacingY": 38,
+    "pattern": "zigzag",
+    "duration": 180,
+    "initialSpeed": 0.52,
+    "stepY": 3.0,
+    "speedMultiplierPerKill": 1.008,
+    "diveChance": 0.02
+  },
+  "enemyTypes": [
+    {
+      "id": "contrato_pj",
+      "name": "Contrato Sem Direitos",
+      "hp": 1,
+      "points": 60,
+      "color": "#cbd5e1",
+      "behavior": "march"
+    },
+    {
+      "id": "mochila_algoritmo",
+      "name": "Mochila da Uberização",
+      "hp": 2,
+      "points": 150,
+      "color": "#fb923c",
+      "behavior": "dive"
+    },
+    {
+      "id": "triturador_clt",
+      "name": "Triturador de Direitos",
+      "hp": 4,
+      "points": 300,
+      "color": "#ea580c",
+      "behavior": "tank"
+    }
+  ],
+  "boss": {
+    "id": "algoritmo_precarizacao",
+    "name": "O Algoritmo da Precarização",
+    "title": "Nave Capitânia Corporativa",
+    "hp": 35,
+    "points": 2200,
+    "attackPattern": "double_laser_sweep"
+  },
+  "palette": {
+    "primary": "#38bdf8",
+    "secondary": "#f97316",
+    "background": "#0f172a"
+  }
+}

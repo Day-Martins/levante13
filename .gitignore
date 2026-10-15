@@ -18,3 +18,14 @@ cards/card_*.png
 
 # Logs do servidor
 *.log
+
+# Deploy database e cards gerados
+deploy/database/*.db
+deploy/database/*.db-wal
+deploy/database/*.db-shm
+deploy/cards/card_*.png
+
+# Arquivos temporários e scratch
+scratch/
+revisao_textos_levante13.csv
+revisao_textos_levante13.xlsx

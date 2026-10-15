@@ -11,6 +11,28 @@ class GerenciadorAudio {
         this.ctx = null;
         this.mutado = false;
         this.inicializado = false;
+
+        // Auto-vincula eventos globais de primeira interação para desbloquear o AudioContext instantaneamente
+        this.vincularDesbloqueioAutomatico();
+    }
+
+    /**
+     * Registra listeners nas primeiras interações com a página (toque, clique, teclado)
+     * para inicializar ou resumir o AudioContext conforme exigido pelos navegadores (Chrome/Safari/Mobile).
+     */
+    vincularDesbloqueioAutomatico() {
+        const desbloquear = () => {
+            this.iniciar();
+            window.removeEventListener('click', desbloquear);
+            window.removeEventListener('touchstart', desbloquear);
+            window.removeEventListener('touchend', desbloquear);
+            window.removeEventListener('keydown', desbloquear);
+        };
+
+        window.addEventListener('click', desbloquear, { once: true, passive: true });
+        window.addEventListener('touchstart', desbloquear, { once: true, passive: true });
+        window.addEventListener('touchend', desbloquear, { once: true, passive: true });
+        window.addEventListener('keydown', desbloquear, { once: true, passive: true });
     }
 
     /**
@@ -18,22 +40,37 @@ class GerenciadorAudio {
      * (necessário para obedecer às políticas de reprodução dos navegadores).
      */
     iniciar() {
-        if (!this.inicializado) {
+        if (!this.ctx) {
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
             if (AudioContextClass) {
-                this.ctx = new AudioContextClass();
-                this.inicializado = true;
+                try {
+                    this.ctx = new AudioContextClass();
+                    this.inicializado = true;
+                } catch (e) {
+                    console.warn('Erro ao instanciar AudioContext:', e);
+                }
             }
         }
         if (this.ctx && this.ctx.state === 'suspended') {
-            this.ctx.resume();
+            this.ctx.resume().catch(() => {});
         }
+    }
+
+    /**
+     * Garante que o contexto existe e está pronto para sintetizar som.
+     * Retorna true se puder tocar, ou false se mutado ou indisponível.
+     */
+    podeTocar() {
+        if (this.mutado) return false;
+        this.iniciar();
+        return !!this.ctx;
     }
 
     /**
      * Alterna o estado de mudo.
      */
     alternarMudo() {
+        this.iniciar();
         this.mutado = !this.mutado;
         return this.mutado;
     }
@@ -42,8 +79,7 @@ class GerenciadorAudio {
      * Disparo laser padrão da Vanguarda 13.
      */
     tocarTiro() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -66,8 +102,7 @@ class GerenciadorAudio {
      * Disparo de raio laser perfurante (Power-up Tomo de Freire).
      */
     tocarLaserPerfurante() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -90,8 +125,7 @@ class GerenciadorAudio {
      * Efeito sonoro de explosão para naves inimigas derrotadas.
      */
     tocarExplosao() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         // Gera ruído branco para impacto explosivo
         const tamanhoBuffer = this.ctx.sampleRate * 0.25;
@@ -126,8 +160,7 @@ class GerenciadorAudio {
      * Coleta de item especial (Power-up).
      */
     tocarPowerup() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const notas = [523.25, 659.25, 783.99, 1046.50]; // Acorde C Maior ascendente
         notas.forEach((freq, idx) => {
@@ -153,8 +186,7 @@ class GerenciadorAudio {
      * Ativado ao coletar o item de Voto Popular (Screen Nuke).
      */
     tocarUrnaConfirma() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const agora = this.ctx.currentTime;
 
@@ -191,8 +223,7 @@ class GerenciadorAudio {
      * Bipe padrão de tecla pressionada na Urna Eletrônica (850 Hz).
      */
     tocarUrnaTecla() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -213,8 +244,7 @@ class GerenciadorAudio {
      * Tom de correção / cancelamento da Urna Eletrônica (440 Hz).
      */
     tocarUrnaCorrige() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -235,8 +265,7 @@ class GerenciadorAudio {
      * Sinal sonoro de erro ou recusa de acesso.
      */
     tocarErro() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -258,8 +287,7 @@ class GerenciadorAudio {
      * Bipe curto de teletipo para a Holotransmissão dos mentores.
      */
     tocarTeletipo() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -281,8 +309,7 @@ class GerenciadorAudio {
      * Alarme de impacto/dano recebido pela Vanguarda 13.
      */
     tocarDano() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -305,8 +332,7 @@ class GerenciadorAudio {
      * Fanfarra triunfal retrô de conclusão de setor / vitória de fase.
      */
     tocarVitoriaFase() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const agora = this.ctx.currentTime;
         // Acorde triunfal em arpeggio clássico arcade: C5, E5, G5, C6 com acorde sustentado
@@ -340,8 +366,7 @@ class GerenciadorAudio {
      * Pulsa duas vezes em tom estridente estilo sirene de alerta vermelho.
      */
     tocarAlertaChefe() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const agora = this.ctx.currentTime;
         const pulsos = [0.0, 0.28, 0.56];

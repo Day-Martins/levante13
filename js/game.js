@@ -10,43 +10,43 @@ const MENSAGENS_MOTIVACIONAIS_FASE = [
     {
         fase: 1,
         titulo: "SETOR DAS REDES LIBERTADO!",
-        sub: "A verdade venceu o Gabinete do Ódio",
-        frase: "A verdade sempre desmonta a mentira! Cada rede clandestina derrubada devolve a consciência e a dignidade ao povo trabalhador.",
+        sub: "A verdade prevaleceu sobre as mentiras",
+        frase: "A verdade prevaleceu sobre as fazendas de mentiras! O povo agora tem acesso aos fatos.",
         autor: "ANA ELISA • GUERRA DIGITAL"
     },
     {
         fase: 2,
-        titulo: "FRENTE DO CAMPO CONQUISTADA!",
-        sub: "Soberania Alimentar e Terra para Quem Produz",
-        frase: "Comida de verdade no prato e justiça no campo! O Brasil avança quando quem planta com amor colhe com respeito e dignidade.",
-        autor: "VANGUARDA POPULAR AGRÁRIA"
+        titulo: "SETOR FABRIL LIBERTADO!",
+        sub: "Resistência Operária e Defesa da CLT",
+        frase: "Direitos não se negociam! Os trabalhadores reconquistaram sua dignidade contra o capital especulativo.",
+        autor: "JONES MANOEL • FRENTE OPERÁRIA"
     },
     {
         fase: 3,
-        titulo: "RESERVA DA FLORESTA PROTEGIDA!",
+        titulo: "RESERVA PLANETÁRIA PROTEGIDA!",
         sub: "A Amazônia e os Povos Originários Resistiram",
-        frase: "Nunca mais um Brasil sem nós! A floresta em pé garante a vida e o futuro do planeta. A luta indígena é a luta pela humanidade!",
-        autor: "SÔNIA GUAJAJARA • MINISTRA DOS POVOS INDÍGENAS"
+        frase: "A floresta vive e respira! Os guardiões da terra expulsaram os invasores das áreas demarcadas.",
+        autor: "SÔNIA GUAJAJARA • MINISTRA DOS POVOS ORIGINÁRIOS"
     },
     {
         fase: 4,
-        titulo: "BASTIÃO DA EDUCAÇÃO ERGUIDO!",
-        sub: "Conhecimento Libertador e Ciência Pública",
-        frase: "Como ensinou Paulo Freire: a educação não transforma o mundo, ela muda as pessoas que vão transformar o mundo!",
-        autor: "BRIGADA PAULO FREIRE"
+        titulo: "COMPLEXO DA VIDA DEFENDIDO!",
+        sub: "A Ciência e o SUS Venceram o Negacionismo",
+        frase: "A ciência e a vida venceram o obscurantismo! O SUS permanece firme como escudo do povo.",
+        autor: "DR. DRAUZIO VARELLA • SAÚDE E CIÊNCIA POPULAR"
     },
     {
         fase: 5,
-        titulo: "DEFESA DA VIDA CONSOLIDADA!",
-        sub: "O SUS e a Solidariedade Salvaram o Brasil",
-        frase: "A força da ciência pública e dos direitos sociais é invencível diante do obscurantismo. A democracia resiste e avança!",
-        autor: "GUARDA DA SAÚDE E CIÊNCIA"
+        titulo: "SANTUÁRIO DA FÉ RESTAURADO!",
+        sub: "O Estado Laico e a Liberdade Espiritual Triunfaram",
+        frase: "O amor venceu a intolerância! O Estado Laico e o respeito a todas as crenças foram restaurados.",
+        autor: "PASTOR HENRIQUE VIEIRA • LIBERDADE ESPIRITUAL"
     },
     {
         fase: 6,
         titulo: "GRANDE VIRADA CONQUISTADA!",
-        sub: "A Democracia Triunfou no Brasil!",
-        frase: "A esperança venceu o medo e a soberania popular é soberana. O Brasil voltou a sorrir com dignidade e justiça social!",
+        sub: "A Soberania Popular e a Democracia Triunfaram",
+        frase: "Nós vencemos o ódio, e a soberania popular é soberana. O Brasil voltou a sorrir com dignidade e justiça social!",
         autor: "LULA • COMANDO SUPREMO DA DEMOCRACIA"
     }
 ];
@@ -112,6 +112,7 @@ class MotorLevante13 {
         // Controles de Entrada
         this.teclas = {};
         this.touchX = null;
+        this.touchY = null;
         this.disparoAutomaticoMobile = true;
 
         // Sistema de Diálogos / Holotransmissão
@@ -229,7 +230,9 @@ class MotorLevante13 {
             if (e.touches && e.touches.length > 0) {
                 const rect = this.canvas.getBoundingClientRect();
                 const escalaX = this.cw / rect.width;
+                const escalaY = this.ch / rect.height;
                 this.touchX = (e.touches[0].clientX - rect.left) * escalaX;
+                this.touchY = (e.touches[0].clientY - rect.top) * escalaY;
                 audio.iniciar();
             }
         };
@@ -252,6 +255,7 @@ class MotorLevante13 {
         this.canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
             this.touchX = null;
+            this.touchY = null;
         }, { passive: false });
     }
 
@@ -610,8 +614,8 @@ class MotorLevante13 {
             }
         }
 
-        // Atualiza a nave do jogador
-        this.jogador.atualizar(this.teclas, this.touchX);
+        // Atualiza a nave do jogador (teclado e touch com offset vertical)
+        this.jogador.atualizar(this.teclas, this.touchX, this.touchY);
 
         // Disparo automático ou por barra de espaço
         const querAtirar = this.teclas['Space'] || (this.touchX !== null && this.disparoAutomaticoMobile);
@@ -686,10 +690,20 @@ class MotorLevante13 {
             for (let i = this.tirosAmigos.length - 1; i >= 0; i--) {
                 const t = this.tirosAmigos[i];
                 if (this.verificarColisao(t, this.chefe)) {
-                    if (!t.perfurante) this.tirosAmigos.splice(i, 1);
-                    this.gerarParticulas(t.x, t.y, '#facc15', 3);
+                    // Se o tiro já impactou o chefe neste feixe, ignora repetições no mesmo chefe
+                    if (t.atingiuChefe) {
+                        continue;
+                    }
+                    t.atingiuChefe = true;
 
-                    const evDano = this.chefe.receberDano(1);
+                    // O Laser perfurante atravessa a manada comum, mas ao atingir o casco blindado
+                    // do Boss, ele causa dano concentrado (2 pts) e dissipa seu feixe na fuselagem
+                    const danoAplicado = t.tipo === 'laser' ? 2 : 1;
+                    this.tirosAmigos.splice(i, 1);
+
+                    this.gerarParticulas(t.x, t.y, t.tipo === 'laser' ? '#38bdf8' : '#facc15', t.tipo === 'laser' ? 6 : 3);
+
+                    const evDano = this.chefe.receberDano(danoAplicado);
                     if (evDano.mudouFase) {
                         this.shakeTela = 22;
                         audio.tocarExplosao();
@@ -1025,11 +1039,11 @@ class MotorLevante13 {
         // Dispara som de sirene tática retrô Sci-Fi
         audio.tocarAlertaChefe();
 
-        // Configura banner de alerta de grande impacto
+        // Configura banner de alerta de grande impacto (duração de ~2 segundos antes do combate iniciar)
         this.textoAlertaChefe = `⚠️ ALERTA DE CHEFE: ${this.chefe.nome.toUpperCase()}`;
         this.subtextoAlertaChefe = this.chefe.titulo ? `[ ${this.chefe.titulo.toUpperCase()} ]` : '[ NAVE CAPITÂNIA AUTORITÁRIA ]';
         this.tipoAlertaChefe = 'chefe';
-        this.tempoAlertaChefe = 220;
+        this.tempoAlertaChefe = 130;
     }
 
     derrotarChefe() {
@@ -1390,8 +1404,11 @@ class MotorLevante13 {
 
             const boxW = this.cw - 24;
             const boxX = 12;
-            const boxH = this.subtextoAlertaChefe ? 44 : 28;
-            const boxY = this.chefe ? 48 : 50;
+            const boxH = this.subtextoAlertaChefe ? 48 : 32;
+            // Quando estiver em combate contra o chefe (this.chefe ativo) ou for alerta de chefe/suprimento de chefe,
+            // posiciona o banner no centro vertical da tela para desobstruir a visão do topo e da nave do jogador
+            const noMeio = ehChefe || (this.chefe !== null);
+            const boxY = noMeio ? Math.floor(this.ch / 2 - boxH / 2) : 50;
 
             // Fundo escurecido de alta opacidade
             this.ctx.fillStyle = corFundo;

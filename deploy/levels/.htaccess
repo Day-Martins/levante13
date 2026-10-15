@@ -1,0 +1,12 @@
+# Proteção de segurança para o diretório de níveis
+# Desativa a execução do interpretador PHP para evitar execução de código malicioso enviado por upload
+
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+<FilesMatch "\.(php|phtml|phar|sh|cgi|pl)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes
