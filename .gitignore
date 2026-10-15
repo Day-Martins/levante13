@@ -1,0 +1,14 @@
+# Dados gerados em tempo de execução: banco, arquivos de transação e segredo do servidor
+database/*
+!database/.htaccess
+
+# Cards gerados para compartilhamento
+cards/*
+!cards/.htaccess
+
+# macOS
+.DS_Store
+
+# Editores
+.vscode/
+.idea/

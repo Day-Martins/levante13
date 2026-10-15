@@ -1,0 +1,67 @@
+{
+  "id": 5,
+  "name": "Santuário da Fé: O Cerco Fundamentalista",
+  "subtitle": "Liberdade Religiosa, Respeito aos Terreiros e Estado Laico",
+  "theme": "mystic_sacred",
+  "holotransmission": {
+    "mentor": "Pastor Henrique Vieira",
+    "role": "Emissário da Liberdade Espiritual e Deputado Federal",
+    "avatar": "levels/level_5/mentor.png",
+    "dialogue": [
+      "Graça, paz e solidariedade, companheiras e companheiros da Vanguarda 13!",
+      "O amor genuíno e a fé popular erguem pontes de comunhão e acolhimento, nunca fogueiras de perseguição e ódio.",
+      "O extremismo teocrático quer destruir nossos terreiros, perseguir a diversidade e quebrar o Estado Laico. Vamos proteger o direito sagrado de crer e de viver com respeito!"
+    ]
+  },
+  "grid": {
+    "rows": 5,
+    "cols": 8,
+    "spacingX": 42,
+    "spacingY": 38,
+    "pattern": "pincer",
+    "duration": 180,
+    "initialSpeed": 1.05,
+    "stepY": 5,
+    "speedMultiplierPerKill": 1.025,
+    "diveChance": 0.12
+  },
+  "enemyTypes": [
+    {
+      "id": "tocha_intolerancia",
+      "name": "Tocha Inquisitória",
+      "hp": 2,
+      "points": 80,
+      "color": "#f97316",
+      "behavior": "march"
+    },
+    {
+      "id": "megafone_inquisicao",
+      "name": "Megafone do Fanatismo",
+      "hp": 2,
+      "points": 180,
+      "color": "#e11d48",
+      "behavior": "dive"
+    },
+    {
+      "id": "carro_de_som_odio",
+      "name": "Templo da Intolerância",
+      "hp": 5,
+      "points": 400,
+      "color": "#be123c",
+      "behavior": "tank"
+    }
+  ],
+  "boss": {
+    "id": "falso_profeta_odio",
+    "name": "O Falso Profeta do Ódio",
+    "title": "Ídolo de Ouro do Fanatismo",
+    "hp": 50,
+    "points": 3200,
+    "attackPattern": "crusade_cross_burst"
+  },
+  "palette": {
+    "primary": "#facc15",
+    "secondary": "#f43f5e",
+    "background": "#18181b"
+  }
+}

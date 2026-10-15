@@ -1,0 +1,7 @@
+# Bloqueio de segurança da pasta de dados
+# Nada aqui deve ser acessível via HTTP: banco SQLite, arquivos de transação e o segredo do servidor.
+
+Require all denied
+
+# Desativa a listagem de diretório
+Options -Indexes

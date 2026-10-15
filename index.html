@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Levante 13: A Virada — O Jogo da Resistência Popular</title>
+
+    <meta name="description" content="Pilote a Vanguarda 13 e defenda o Brasil contra as forças do obscurantismo em um arcade vertical retrô épico!">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Open Graph Básico -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://levante13.online">
+    <meta property="og:title" content="Levante 13: A Virada">
+    <meta property="og:description" content="A Resistência Popular contra o Fascismo. Jogue direto no navegador!">
+    <meta property="og:image" content="https://levante13.online/assets/og_capa.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+</head>
+<body>
+    <div class="arcade-container">
+        <!-- Topo do Gabinete Arcade -->
+        <header class="arcade-header">
+            <span class="marquee-titulo">★ LEVANTE 13: A VIRADA ★</span>
+            <div>
+                <button id="btnRanking" class="btn-icone" title="Ver Placar Global">🏆</button>
+                <button id="btnSom" class="btn-icone" title="Ativar/Desativar Som">🔊</button>
+            </div>
+        </header>
+
+        <!-- Área de Tela com Canvas -->
+        <main class="game-screen">
+            <!-- Painel HUD Superior -->
+            <div class="hud-overlay">
+                <div class="hud-item"><span id="hudVidas">❤️❤️❤️</span></div>
+                <div class="hud-item"><span id="hudFase">FRENTE 1</span></div>
+                <div class="hud-item"><span id="hudTempo" class="hud-timer">03:00</span></div>
+                <div class="hud-item">PTS: <span id="hudPontos">0</span></div>
+            </div>
+
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- Linhas de Varredura CRT -->
+            <div class="scanlines"></div>
+
+            <!-- Caixa de Holotransmissão Sci-Fi (Mentores) -->
+            <div id="holoOverlay" class="holo-overlay">
+                <div class="holo-cabecalho">
+                    <img id="holoMentorAvatar" src="assets/images/mentor_padrao.png" alt="Retrato do Mentor" class="holo-avatar">
+                    <div class="holo-identidade">
+                        <h3 id="holoMentorNome">ANA ELISA</h3>
+                        <p id="holoMentorCargo">OFICIAL DE GUERRA DIGITAL</p>
+                    </div>
+                </div>
+                <div id="holoTexto" class="holo-texto">Carregando transmissão...</div>
+                <span class="holo-instrucao">TOQUE OU ESPAÇO PARA AVANÇAR ▶</span>
+            </div>
+
+            <!-- Modal de Fim de Jogo (Game Over / Vitória) -->
+            <div id="gameOverModal" class="modal-overlay">
+                <div class="modal-caixa">
+                    <h2 id="gameOverTitulo" class="modal-titulo">MISSÃO INTERROMPIDA</h2>
+                    <p id="gameOverMotivo" style="font-size: 0.82rem; margin-bottom: 8px; font-weight: bold;"></p>
+                    <p style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Pontos de Resistência</p>
+                    <div id="gameOverPontos" class="modal-pontos">0</div>
+
+                    <form id="formSalvarScore">
+                        <input type="text" 
+                               id="inputPlayerName" 
+                               class="input-tag" 
+                               placeholder="SUA TAG (3-12)" 
+                               maxlength="12" 
+                               autocomplete="off" 
+                               required>
+                        <p class="aviso-lgpd">
+                            Utilize apenas um apelido fictício de arcade.<br>
+                            Em conformidade com a LGPD: nenhum dado pessoal é coletado.
+                        </p>
+                        <button type="submit" id="btnSalvarScore" class="btn-acao">
+                            💾 REGISTRAR RECORDE
+                        </button>
+                    </form>
+
+                    <!-- Botão de Compartilhamento WhatsApp 1-Toque -->
+                    <a id="btnWhatsAppShare" href="#" target="_blank" class="btn-acao btn-whatsapp">
+                        📲 COMPARTILHAR NO WHATSAPP
+                    </a>
+
+                    <button id="btnJogarNovamente" class="btn-acao btn-secundario" style="margin-top: 10px;">
+                        🔄 REINICIAR MISSÃO
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal de Placar Global (Leaderboard) -->
+            <div id="leaderboardModal" class="modal-overlay">
+                <div class="modal-caixa">
+                    <h2 class="modal-titulo">🏆 PLACAR DO LEVANTE</h2>
+                    <p style="font-size: 0.75rem; color: #38bdf8; margin-bottom: 8px;">TOP 10 PILOTOS DA RESISTÊNCIA</p>
+                    
+                    <div id="listaRanking" class="ranking-lista">
+                        <p style="color: #94a3b8; text-align: center;">Carregando recordes...</p>
+                    </div>
+
+                    <button id="btnFecharRanking" class="btn-acao btn-secundario">
+                        FECHAR
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts do Jogo em JavaScript Puro -->
+    <script src="js/audio.js"></script>
+    <script src="js/entities.js"></script>
+    <script src="js/game.js"></script>
+
+    <!-- Script de Integração com as APIs Backend -->
+    <script>
+        // Controle de Som no Marquee
+        const btnSom = document.getElementById('btnSom');
+        if (btnSom) {
+            btnSom.addEventListener('click', () => {
+                const mutado = audio.alternarMudo();
+                btnSom.textContent = mutado ? '🔇' : '🔊';
+            });
+        }
+
+        // Modal de Placar Global
+        const btnRanking = document.getElementById('btnRanking');
+        const modalRanking = document.getElementById('leaderboardModal');
+        const btnFecharRanking = document.getElementById('btnFecharRanking');
+        const listaRanking = document.getElementById('listaRanking');
+
+        async function abrirRanking() {
+            modalRanking.style.display = 'flex';
+            listaRanking.innerHTML = '<p style="color: #94a3b8; text-align: center;">Buscando dados no SQLite...</p>';
+
+            try {
+                const res = await fetch('api/leaderboard.php?limit=10');
+                const dados = await res.json();
+
+                if (dados.sucesso && dados.ranking && dados.ranking.length > 0) {
+                    listaRanking.innerHTML = dados.ranking.map(item => `
+                        <div class="ranking-item">
+                            <span class="ranking-pos">${item.posicao}º</span>
+                            <span class="ranking-nome">${item.piloto}</span>
+                            <span class="ranking-pontos">${item.pontos.toLocaleString('pt-BR')}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    listaRanking.innerHTML = '<p style="color: #94a3b8; text-align: center;">Nenhum recorde registrado ainda. Seja o primeiro!</p>';
+                }
+            } catch (err) {
+                listaRanking.innerHTML = '<p style="color: #ef4444; text-align: center;">Falha ao carregar ranking.</p>';
+            }
+        }
+
+        if (btnRanking) btnRanking.addEventListener('click', abrirRanking);
+        if (btnFecharRanking) btnFecharRanking.addEventListener('click', () => modalRanking.style.display = 'none');
+
+        // Submissão de Score para o Backend
+        const formScore = document.getElementById('formSalvarScore');
+        const btnSalvar = document.getElementById('btnSalvarScore');
+        const btnWhatsApp = document.getElementById('btnWhatsAppShare');
+        const btnRestart = document.getElementById('btnJogarNovamente');
+
+        if (formScore) {
+            formScore.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const inputNome = document.getElementById('inputPlayerName');
+                const tag = inputNome.value.trim().toUpperCase();
+
+                if (!tag || tag.length < 3) {
+                    alert('Insira uma tag de 3 a 12 caracteres!');
+                    return;
+                }
+
+                btnSalvar.disabled = true;
+                btnSalvar.textContent = 'REGISTRANDO...';
+
+                try {
+                    // O token da partida é pedido ao servidor no início do jogo
+                    const token = window.jogo.tokenPartida || await window.jogo.promessaToken;
+                    if (!token) {
+                        alert('Não foi possível falar com o servidor no início desta partida, então o recorde não pode ser registrado. Verifique a conexão e jogue novamente.');
+                        btnSalvar.disabled = false;
+                        btnSalvar.textContent = '💾 TENTAR NOVAMENTE';
+                        return;
+                    }
+
+                    const payload = {
+                        player_name: tag,
+                        score: window.jogo.pontos,
+                        token,
+                        registro: window.jogo.registro
+                    };
+
+                    const res = await fetch('api/leaderboard.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const json = await res.json();
+
+                    if (json.sucesso) {
+                        btnSalvar.textContent = '✅ REGISTRADO!';
+                        formScore.style.display = 'none';
+
+                        // Ativa botão de compartilhamento com WhatsApp
+                        if (json.whatsapp_url) {
+                            btnWhatsApp.href = json.whatsapp_url;
+                            btnWhatsApp.style.display = 'flex';
+                        }
+                    } else {
+                        alert(json.erro || 'Falha ao registrar pontuação.');
+                        btnSalvar.disabled = false;
+                        btnSalvar.textContent = '💾 TENTAR NOVAMENTE';
+                    }
+                } catch (err) {
+                    alert('Erro de conexão ao salvar recorde.');
+                    btnSalvar.disabled = false;
+                    btnSalvar.textContent = '💾 TENTAR NOVAMENTE';
+                }
+            });
+        }
+
+        if (btnRestart) {
+            btnRestart.addEventListener('click', () => {
+                document.getElementById('gameOverModal').style.display = 'none';
+                formScore.style.display = 'block';
+                btnSalvar.disabled = false;
+                btnSalvar.textContent = '💾 REGISTRAR RECORDE';
+                btnWhatsApp.style.display = 'none';
+                window.jogo.iniciarPartida();
+            });
+        }
+    </script>
+</body>
+</html>

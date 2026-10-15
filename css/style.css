@@ -1,0 +1,389 @@
+/* =============================================================================
+   LEVANTE 13: A VIRADA — Folha de Estilos Principal (CSS Puro)
+   Arquivo: css/style.css
+   
+   Proporção Vertical 9:16, Estética Space Opera Retrô, Efeito CRT e Responsividade.
+   ============================================================================= */
+
+:root {
+    --cor-fundo: #050813;
+    --cor-gabinete: #0d1326;
+    --cor-borda: #dc2626;
+    --cor-dourado: #facc15;
+    --cor-ciano: #38bdf8;
+    --cor-verde: #22c55e;
+    --cor-texto: #ffffff;
+    --cor-texto-mutado: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Moldura do Fliperama Retrô (Gabinete Arcade no Desktop) */
+.arcade-container {
+    position: relative;
+    /* Ocupa a altura toda da janela e calcula a largura pela proporção 9:16 da tela de jogo
+       (+38px do letreiro). Cresce em monitores grandes em vez de travar em 480x853. */
+    height: 100vh;
+    height: 100dvh;
+    width: min(100vw, calc((100vh - 38px) * 9 / 16));
+    width: min(100vw, calc((100dvh - 38px) * 9 / 16));
+    background: var(--cor-gabinete);
+    border: 3px solid var(--cor-borda);
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Painel Superior (Marquee do Arcade) */
+.arcade-header {
+    height: 38px;
+    background: linear-gradient(180deg, #1e293b, #0f172a);
+    border-bottom: 2px solid var(--cor-borda);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--cor-dourado);
+    letter-spacing: 1px;
+    z-index: 20;
+}
+
+.marquee-titulo {
+    text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+}
+
+.btn-icone {
+    background: none;
+    border: none;
+    color: var(--cor-texto);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px;
+}
+
+/* Área de Tela do Jogo */
+.game-screen {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+/* Painel HUD Sobreposto no Topo */
+.hud-overlay {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #ffffff;
+    pointer-events: none;
+    z-index: 10;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+.hud-item {
+    background: rgba(15, 23, 42, 0.65);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.hud-item span {
+    color: var(--cor-dourado);
+}
+
+.hud-timer {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #38bdf8 !important;
+    letter-spacing: 1px;
+}
+
+.hud-timer.alerta-tempo {
+    color: #ef4444 !important;
+    animation: piscarAlertaTempo 0.5s infinite alternate ease-in-out;
+}
+
+@keyframes piscarAlertaTempo {
+    from {
+        opacity: 1;
+        text-shadow: 0 0 8px #ef4444;
+    }
+    to {
+        opacity: 0.35;
+        text-shadow: none;
+    }
+}
+
+/* Efeito de Scanlines CRT (Linhas de Varredura Retrô) */
+.scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%,
+        rgba(0, 0, 0, 0.25)
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 15;
+}
+
+/* Tela de Holotransmissão Sci-Fi (Diálogo dos Mentores) */
+.holo-overlay {
+    position: absolute;
+    bottom: 12px;
+    left: 10px;
+    right: 10px;
+    background: rgba(10, 15, 30, 0.94);
+    border: 2px solid var(--cor-ciano);
+    border-radius: 8px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+    z-index: 30;
+    cursor: pointer;
+}
+
+.holo-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+    padding-bottom: 8px;
+}
+
+.holo-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 6px;
+    border: 1px solid var(--cor-dourado);
+    background: #000;
+    object-fit: cover;
+}
+
+.holo-identidade h3 {
+    font-size: 0.95rem;
+    color: var(--cor-dourado);
+    font-weight: 800;
+}
+
+.holo-identidade p {
+    font-size: 0.72rem;
+    color: var(--cor-ciano);
+    text-transform: uppercase;
+}
+
+.holo-texto {
+    font-size: 0.85rem;
+    line-height: 1.35;
+    color: #f8fafc;
+    min-height: 50px;
+    font-family: monospace;
+}
+
+.holo-instrucao {
+    align-self: flex-end;
+    font-size: 0.68rem;
+    color: var(--cor-texto-mutado);
+    margin-top: 6px;
+    animation: pulsar 1s infinite alternate;
+}
+
+/* Modais de Fim de Jogo e Placar */
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 8, 19, 0.92);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 50;
+    text-align: center;
+}
+
+.modal-caixa {
+    background: var(--cor-gabinete);
+    border: 2px solid var(--cor-borda);
+    border-radius: 10px;
+    padding: 24px 18px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 0 25px rgba(220, 38, 38, 0.4);
+}
+
+.modal-titulo {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--cor-dourado);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.modal-pontos {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 16px;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.input-tag {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-align: center;
+    text-transform: uppercase;
+    background: #050813;
+    border: 2px solid var(--cor-ciano);
+    border-radius: 6px;
+    color: var(--cor-dourado);
+    margin-bottom: 10px;
+    outline: none;
+    letter-spacing: 2px;
+}
+
+.input-tag:focus {
+    border-color: var(--cor-dourado);
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+}
+
+.aviso-lgpd {
+    font-size: 0.65rem;
+    color: var(--cor-texto-mutado);
+    margin-bottom: 16px;
+    line-height: 1.25;
+}
+
+.btn-acao {
+    width: 100%;
+    padding: 13px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    transition: transform 0.1s ease;
+}
+
+.btn-acao:active {
+    transform: scale(0.98);
+}
+
+.btn-whatsapp {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    display: none;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-secundario {
+    background: transparent;
+    border: 1px solid var(--cor-texto-mutado);
+    color: var(--cor-texto-mutado);
+    font-size: 0.8rem;
+    padding: 8px;
+}
+
+/* Lista do Placar de Recordes (Leaderboard Modal) */
+.ranking-lista {
+    max-height: 220px;
+    overflow-y: auto;
+    margin: 14px 0;
+    text-align: left;
+    font-size: 0.8rem;
+}
+
+.ranking-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ranking-pos {
+    color: var(--cor-dourado);
+    font-weight: 800;
+    width: 24px;
+}
+
+.ranking-nome {
+    flex: 1;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.ranking-pontos {
+    color: var(--cor-ciano);
+    font-weight: 800;
+}
+
+@keyframes pulsar {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+/* Responsividade Mobile: tela cheia real */
+@media (max-width: 480px) {
+    .arcade-container {
+        max-width: 100vw;
+        max-height: 100vh;
+        border: none;
+        box-shadow: none;
+    }
+}
