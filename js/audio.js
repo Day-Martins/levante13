@@ -182,83 +182,155 @@ class GerenciadorAudio {
     }
 
     /**
-     * O som lendário da Urna Eletrônica brasileira ("Pilili... Confirma").
-     * Ativado ao coletar o item de Voto Popular (Screen Nuke).
+     * Som de clique sutil e responsivo para botões da interface (UI).
+     */
+    tocarClique() {
+        if (!this.podeTocar()) return;
+
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const agora = this.ctx.currentTime;
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(820, agora);
+            osc.frequency.exponentialRampToValueAtTime(380, agora + 0.04);
+
+            gain.gain.setValueAtTime(0.2, agora);
+            gain.gain.exponentialRampToValueAtTime(0.001, agora + 0.04);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(agora);
+            osc.stop(agora + 0.04);
+        } catch (e) {
+            console.warn('Erro ao tocar som de clique:', e);
+        }
+    }
+
+    /**
+     * O lendário e característico som da Urna Eletrônica brasileira ("Pilili... Confirma" do TSE).
+     * Reproduz com fidelidade a sequência de 3 bips (dois curtos preparatórios e o longo agudo sustentado)
+     * com o timbre metálico/ressonante clássico do transdutor piezoelétrico da urna.
      */
     tocarUrnaConfirma() {
         if (!this.podeTocar()) return;
 
-        const agora = this.ctx.currentTime;
+        try {
+            const agora = this.ctx.currentTime;
 
-        // Primeiro bip clássico (1050 Hz)
-        const osc1 = this.ctx.createOscillator();
-        const gain1 = this.ctx.createGain();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(1050, agora);
-        gain1.gain.setValueAtTime(0.35, agora);
-        gain1.gain.setValueAtTime(0.35, agora + 0.12);
-        gain1.gain.linearRampToValueAtTime(0.01, agora + 0.13);
+            // Filtro passa-baixa para reproduzir a ressonância acústica do piezo da urna
+            const filtro = this.ctx.createBiquadFilter();
+            filtro.type = 'lowpass';
+            filtro.frequency.setValueAtTime(3600, agora);
+            filtro.connect(this.ctx.destination);
 
-        osc1.connect(gain1);
-        gain1.connect(this.ctx.destination);
-        osc1.start(agora);
-        osc1.stop(agora + 0.13);
+            // Sequência clássica de 3 tons do "Pilili" do TSE:
+            // 1) ~1050 Hz (aprox 75ms)
+            // 2) ~1400 Hz (aprox 75ms)
+            // 3) ~2093 Hz (C7 - sustentado por aprox 680ms)
+            const notas = [
+                { freq: 1050, inicio: 0.00, duracao: 0.075 },
+                { freq: 1400, inicio: 0.11, duracao: 0.075 },
+                { freq: 2093, inicio: 0.22, duracao: 0.68 }
+            ];
 
-        // Segundo bip mais agudo ("Confirma" - 1400 Hz)
-        const osc2 = this.ctx.createOscillator();
-        const gain2 = this.ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(1400, agora + 0.16);
-        gain2.gain.setValueAtTime(0.4, agora + 0.16);
-        gain2.gain.setValueAtTime(0.4, agora + 0.35);
-        gain2.gain.linearRampToValueAtTime(0.01, agora + 0.38);
+            notas.forEach(({ freq, inicio, duracao }) => {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
 
-        osc2.connect(gain2);
-        gain2.connect(this.ctx.destination);
-        osc2.start(agora + 0.16);
-        osc2.stop(agora + 0.38);
+                // Onda quadrada filtrada produz o timbre idêntico ao buzzer do TSE
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(freq, agora + inicio);
+
+                const tInicio = agora + inicio;
+                const tFim = tInicio + duracao;
+
+                if (duracao > 0.2) {
+                    // Tom longo sustentado ("liiii")
+                    gain.gain.setValueAtTime(0.001, tInicio);
+                    gain.gain.linearRampToValueAtTime(0.32, tInicio + 0.015);
+                    gain.gain.setValueAtTime(0.32, tFim - 0.06);
+                    gain.gain.linearRampToValueAtTime(0.001, tFim);
+                } else {
+                    // Bips curtos de preparação ("pi", "li")
+                    gain.gain.setValueAtTime(0.001, tInicio);
+                    gain.gain.linearRampToValueAtTime(0.26, tInicio + 0.01);
+                    gain.gain.setValueAtTime(0.26, tFim - 0.01);
+                    gain.gain.linearRampToValueAtTime(0.001, tFim);
+                }
+
+                osc.connect(gain);
+                gain.connect(filtro);
+
+                osc.start(tInicio);
+                osc.stop(tFim);
+            });
+        } catch (e) {
+            console.warn('Erro ao tocar som da urna:', e);
+        }
     }
 
     /**
-     * Bipe padrão de tecla pressionada na Urna Eletrônica (850 Hz).
+     * Bipe padrão característico de tecla pressionada na Urna Eletrônica (aprox. 850 Hz com timbre piezo).
      */
     tocarUrnaTecla() {
         if (!this.podeTocar()) return;
 
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const agora = this.ctx.currentTime;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const filtro = this.ctx.createBiquadFilter();
+            const agora = this.ctx.currentTime;
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(850, agora);
-        gain.gain.setValueAtTime(0.25, agora);
-        gain.gain.exponentialRampToValueAtTime(0.01, agora + 0.07);
+            filtro.type = 'lowpass';
+            filtro.frequency.setValueAtTime(3200, agora);
 
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(agora);
-        osc.stop(agora + 0.07);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(850, agora);
+
+            gain.gain.setValueAtTime(0.001, agora);
+            gain.gain.linearRampToValueAtTime(0.24, agora + 0.008);
+            gain.gain.exponentialRampToValueAtTime(0.001, agora + 0.065);
+
+            osc.connect(gain);
+            gain.connect(filtro);
+            filtro.connect(this.ctx.destination);
+
+            osc.start(agora);
+            osc.stop(agora + 0.065);
+        } catch (e) {
+            console.warn('Erro ao tocar tecla da urna:', e);
+        }
     }
 
     /**
-     * Tom de correção / cancelamento da Urna Eletrônica (440 Hz).
+     * Tom de correção / cancelamento da Urna Eletrônica (tom duplo/grave ~440 Hz).
      */
     tocarUrnaCorrige() {
         if (!this.podeTocar()) return;
 
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const agora = this.ctx.currentTime;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const agora = this.ctx.currentTime;
 
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(440, agora);
-        gain.gain.setValueAtTime(0.28, agora);
-        gain.gain.exponentialRampToValueAtTime(0.01, agora + 0.12);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(440, agora);
+            osc.frequency.linearRampToValueAtTime(330, agora + 0.1);
 
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(agora);
-        osc.stop(agora + 0.12);
+            gain.gain.setValueAtTime(0.26, agora);
+            gain.gain.exponentialRampToValueAtTime(0.001, agora + 0.1);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(agora);
+            osc.stop(agora + 0.1);
+        } catch (e) {
+            console.warn('Erro ao tocar corrige da urna:', e);
+        }
     }
 
     /**
@@ -394,5 +466,6 @@ class GerenciadorAudio {
     }
 }
 
-// Instância global de áudio
+// Instância global de áudio acessível tanto no escopo léxico quanto em window
 const audio = new GerenciadorAudio();
+window.audio = audio;

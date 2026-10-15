@@ -584,13 +584,26 @@
     </div>
 
     <!-- Scripts do Jogo em JavaScript Puro -->
-    <script src="js/audio.js?v=20261015_1838"></script>
-    <script src="js/auth.js?v=20261015_1838"></script>
-    <script src="js/entities.js?v=20261015_1838"></script>
-    <script src="js/game.js?v=20261015_1838"></script>
+    <script src="js/audio.js?v=20261015_1855"></script>
+    <script src="js/auth.js?v=20261015_1855"></script>
+    <script src="js/entities.js?v=20261015_1855"></script>
+    <script src="js/game.js?v=20261015_1855"></script>
 
     <!-- Script de Integração com as APIs Backend -->
     <script>
+        // Feedback Sonoro Universal para Cliques em Botões e Ações de Interface
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('button, .btn-acao, .btn-icone, .btn-link');
+            if (!btn) return;
+            // Teclas específicas da Urna Eletrônica possuem sonorização própria (tecla, corrige, confirma)
+            if (btn.classList.contains('tecla-num') || btn.classList.contains('tecla-acao')) return;
+            if (btn.id === 'btnSom') return;
+            const som = window.audio || (typeof audio !== 'undefined' ? audio : null);
+            if (som) {
+                som.tocarClique();
+            }
+        });
+
         // Controle de Som no Marquee
         const btnSom = document.getElementById('btnSom');
         if (btnSom) {

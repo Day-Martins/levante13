@@ -46,34 +46,60 @@ class GerenciadorIdentidadeUrna {
         ];
     }
 
+    obterAudio() {
+        return window.audio || (typeof audio !== 'undefined' ? audio : null);
+    }
+
     vincularEventos() {
         if (this.btnAvancarCodename) {
-            this.btnAvancarCodename.addEventListener('click', () => this.processarAvancoCodename());
+            this.btnAvancarCodename.addEventListener('click', () => {
+                const som = this.obterAudio();
+                if (som) som.tocarClique();
+                this.processarAvancoCodename();
+            });
         }
 
         if (this.inputCodename) {
             this.inputCodename.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
+                    const som = this.obterAudio();
+                    if (som) som.tocarClique();
                     this.processarAvancoCodename();
                 }
             });
         }
 
         if (this.btnOptarSim) {
-            this.btnOptarSim.addEventListener('click', () => this.iniciarCriacaoSenhaUrna());
+            this.btnOptarSim.addEventListener('click', () => {
+                const som = this.obterAudio();
+                if (som) som.tocarClique();
+                this.iniciarCriacaoSenhaUrna();
+            });
         }
 
         if (this.btnOptarNao) {
-            this.btnOptarNao.addEventListener('click', () => this.concluirSemSenha());
+            this.btnOptarNao.addEventListener('click', () => {
+                const som = this.obterAudio();
+                if (som) som.tocarClique();
+                this.concluirSemSenha();
+            });
         }
 
         if (this.btnVoltarCodename) {
-            this.btnVoltarCodename.addEventListener('click', () => this.exibirEtapaCodename());
+            this.btnVoltarCodename.addEventListener('click', () => {
+                const som = this.obterAudio();
+                if (som) som.tocarClique();
+                this.exibirEtapaCodename();
+            });
         }
 
         if (this.btnCancelarUrna) {
-            this.btnCancelarUrna.addEventListener('click', () => this.exibirEtapaCodename());
+            this.btnCancelarUrna.addEventListener('click', () => {
+                const som = this.obterAudio();
+                if (som) som.tocarClique();
+                this.exibirEtapaCodename();
+            });
         }
 
         // Teclas Numéricas da Urna (0 a 9)
@@ -150,9 +176,10 @@ class GerenciadorIdentidadeUrna {
     async processarAvancoCodename() {
         if (!this.inputCodename) return;
         const tag = this.inputCodename.value.trim().toUpperCase();
+        const som = this.obterAudio();
 
         if (!tag || tag.length < 3) {
-            if (window.audio) window.audio.tocarErro();
+            if (som) som.tocarErro();
             this.statusMsg.style.color = '#ef4444';
             this.statusMsg.textContent = 'O Codinome deve ter entre 3 e 12 caracteres.';
             this.inputCodename.focus();
@@ -160,7 +187,7 @@ class GerenciadorIdentidadeUrna {
         }
 
         if (!/^[A-Z0-9_\-]+$/.test(tag)) {
-            if (window.audio) window.audio.tocarErro();
+            if (som) som.tocarErro();
             this.statusMsg.style.color = '#ef4444';
             this.statusMsg.textContent = 'Use apenas letras, números e traço.';
             this.inputCodename.focus();
@@ -217,7 +244,8 @@ class GerenciadorIdentidadeUrna {
         localStorage.setItem('l13_pin', '');
         localStorage.setItem('l13_protegido', 'false');
 
-        if (window.audio) window.audio.tocarPowerup();
+        const som = this.obterAudio();
+        if (som) som.tocarPowerup();
         this.fecharModal();
 
         if (typeof this.onSucessoCallback === 'function') {
@@ -240,7 +268,8 @@ class GerenciadorIdentidadeUrna {
     digitarNumero(num) {
         if (this.pinDigitado.length < 4) {
             this.pinDigitado += num;
-            if (window.audio) window.audio.tocarUrnaTecla();
+            const som = this.obterAudio();
+            if (som) som.tocarUrnaTecla();
             this.atualizarDisplaySlots();
             if (this.urnaErroMsg) this.urnaErroMsg.textContent = '';
         }
@@ -249,7 +278,8 @@ class GerenciadorIdentidadeUrna {
     corrigirNumero() {
         if (this.pinDigitado.length > 0) {
             this.pinDigitado = this.pinDigitado.slice(0, -1);
-            if (window.audio) window.audio.tocarUrnaCorrige();
+            const som = this.obterAudio();
+            if (som) som.tocarUrnaCorrige();
             this.atualizarDisplaySlots();
             if (this.urnaErroMsg) this.urnaErroMsg.textContent = '';
         }
@@ -275,8 +305,10 @@ class GerenciadorIdentidadeUrna {
     }
 
     async confirmarUrna() {
+        const som = this.obterAudio();
+
         if (this.pinDigitado.length < 4) {
-            if (window.audio) window.audio.tocarErro();
+            if (som) som.tocarErro();
             if (this.urnaErroMsg) {
                 this.urnaErroMsg.textContent = 'DIGITE OS 4 NÚMEROS DA SENHA!';
             }
@@ -302,8 +334,8 @@ class GerenciadorIdentidadeUrna {
             if (this.btnUrnaConfirma) this.btnUrnaConfirma.disabled = false;
 
             if (json.sucesso) {
-                // Toca o clássico som de confirmação da Urna Eletrônica
-                if (window.audio) window.audio.tocarUrnaConfirma();
+                // Toca o clássico som de confirmação da Urna Eletrônica ("Pilili... Confirma" do TSE)
+                if (som) som.tocarUrnaConfirma();
 
                 this.codename = this.codenamePendente;
                 this.pin = this.pinDigitado;
@@ -318,15 +350,16 @@ class GerenciadorIdentidadeUrna {
                     this.urnaErroMsg.textContent = json.mensagem || 'AUTENTICADO COM SUCESSO!';
                 }
 
+                // Aguarda o término glorioso do "Pilili" antes de fechar a Urna
                 setTimeout(() => {
                     this.fecharModal();
                     if (typeof this.onSucessoCallback === 'function') {
                         this.onSucessoCallback(this.obterPiloto());
                     }
-                }, 600);
+                }, 950);
 
             } else {
-                if (window.audio) window.audio.tocarErro();
+                if (som) som.tocarErro();
                 if (this.urnaErroMsg) {
                     this.urnaErroMsg.style.color = '#ef4444';
                     this.urnaErroMsg.textContent = json.erro || 'Senha incorreta na Urna.';
@@ -336,7 +369,7 @@ class GerenciadorIdentidadeUrna {
             }
         } catch (err) {
             if (this.btnUrnaConfirma) this.btnUrnaConfirma.disabled = false;
-            if (window.audio) window.audio.tocarErro();
+            if (som) som.tocarErro();
             if (this.urnaErroMsg) {
                 this.urnaErroMsg.style.color = '#ef4444';
                 this.urnaErroMsg.textContent = 'Erro de conexão com a Urna.';
