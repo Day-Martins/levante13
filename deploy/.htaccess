@@ -1,14 +1,15 @@
 # =============================================================================
-# LEVANTE 13: A VIRADA — Configuração da Página de Espera (.htaccess)
+# LEVANTE 13: A VIRADA — Configuração do Servidor Web (.htaccess)
 # =============================================================================
 
-# 1. Arquivo de entrada padrão
-DirectoryIndex index.html home.html
+# 1. Arquivo de entrada padrão (PHP entrega home.html com links desabilitados em modo espera)
+DirectoryIndex index.php index.html home.html
 
 # 2. Tipos MIME para fontes e imagens
 AddType font/ttf .ttf
 AddType image/webp .webp
 AddType image/svg+xml .svg
+AddType application/json .json
 
 # 3. Charset padrão
 AddDefaultCharset UTF-8
@@ -20,9 +21,9 @@ AddDefaultCharset UTF-8
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# 5. Compressão Gzip para carregamento instantâneo
+# 5. Compressão Gzip / Deflate para carregamento veloz
 <IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript font/ttf image/svg+xml
+    AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript application/json font/ttf image/svg+xml
 </IfModule>
 
 # 6. Cache de recursos estáticos
@@ -32,8 +33,14 @@ AddDefaultCharset UTF-8
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
     ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
     ExpiresByType image/svg+xml "access plus 1 month"
 </IfModule>
 
-# 7. Proteção de navegação em diretórios
+# 7. Proteção de arquivos confidenciais e ocultos
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# 8. Desativa listagem de diretórios
 Options -Indexes

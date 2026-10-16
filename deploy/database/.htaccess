@@ -1,0 +1,9 @@
+# Bloqueio de segurança para o banco de dados SQLite
+# Impede terminantemente o download direto de arquivos de banco e logs de transação via HTTP
+
+<FilesMatch "\.(db|sqlite|sqlite3|wal|shm)$">
+    Require all denied
+</FilesMatch>
+
+# Desativa a listagem de diretório
+Options -Indexes

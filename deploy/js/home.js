@@ -44,6 +44,9 @@ function inicializarModoSite() {
             if (boxEspera) boxEspera.classList.remove('escondido');
             if (heroBadge) heroBadge.textContent = '★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE';
 
+            const boxContadorHero = document.getElementById('boxContadorPilotosHero');
+            if (boxContadorHero) boxContadorHero.style.display = 'none';
+
             // Botão Principal do Hero: DESATIVADO
             if (btnHeroPrincipal) {
                 btnHeroPrincipal.outerHTML = `
@@ -92,6 +95,12 @@ function inicializarModoSite() {
                 `;
             }
 
+            // Ocultar a seção de Leaderboard (Placar) e o link do menu no Modo de Espera
+            const secaoPlacar = document.getElementById('placar');
+            const linkNavPlacar = document.getElementById('linkNavPlacar');
+            if (secaoPlacar) secaoPlacar.style.display = 'none';
+            if (linkNavPlacar) linkNavPlacar.style.display = 'none';
+
             if (toggleModo) {
                 toggleModo.textContent = 'Pré-visualizar Modo Publicado (Jogo no Ar)';
             }
@@ -99,6 +108,15 @@ function inicializarModoSite() {
             // --- MODO PUBLICADO (JOGO NO AR) ---
             if (boxEspera) boxEspera.classList.add('escondido');
             if (heroBadge) heroBadge.textContent = '★ Mobilização Popular Permanente';
+
+            // Exibir a seção de Leaderboard (Placar) e o link do menu no Modo Publicado
+            const secaoPlacar = document.getElementById('placar');
+            const linkNavPlacar = document.getElementById('linkNavPlacar');
+            if (secaoPlacar) secaoPlacar.style.display = '';
+            if (linkNavPlacar) linkNavPlacar.style.display = '';
+
+            const boxContadorHero = document.getElementById('boxContadorPilotosHero');
+            if (boxContadorHero) boxContadorHero.style.display = 'inline-flex';
 
             if (btnHeroPrincipal) {
                 btnHeroPrincipal.outerHTML = `
@@ -169,11 +187,34 @@ function inicializarModoSite() {
    ============================================================================= */
 async function carregarRanking() {
     const corpo = document.getElementById('corpoRanking');
-    if (!corpo) return;
+    const boxContadorPlacar = document.getElementById('boxContadorPilotosPlacar');
+    const numContadorPlacar = document.getElementById('numContadorPilotosPlacar');
+    const boxContadorHero = document.getElementById('boxContadorPilotosHero');
+    const numContadorHero = document.getElementById('numContadorPilotosHero');
 
     try {
         const res = await fetch('api/leaderboard.php?limit=10');
         const dados = await res.json();
+
+        // Atualiza contador de codinomes / usuários cadastrados
+        if (dados.sucesso && typeof dados.total_codinomes === 'number') {
+            const totalFormatado = dados.total_codinomes.toLocaleString('pt-BR');
+            if (numContadorPlacar) numContadorPlacar.textContent = totalFormatado;
+            if (boxContadorPlacar) boxContadorPlacar.style.display = 'inline-flex';
+
+            if (numContadorHero) numContadorHero.textContent = totalFormatado;
+
+            // No Hero, se o site estiver no modo publicado, exibe o contador com destaque
+            const modoEspera = localStorage.getItem('levante13_modo_espera') !== 'false';
+            const params = new URLSearchParams(window.location.search);
+            const forcarPublicado = params.get('publicado') === '1' || params.get('modo') === 'jogar';
+
+            if (boxContadorHero && (!modoEspera || forcarPublicado)) {
+                boxContadorHero.style.display = 'inline-flex';
+            }
+        }
+
+        if (!corpo) return;
 
         if (dados.sucesso && Array.isArray(dados.ranking) && dados.ranking.length > 0) {
             corpo.innerHTML = dados.ranking.map((item, idx) => {
@@ -208,11 +249,13 @@ async function carregarRanking() {
             `;
         }
     } catch (err) {
-        corpo.innerHTML = `
-            <div style="padding: 24px; text-align: center; color: var(--texto-mutado); font-size: 0.9rem;">
-                ★ Placar aberto no lançamento oficial. Prepare seu codinome!
-            </div>
-        `;
+        if (corpo) {
+            corpo.innerHTML = `
+                <div style="padding: 24px; text-align: center; color: var(--texto-mutado); font-size: 0.9rem;">
+                    ★ Placar aberto no lançamento oficial. Prepare seu codinome!
+                </div>
+            `;
+        }
     }
 }
 
@@ -267,68 +310,79 @@ function inicializarCompartilhamento() {
         });
     }
 
-    // 2. Instagram (Opção 1): Web Share API com arquivo anexado ou fallback inteligente
-    if (btnInsta) {
-        btnInsta.addEventListener('click', async () => {
-            const cardStoryUrl = 'assets/img/card_story.png';
-            const textoInsta = 'Levante 13: A Virada — O arcade da democracia popular brasileira! Acesse levante13.online';
+    // Função unificada para acionar o compartilhamento nos Stories do Instagram
+    async function acionarCompartilharInstagram(botaoOrigem) {
+        const cardStoryUrl = 'assets/img/card_story.png';
+        const textoInsta = 'Levante 13: A Virada — O arcade da democracia popular brasileira! Acesse levante13.online';
 
-            btnInsta.disabled = true;
-            const originalHTML = btnInsta.innerHTML;
-            btnInsta.innerHTML = '<svg class="px-icon"><use href="#px-refresh"></use></svg> Preparando...';
+        if (botaoOrigem) botaoOrigem.disabled = true;
+        const originalHTML = botaoOrigem ? botaoOrigem.innerHTML : '';
+        if (botaoOrigem) {
+            botaoOrigem.innerHTML = '<svg class="px-icon"><use href="#px-refresh"></use></svg> Preparando...';
+        }
 
-            try {
-                // Tenta carregar o Blob da imagem de Stories
-                const response = await fetch(cardStoryUrl);
-                const blob = await response.blob();
-                const arquivoStory = new File([blob], 'levante13_story.png', { type: 'image/png' });
+        try {
+            // Tenta carregar o Blob da imagem de Stories
+            const response = await fetch(cardStoryUrl);
+            const blob = await response.blob();
+            const arquivoStory = new File([blob], 'levante13_story.png', { type: 'image/png' });
 
-                // Verifica suporte à Web Share API com arquivos (disponível em navegadores móveis)
-                if (navigator.canShare && navigator.canShare({ files: [arquivoStory] })) {
-                    await navigator.share({
-                        title: 'Levante 13: A Virada',
-                        text: textoInsta,
-                        files: [arquivoStory]
-                    });
-                    mostrarToast('Arte pronta para os Stories!');
-                } else {
-                    // Fallback para Desktop ou navegadores sem compartilhamento de arquivos:
-                    // 1. Copia o link oficial para a área de transferência
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        await navigator.clipboard.writeText(urlCompartilhamento);
-                    }
-
-                    // 2. Dispara o download da imagem 9:16
-                    const linkDownload = document.createElement('a');
-                    linkDownload.href = cardStoryUrl;
-                    linkDownload.download = 'levante13_story.png';
-                    document.body.appendChild(linkDownload);
-                    linkDownload.click();
-                    document.body.removeChild(linkDownload);
-
-                    mostrarToast('Arte baixada & Link copiado para os Stories!');
+            // Verifica suporte à Web Share API com arquivos (disponível em celulares)
+            if (navigator.canShare && navigator.canShare({ files: [arquivoStory] })) {
+                await navigator.share({
+                    title: 'Levante 13: A Virada',
+                    text: textoInsta,
+                    files: [arquivoStory]
+                });
+                mostrarToast('Arte pronta para os Stories!');
+            } else {
+                // Fallback para Desktop ou navegadores sem compartilhamento direto de arquivos:
+                // 1. Copia o link oficial para a área de transferência
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(urlCompartilhamento);
                 }
-            } catch (err) {
-                // Se o usuário cancelou o share nativo, não trata como erro crítico
-                if (err.name !== 'AbortError') {
-                    // Fallback simples
-                    const linkDownload = document.createElement('a');
-                    linkDownload.href = cardStoryUrl;
-                    linkDownload.download = 'levante13_story.png';
-                    document.body.appendChild(linkDownload);
-                    linkDownload.click();
-                    document.body.removeChild(linkDownload);
 
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(urlCompartilhamento);
-                    }
-                    mostrarToast('Arte baixada! Poste nos Stories e cole o link.');
-                }
-            } finally {
-                btnInsta.disabled = false;
-                btnInsta.innerHTML = originalHTML;
+                // 2. Dispara o download da imagem 9:16
+                const linkDownload = document.createElement('a');
+                linkDownload.href = cardStoryUrl;
+                linkDownload.download = 'levante13_story.png';
+                document.body.appendChild(linkDownload);
+                linkDownload.click();
+                document.body.removeChild(linkDownload);
+
+                mostrarToast('Arte baixada & Link copiado para os Stories!');
             }
-        });
+        } catch (err) {
+            // Se o usuário cancelou o share nativo, não trata como erro crítico
+            if (err.name !== 'AbortError') {
+                const linkDownload = document.createElement('a');
+                linkDownload.href = cardStoryUrl;
+                linkDownload.download = 'levante13_story.png';
+                document.body.appendChild(linkDownload);
+                linkDownload.click();
+                document.body.removeChild(linkDownload);
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(urlCompartilhamento);
+                }
+                mostrarToast('Arte baixada! Poste nos Stories e cole o link.');
+            }
+        } finally {
+            if (botaoOrigem) {
+                botaoOrigem.disabled = false;
+                botaoOrigem.innerHTML = originalHTML;
+            }
+        }
+    }
+
+    // 2. Instagram: Acionamento via Box de Compartilhar ou via Botão do Hero
+    if (btnInsta) {
+        btnInsta.addEventListener('click', () => acionarCompartilharInstagram(btnInsta));
+    }
+
+    const btnHeroInsta = document.getElementById('btnHeroInsta');
+    if (btnHeroInsta) {
+        btnHeroInsta.addEventListener('click', () => acionarCompartilharInstagram(btnHeroInsta));
     }
 }
 

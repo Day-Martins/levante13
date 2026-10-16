@@ -1,0 +1,68 @@
+{
+  "id": 1,
+  "name": "Setor das Redes: O Gabinete do Ódio",
+  "subtitle": "Guerra da Informação e Desinformação em Massa",
+  "theme": "cyber_matrix",
+  "holotransmission": {
+    "mentor": "Ana Elisa",
+    "role": "Oficial de Contrainteligência e Guerra Digital",
+    "avatar": "levels/level_1/mentor.png",
+    "dialogue": [
+      "Companheiras e companheiros da Vanguarda 13! Aqui é Ana Elisa na transmissão.",
+      "O Gabinete Imperial ativou uma rede massiva de disparos de mentiras e ódio para confundir o povo trabalhador.",
+      "Eles usam algoritmos clandestinos e fazendas de robôs para atacar a verdade. Quebrem a criptografia do ódio e destruam os servidores centrais!",
+      "Atenção aos POWER-UPS: colete as cápsulas da resistência ejetadas pelos inimigos (Tomo Laser, Escudo CLT, Megafone Triplo, Manto da Diversidade, Vacina SUS e Urna Soberana) para fortalecer sua nave!"
+    ]
+  },
+  "grid": {
+    "rows": 4,
+    "cols": 8,
+    "spacingX": 42,
+    "spacingY": 36,
+    "pattern": "classic",
+    "duration": 180,
+    "initialSpeed": 0.65,
+    "stepY": 4,
+    "speedMultiplierPerKill": 1.015,
+    "diveChance": 0.03
+  },
+  "enemyTypes": [
+    {
+      "id": "drone_fake_news",
+      "name": "Drone de Fake News",
+      "hp": 1,
+      "points": 50,
+      "color": "#94a3b8",
+      "behavior": "march"
+    },
+    {
+      "id": "troll_virtual",
+      "name": "Troll de Disparo em Massa",
+      "hp": 2,
+      "points": 120,
+      "color": "#f87171",
+      "behavior": "dive"
+    },
+    {
+      "id": "servidor_spam",
+      "name": "Servidor da Mentira",
+      "hp": 3,
+      "points": 250,
+      "color": "#ef4444",
+      "behavior": "tank"
+    }
+  ],
+  "boss": {
+    "id": "superbot_desinformacao",
+    "name": "O Super-Robô da Mentira",
+    "title": "Nave Capitânia da Desinformação",
+    "hp": 30,
+    "points": 2000,
+    "attackPattern": "circular_spread"
+  },
+  "palette": {
+    "primary": "#38bdf8",
+    "secondary": "#ef4444",
+    "background": "#070b19"
+  }
+}

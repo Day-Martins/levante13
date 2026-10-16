@@ -13,7 +13,8 @@ class Jogador {
         this.largura = 32;
         this.altura = 26;
         this.x = canvasWidth / 2 - this.largura / 2;
-        this.y = canvasHeight - 54;
+        // Posição base mais elevada (84px da borda inferior) para evitar que o dedo fique sobre a nave no celular
+        this.y = canvasHeight - 84;
         this.velocidade = 4.5;
         this.vidas = 3;
         this.escudos = 0; // Concedidos pelo power-up da CLT
@@ -29,7 +30,7 @@ class Jogador {
         this.particulas = [];
     }
 
-    atualizar(teclas, touchX) {
+    atualizar(teclas, touchX, touchY = null) {
         // Movimentação via Teclado
         if (teclas['ArrowLeft'] || teclas['KeyA']) {
             this.x -= this.velocidade;
@@ -37,16 +38,30 @@ class Jogador {
         if (teclas['ArrowRight'] || teclas['KeyD']) {
             this.x += this.velocidade;
         }
-
-        // Movimentação via Touch suave
-        if (touchX !== null) {
-            const destinoX = touchX - this.largura / 2;
-            const diff = destinoX - this.x;
-            this.x += diff * 0.25; // Interpolação suave
+        if (teclas['ArrowUp'] || teclas['KeyW']) {
+            this.y -= this.velocidade;
+        }
+        if (teclas['ArrowDown'] || teclas['KeyS']) {
+            this.y += this.velocidade;
         }
 
-        // Limites de tela
+        // Movimentação via Touch suave com offset para o dedo ficar logo abaixo da nave (visibilidade perfeita)
+        if (touchX !== null) {
+            const destinoX = touchX - this.largura / 2;
+            const diffX = destinoX - this.x;
+            this.x += diffX * 0.28; // Interpolação suave
+
+            if (touchY !== null) {
+                // Offset de ~50px acima do ponto de toque do dedo
+                const destinoY = touchY - this.altura - 45;
+                const diffY = destinoY - this.y;
+                this.y += diffY * 0.25;
+            }
+        }
+
+        // Limites de tela (horizontal e vertical)
         this.x = Math.max(6, Math.min(this.cw - this.largura - 6, this.x));
+        this.y = Math.max(140, Math.min(this.ch - this.altura - 20, this.y));
 
         // Atualização de timers de power-ups
         if (this.temporizadorTiro > 0) this.temporizadorTiro--;
@@ -82,22 +97,24 @@ class Jogador {
     }
 
     disparar() {
-        this.temporizadorTiro = this.intervaloTiro;
         const tiros = [];
         const centroX = this.x + this.largura / 2;
 
         if (this.tempoLaserPerfurante > 0) {
-            // Raio Laser Perfurante (Paulo Freire)
+            // Raio Laser Perfurante (Paulo Freire) - cadência ligeiramente mais pesada (18 quadros) para disparo equilibrado
+            this.temporizadorTiro = 18;
             tiros.push(new Projetil(centroX - 3, this.y - 12, 0, -9, 'laser', '#38bdf8', true));
             audio.tocarLaserPerfurante();
         } else if (this.tempoTiroTriplo > 0) {
             // Disparo Triplo em Leque (Megafone)
+            this.temporizadorTiro = this.intervaloTiro;
             tiros.push(new Projetil(centroX - 2, this.y - 4, 0, -7, 'normal', '#facc15'));
             tiros.push(new Projetil(centroX - 6, this.y - 2, -1.8, -6.5, 'normal', '#facc15'));
             tiros.push(new Projetil(centroX + 2, this.y - 2, 1.8, -6.5, 'normal', '#facc15'));
             audio.tocarTiro();
         } else {
             // Disparo duplo padrão de energia
+            this.temporizadorTiro = this.intervaloTiro;
             tiros.push(new Projetil(this.x + 4, this.y - 2, 0, -7.5, 'normal', '#ef4444'));
             tiros.push(new Projetil(this.x + this.largura - 8, this.y - 2, 0, -7.5, 'normal', '#ef4444'));
             audio.tocarTiro();
@@ -197,6 +214,7 @@ class Projetil {
         this.largura = perfurante ? 6 : 4;
         this.altura = perfurante ? 20 : 9;
         this.removido = false;
+        this.atingiuChefe = false; // Garante que o laser não aplique múltiplos danos por frame ao mesmo chefe
     }
 
     atualizar() {
@@ -404,12 +422,15 @@ class ChefeSetor {
         this.velocidadeX = this.idFase === 6 ? 1.6 : 1.9;
         this.direcaoX = 1;
         this.temporizadorDisparo = 0;
+        // Período de ~2 segundos (120 quadros) após descer para o banner sumir antes de iniciar a batalha
+        this.temporizadorEsperaCombate = 120;
         this.derrotado = false;
         this.tempo = 0; // Oscilação e cálculo de rajadas
 
         // Sprites e Fases de Dano
         this.sprite = spritePrincipal;
         this.faseDano = 1; // 1: 100-75%, 2: 75-50%, 3: 50-25%, 4: <25%
+        this.temporizadorInvulnerabilidade = 0; // Blindagem energética anti-derretimento rápido (micro-cooldown entre hits)
         this.droppouMeio = false;
         this.pedacosEjetados = {
             asaEsquerda: false,
@@ -454,14 +475,28 @@ class ChefeSetor {
         };
     }
 
-    receberDano(dano = 1) {
+    receberDano(dano = 1, ignorarCooldown = false) {
+        // Se a blindagem energética estiver ativa em micro-cooldown, absorve o dano contínuo excessivo
+        if (!ignorarCooldown && this.temporizadorInvulnerabilidade > 0) {
+            return {
+                mudouFase: false,
+                soltarPowerUp: false,
+                faseAtual: this.faseDano,
+                bloqueadoPelaBlindagem: true
+            };
+        }
+
+        // Aplica janela de invulnerabilidade rápida (5 quadros ~80ms) para amortecer disparos contínuos automáticos
+        this.temporizadorInvulnerabilidade = 5;
+
         this.hp -= dano;
         const pctHp = Math.max(0, this.hp / this.hpMax);
 
         const eventos = {
             mudouFase: false,
             soltarPowerUp: false,
-            faseAtual: this.faseDano
+            faseAtual: this.faseDano,
+            bloqueadoPelaBlindagem: false
         };
 
         if (this.idFase === 6) {
@@ -531,7 +566,13 @@ class ChefeSetor {
 
         // Entrada em cena descendo suavemente
         if (this.y < this.yDestino) {
-            this.y += 1.2;
+            this.y += 1.8;
+            return;
+        }
+
+        // Aguarda os ~2 segundos de introdução para o banner sumir antes de iniciar o combate
+        if (this.temporizadorEsperaCombate > 0) {
+            this.temporizadorEsperaCombate--;
             return;
         }
 
@@ -551,6 +592,7 @@ class ChefeSetor {
         }
 
         if (this.temporizadorDisparo > 0) this.temporizadorDisparo--;
+        if (this.temporizadorInvulnerabilidade > 0) this.temporizadorInvulnerabilidade--;
 
         // Geração contínua de fumaça, chamas e faíscas nos cotos danificados
         this.atualizarParticulasDano();
@@ -628,7 +670,7 @@ class ChefeSetor {
     }
 
     podeDisparar() {
-        return this.y >= this.yDestino && this.temporizadorDisparo <= 0;
+        return this.y >= this.yDestino && this.temporizadorEsperaCombate <= 0 && this.temporizadorDisparo <= 0;
     }
 
     disparar() {

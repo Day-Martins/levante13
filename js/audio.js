@@ -11,6 +11,42 @@ class GerenciadorAudio {
         this.ctx = null;
         this.mutado = false;
         this.inicializado = false;
+
+        // Gerenciamento de Trilha Sonora / BGM
+        this.musicaAtual = null; // 'menu' | 'gameplay' | 'boss' | null
+        this.audioMenu = null;
+        this.audioGameplay = null;
+        this.audioBoss = null;
+        this.sourceMenu = null;
+        this.sourceGameplay = null;
+        this.sourceBoss = null;
+        this.gainMenu = null;
+        this.gainGameplay = null;
+        this.gainBoss = null;
+        this.volumeBaseMusica = 0.18; // Volume mais baixo que os FX para equilibrar gameplay
+        this.timeoutsFade = {};
+
+        // Auto-vincula eventos globais de primeira interação para desbloquear o áudio e iniciar trilha
+        this.vincularDesbloqueioAutomatico();
+    }
+
+    /**
+     * Registra listeners nas primeiras interações com a página (toque, clique, teclado)
+     * para inicializar ou resumir o AudioContext conforme exigido pelos navegadores (Chrome/Safari/Mobile).
+     */
+    vincularDesbloqueioAutomatico() {
+        const desbloquear = () => {
+            this.iniciar();
+            // Se estiver estritamente na tela de menu/início e a música não começou a tocar
+            const emMenuOuInicio = !window.jogo || window.jogo.estado === 'INICIO';
+            if (emMenuOuInicio && (!this.musicaAtual || (this.audioMenu && this.audioMenu.paused))) {
+                this.tocarMusicaMenu();
+            }
+        };
+
+        ['click', 'touchstart', 'touchend', 'keydown', 'pointerdown'].forEach(evento => {
+            window.addEventListener(evento, desbloquear, { passive: true });
+        });
     }
 
     /**
@@ -18,23 +54,278 @@ class GerenciadorAudio {
      * (necessário para obedecer às políticas de reprodução dos navegadores).
      */
     iniciar() {
-        if (!this.inicializado) {
+        if (!this.ctx) {
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
             if (AudioContextClass) {
-                this.ctx = new AudioContextClass();
-                this.inicializado = true;
+                try {
+                    this.ctx = new AudioContextClass();
+                    this.inicializado = true;
+                } catch (e) {
+                    console.warn('Erro ao instanciar AudioContext:', e);
+                }
             }
         }
         if (this.ctx && this.ctx.state === 'suspended') {
-            this.ctx.resume();
+            this.ctx.resume().catch(() => {});
         }
+        this.inicializarElementosMusica();
+    }
+
+    /**
+     * Prepara os elementos de áudio HTML5 e conecta-os ao grafo da Web Audio API
+     */
+    inicializarElementosMusica() {
+        if (!this.ctx) return;
+        if (this.gainMenu && this.gainGameplay && this.gainBoss) return;
+
+        try {
+            // Cria elementos de áudio em formato OGG otimizado sem espaços
+            this.audioMenu = new Audio('sounds/arcade_menu.ogg');
+            this.audioMenu.loop = true;
+            this.audioMenu.preload = 'auto';
+
+            this.audioGameplay = new Audio('sounds/game_play.ogg');
+            this.audioGameplay.loop = true;
+            this.audioGameplay.preload = 'auto';
+
+            this.audioBoss = new Audio('sounds/boss.ogg');
+            this.audioBoss.loop = true;
+            this.audioBoss.preload = 'auto';
+
+            // Nós de ganho para crossfade suave
+            this.gainMenu = this.ctx.createGain();
+            this.gainMenu.gain.setValueAtTime(0, this.ctx.currentTime);
+
+            this.gainGameplay = this.ctx.createGain();
+            this.gainGameplay.gain.setValueAtTime(0, this.ctx.currentTime);
+
+            this.gainBoss = this.ctx.createGain();
+            this.gainBoss.gain.setValueAtTime(0, this.ctx.currentTime);
+
+            // Conecta os nós ao destino de áudio
+            this.sourceMenu = this.ctx.createMediaElementSource(this.audioMenu);
+            this.sourceMenu.connect(this.gainMenu);
+            this.gainMenu.connect(this.ctx.destination);
+
+            this.sourceGameplay = this.ctx.createMediaElementSource(this.audioGameplay);
+            this.sourceGameplay.connect(this.gainGameplay);
+            this.gainGameplay.connect(this.ctx.destination);
+
+            this.sourceBoss = this.ctx.createMediaElementSource(this.audioBoss);
+            this.sourceBoss.connect(this.gainBoss);
+            this.gainBoss.connect(this.ctx.destination);
+        } catch (e) {
+            console.warn('Aviso: Áudio via WebAudio MediaElementSource fallback para elemento direto:', e);
+            if (this.audioMenu) this.audioMenu.volume = this.volumeBaseMusica;
+            if (this.audioGameplay) this.audioGameplay.volume = this.volumeBaseMusica;
+            if (this.audioBoss) this.audioBoss.volume = this.volumeBaseMusica;
+        }
+    }
+
+    /**
+     * Executa crossfade suave entre as faixas e para completamente a execução das faixas anteriores
+     */
+    executarTransicaoMusica(tipoDestino, duracaoFade = 1.5) {
+        this.musicaAtual = tipoDestino;
+        const volAlvo = this.mutado ? 0 : this.volumeBaseMusica;
+
+        const mapeamento = {
+            menu: { el: this.audioMenu, gain: this.gainMenu, vol: volAlvo },
+            gameplay: { el: this.audioGameplay, gain: this.gainGameplay, vol: volAlvo },
+            boss: { el: this.audioBoss, gain: this.gainBoss, vol: volAlvo * 1.15 }
+        };
+
+        const destino = mapeamento[tipoDestino];
+        if (!destino || !destino.el) return;
+
+        // Se havia algum timeout agendado para parar esta mesma música, cancela imediatamente
+        if (this.timeoutsFade[tipoDestino]) {
+            clearTimeout(this.timeoutsFade[tipoDestino]);
+            this.timeoutsFade[tipoDestino] = null;
+        }
+
+        // Garante que o elemento HTML5 Audio está desmutado
+        destino.el.muted = false;
+
+        // Inicia reprodução da música de destino se ainda não estiver tocando
+        const tentarTocar = () => {
+            if (destino.el.paused) {
+                const promessa = destino.el.play();
+                if (promessa !== undefined) {
+                    promessa.catch(err => {
+                        console.warn(`[Audio] Reprodução de ${tipoDestino} aguardando gesto do usuário:`, err.message);
+                    });
+                }
+            }
+        };
+
+        if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume().then(tentarTocar).catch(tentarTocar);
+        } else {
+            tentarTocar();
+        }
+
+        if (this.ctx && this.gainMenu && this.gainGameplay && this.gainBoss) {
+            const agora = this.ctx.currentTime;
+
+            // Fade in na música de destino
+            destino.gain.gain.cancelScheduledValues(agora);
+            const valAtual = Number.isFinite(destino.gain.gain.value) ? destino.gain.gain.value : 0;
+            destino.gain.gain.setValueAtTime(valAtual, agora);
+            destino.gain.gain.linearRampToValueAtTime(destino.vol, agora + duracaoFade);
+
+            // Fade out e parada nas outras músicas
+            Object.keys(mapeamento).forEach(chave => {
+                if (chave !== tipoDestino) {
+                    const outra = mapeamento[chave];
+                    if (outra.gain) {
+                        outra.gain.gain.cancelScheduledValues(agora);
+                        const valOutra = Number.isFinite(outra.gain.gain.value) ? outra.gain.gain.value : 0;
+                        outra.gain.gain.setValueAtTime(valOutra, agora);
+                        outra.gain.gain.linearRampToValueAtTime(0, agora + duracaoFade);
+                    }
+
+                    // Limpa timeout anterior se houver
+                    if (this.timeoutsFade[chave]) {
+                        clearTimeout(this.timeoutsFade[chave]);
+                    }
+
+                    // Após o crossfade, para de vez a execução da música anterior e reseta o tempo
+                    this.timeoutsFade[chave] = setTimeout(() => {
+                        if (this.musicaAtual !== chave && outra.el && !outra.el.paused) {
+                            outra.el.pause();
+                            outra.el.currentTime = 0;
+                        }
+                    }, duracaoFade * 1000 + 80);
+                }
+            });
+        } else {
+            // Fallback sem Web Audio nodes
+            Object.keys(mapeamento).forEach(chave => {
+                const item = mapeamento[chave];
+                if (item.el) {
+                    if (chave === tipoDestino) {
+                        item.el.volume = item.vol;
+                    } else {
+                        item.el.pause();
+                        item.el.currentTime = 0;
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Toca ou faz crossfade para a música padrão de menu Arcade Menu
+     * @param {number} duracaoFade - duração do crossfade em segundos
+     */
+    tocarMusicaMenu(duracaoFade = 1.2) {
+        if (!this.podeTocar()) return;
+        this.inicializarElementosMusica();
+        this.executarTransicaoMusica('menu', duracaoFade);
+    }
+
+    /**
+     * Inicia ou realiza crossfade para a música de gameplay normal e para o menu anterior
+     * @param {number} duracaoFade - duração do crossfade em segundos
+     */
+    tocarMusicaGameplay(duracaoFade = 1.8) {
+        if (!this.podeTocar()) return;
+        this.inicializarElementosMusica();
+        this.executarTransicaoMusica('gameplay', duracaoFade);
+    }
+
+    /**
+     * Realiza crossfade da música de gameplay para a música de confronto contra o Chefe e para a anterior
+     * @param {number} duracaoFade - duração do crossfade em segundos
+     */
+    tocarMusicaBoss(duracaoFade = 2.0) {
+        if (!this.podeTocar()) return;
+        this.inicializarElementosMusica();
+        this.executarTransicaoMusica('boss', duracaoFade);
+    }
+
+    /**
+     * Para suavemente qualquer música de fundo ativa e pausa execução
+     * @param {number} duracaoFade - duração do fade out em segundos
+     */
+    pararMusica(duracaoFade = 1.0) {
+        this.musicaAtual = null;
+
+        const lista = [
+            { el: this.audioMenu, gain: this.gainMenu },
+            { el: this.audioGameplay, gain: this.gainGameplay },
+            { el: this.audioBoss, gain: this.gainBoss }
+        ];
+
+        if (this.ctx && this.gainMenu && this.gainGameplay && this.gainBoss) {
+            const agora = this.ctx.currentTime;
+            lista.forEach(item => {
+                if (item.gain) {
+                    item.gain.gain.cancelScheduledValues(agora);
+                    item.gain.gain.setValueAtTime(item.gain.gain.value, agora);
+                    item.gain.gain.linearRampToValueAtTime(0, agora + duracaoFade);
+                }
+            });
+
+            setTimeout(() => {
+                if (!this.musicaAtual) {
+                    lista.forEach(item => {
+                        if (item.el) {
+                            item.el.pause();
+                            item.el.currentTime = 0;
+                        }
+                    });
+                }
+            }, duracaoFade * 1000 + 80);
+        } else {
+            lista.forEach(item => {
+                if (item.el) {
+                    item.el.pause();
+                    item.el.currentTime = 0;
+                }
+            });
+        }
+    }
+
+    /**
+     * Garante que o contexto existe e está pronto para sintetizar som.
+     * Retorna true se puder tocar, ou false se mutado ou indisponível.
+     */
+    podeTocar() {
+        if (this.mutado) return false;
+        this.iniciar();
+        return !!this.ctx;
     }
 
     /**
      * Alterna o estado de mudo.
      */
     alternarMudo() {
+        this.iniciar();
         this.mutado = !this.mutado;
+
+        if (this.ctx && this.gainMenu && this.gainGameplay && this.gainBoss) {
+            const agora = this.ctx.currentTime;
+            if (this.mutado) {
+                this.gainMenu.gain.setValueAtTime(0, agora);
+                this.gainGameplay.gain.setValueAtTime(0, agora);
+                this.gainBoss.gain.setValueAtTime(0, agora);
+            } else {
+                if (this.musicaAtual === 'menu') {
+                    this.gainMenu.gain.setValueAtTime(this.volumeBaseMusica, agora);
+                } else if (this.musicaAtual === 'gameplay') {
+                    this.gainGameplay.gain.setValueAtTime(this.volumeBaseMusica, agora);
+                } else if (this.musicaAtual === 'boss') {
+                    this.gainBoss.gain.setValueAtTime(this.volumeBaseMusica * 1.15, agora);
+                }
+            }
+        } else {
+            if (this.audioMenu) this.audioMenu.muted = this.mutado;
+            if (this.audioGameplay) this.audioGameplay.muted = this.mutado;
+            if (this.audioBoss) this.audioBoss.muted = this.mutado;
+        }
+
         return this.mutado;
     }
 
@@ -42,8 +333,7 @@ class GerenciadorAudio {
      * Disparo laser padrão da Vanguarda 13.
      */
     tocarTiro() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -66,8 +356,7 @@ class GerenciadorAudio {
      * Disparo de raio laser perfurante (Power-up Tomo de Freire).
      */
     tocarLaserPerfurante() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -90,8 +379,7 @@ class GerenciadorAudio {
      * Efeito sonoro de explosão para naves inimigas derrotadas.
      */
     tocarExplosao() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         // Gera ruído branco para impacto explosivo
         const tamanhoBuffer = this.ctx.sampleRate * 0.25;
@@ -126,8 +414,7 @@ class GerenciadorAudio {
      * Coleta de item especial (Power-up).
      */
     tocarPowerup() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const notas = [523.25, 659.25, 783.99, 1046.50]; // Acorde C Maior ascendente
         notas.forEach((freq, idx) => {
@@ -149,94 +436,162 @@ class GerenciadorAudio {
     }
 
     /**
-     * O som lendário da Urna Eletrônica brasileira ("Pilili... Confirma").
-     * Ativado ao coletar o item de Voto Popular (Screen Nuke).
+     * Som de clique sutil e responsivo para botões da interface (UI).
+     */
+    tocarClique() {
+        if (!this.podeTocar()) return;
+
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const agora = this.ctx.currentTime;
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(820, agora);
+            osc.frequency.exponentialRampToValueAtTime(380, agora + 0.04);
+
+            gain.gain.setValueAtTime(0.2, agora);
+            gain.gain.exponentialRampToValueAtTime(0.001, agora + 0.04);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(agora);
+            osc.stop(agora + 0.04);
+        } catch (e) {
+            console.warn('Erro ao tocar som de clique:', e);
+        }
+    }
+
+    /**
+     * O lendário e característico som da Urna Eletrônica brasileira ("Pilili... Confirma" do TSE).
+     * Reproduz com fidelidade a sequência de 3 bips (dois curtos preparatórios e o longo agudo sustentado)
+     * com o timbre metálico/ressonante clássico do transdutor piezoelétrico da urna.
      */
     tocarUrnaConfirma() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
-        const agora = this.ctx.currentTime;
+        try {
+            const agora = this.ctx.currentTime;
 
-        // Primeiro bip clássico (1050 Hz)
-        const osc1 = this.ctx.createOscillator();
-        const gain1 = this.ctx.createGain();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(1050, agora);
-        gain1.gain.setValueAtTime(0.35, agora);
-        gain1.gain.setValueAtTime(0.35, agora + 0.12);
-        gain1.gain.linearRampToValueAtTime(0.01, agora + 0.13);
+            // Filtro passa-baixa para reproduzir a ressonância acústica do piezo da urna
+            const filtro = this.ctx.createBiquadFilter();
+            filtro.type = 'lowpass';
+            filtro.frequency.setValueAtTime(3600, agora);
+            filtro.connect(this.ctx.destination);
 
-        osc1.connect(gain1);
-        gain1.connect(this.ctx.destination);
-        osc1.start(agora);
-        osc1.stop(agora + 0.13);
+            // Sequência clássica de 3 tons do "Pilili" do TSE:
+            // 1) ~1050 Hz (aprox 75ms)
+            // 2) ~1400 Hz (aprox 75ms)
+            // 3) ~2093 Hz (C7 - sustentado por aprox 680ms)
+            const notas = [
+                { freq: 1050, inicio: 0.00, duracao: 0.075 },
+                { freq: 1400, inicio: 0.11, duracao: 0.075 },
+                { freq: 2093, inicio: 0.22, duracao: 0.68 }
+            ];
 
-        // Segundo bip mais agudo ("Confirma" - 1400 Hz)
-        const osc2 = this.ctx.createOscillator();
-        const gain2 = this.ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(1400, agora + 0.16);
-        gain2.gain.setValueAtTime(0.4, agora + 0.16);
-        gain2.gain.setValueAtTime(0.4, agora + 0.35);
-        gain2.gain.linearRampToValueAtTime(0.01, agora + 0.38);
+            notas.forEach(({ freq, inicio, duracao }) => {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
 
-        osc2.connect(gain2);
-        gain2.connect(this.ctx.destination);
-        osc2.start(agora + 0.16);
-        osc2.stop(agora + 0.38);
+                // Onda quadrada filtrada produz o timbre idêntico ao buzzer do TSE
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(freq, agora + inicio);
+
+                const tInicio = agora + inicio;
+                const tFim = tInicio + duracao;
+
+                if (duracao > 0.2) {
+                    // Tom longo sustentado ("liiii")
+                    gain.gain.setValueAtTime(0.001, tInicio);
+                    gain.gain.linearRampToValueAtTime(0.32, tInicio + 0.015);
+                    gain.gain.setValueAtTime(0.32, tFim - 0.06);
+                    gain.gain.linearRampToValueAtTime(0.001, tFim);
+                } else {
+                    // Bips curtos de preparação ("pi", "li")
+                    gain.gain.setValueAtTime(0.001, tInicio);
+                    gain.gain.linearRampToValueAtTime(0.26, tInicio + 0.01);
+                    gain.gain.setValueAtTime(0.26, tFim - 0.01);
+                    gain.gain.linearRampToValueAtTime(0.001, tFim);
+                }
+
+                osc.connect(gain);
+                gain.connect(filtro);
+
+                osc.start(tInicio);
+                osc.stop(tFim);
+            });
+        } catch (e) {
+            console.warn('Erro ao tocar som da urna:', e);
+        }
     }
 
     /**
-     * Bipe padrão de tecla pressionada na Urna Eletrônica (850 Hz).
+     * Bipe padrão característico de tecla pressionada na Urna Eletrônica (aprox. 850 Hz com timbre piezo).
      */
     tocarUrnaTecla() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const agora = this.ctx.currentTime;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const filtro = this.ctx.createBiquadFilter();
+            const agora = this.ctx.currentTime;
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(850, agora);
-        gain.gain.setValueAtTime(0.25, agora);
-        gain.gain.exponentialRampToValueAtTime(0.01, agora + 0.07);
+            filtro.type = 'lowpass';
+            filtro.frequency.setValueAtTime(3200, agora);
 
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(agora);
-        osc.stop(agora + 0.07);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(850, agora);
+
+            gain.gain.setValueAtTime(0.001, agora);
+            gain.gain.linearRampToValueAtTime(0.24, agora + 0.008);
+            gain.gain.exponentialRampToValueAtTime(0.001, agora + 0.065);
+
+            osc.connect(gain);
+            gain.connect(filtro);
+            filtro.connect(this.ctx.destination);
+
+            osc.start(agora);
+            osc.stop(agora + 0.065);
+        } catch (e) {
+            console.warn('Erro ao tocar tecla da urna:', e);
+        }
     }
 
     /**
-     * Tom de correção / cancelamento da Urna Eletrônica (440 Hz).
+     * Tom de correção / cancelamento da Urna Eletrônica (tom duplo/grave ~440 Hz).
      */
     tocarUrnaCorrige() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const agora = this.ctx.currentTime;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const agora = this.ctx.currentTime;
 
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(440, agora);
-        gain.gain.setValueAtTime(0.28, agora);
-        gain.gain.exponentialRampToValueAtTime(0.01, agora + 0.12);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(440, agora);
+            osc.frequency.linearRampToValueAtTime(330, agora + 0.1);
 
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(agora);
-        osc.stop(agora + 0.12);
+            gain.gain.setValueAtTime(0.26, agora);
+            gain.gain.exponentialRampToValueAtTime(0.001, agora + 0.1);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(agora);
+            osc.stop(agora + 0.1);
+        } catch (e) {
+            console.warn('Erro ao tocar corrige da urna:', e);
+        }
     }
 
     /**
      * Sinal sonoro de erro ou recusa de acesso.
      */
     tocarErro() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -258,8 +613,7 @@ class GerenciadorAudio {
      * Bipe curto de teletipo para a Holotransmissão dos mentores.
      */
     tocarTeletipo() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -281,8 +635,7 @@ class GerenciadorAudio {
      * Alarme de impacto/dano recebido pela Vanguarda 13.
      */
     tocarDano() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -305,8 +658,7 @@ class GerenciadorAudio {
      * Fanfarra triunfal retrô de conclusão de setor / vitória de fase.
      */
     tocarVitoriaFase() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const agora = this.ctx.currentTime;
         // Acorde triunfal em arpeggio clássico arcade: C5, E5, G5, C6 com acorde sustentado
@@ -340,8 +692,7 @@ class GerenciadorAudio {
      * Pulsa duas vezes em tom estridente estilo sirene de alerta vermelho.
      */
     tocarAlertaChefe() {
-        if (this.mutado || !this.ctx) return;
-        this.iniciar();
+        if (!this.podeTocar()) return;
 
         const agora = this.ctx.currentTime;
         const pulsos = [0.0, 0.28, 0.56];
@@ -369,5 +720,6 @@ class GerenciadorAudio {
     }
 }
 
-// Instância global de áudio
+// Instância global de áudio acessível tanto no escopo léxico quanto em window
 const audio = new GerenciadorAudio();
+window.audio = audio;

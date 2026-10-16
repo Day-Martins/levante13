@@ -1,0 +1,13 @@
+# Proteção de segurança para a pasta de cards gerados
+# Impede a execução de qualquer script PHP ou executável dentro da pasta de mídias
+
+<FilesMatch "\.(php|phtml|phar|sh|cgi|pl)$">
+    Require all denied
+</FilesMatch>
+
+# Garante a entrega de imagens PNG com cabeçalhos seguros
+<FilesMatch "\.png$">
+    Header set Cache-Control "public, max-age=86400"
+</FilesMatch>
+
+Options -Indexes

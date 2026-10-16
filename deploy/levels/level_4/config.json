@@ -1,0 +1,67 @@
+{
+  "id": 4,
+  "name": "Complexo da Vida: O Cerco Negacionista",
+  "subtitle": "A Ciência a Serviço do Povo e a Defesa do SUS",
+  "theme": "bio_hazard",
+  "holotransmission": {
+    "mentor": "Dr. Drauzio Varella",
+    "role": "Médico Oncologista, Sanitarista e Cientista Popular",
+    "avatar": "levels/level_4/mentor.png",
+    "dialogue": [
+      "Olá a todos da Vanguarda 13. Aqui é o Dr. Drauzio Varella.",
+      "O obscurantismo e o negacionismo atacaram as unidades do Sistema Único de Saúde, espalhando pânico contra vacinas e destruindo estoques de remédios essenciais.",
+      "A saúde é um direito constitucional de todos e um dever inegociável do Estado. Defendam nossos cientistas, vacinem a esperança e restaurem a vida!"
+    ]
+  },
+  "grid": {
+    "rows": 5,
+    "cols": 8,
+    "spacingX": 42,
+    "spacingY": 36,
+    "pattern": "advance_retreat",
+    "duration": 180,
+    "initialSpeed": 0.95,
+    "stepY": 4.5,
+    "speedMultiplierPerKill": 1.022,
+    "diveChance": 0.1
+  },
+  "enemyTypes": [
+    {
+      "id": "frasco_ineficaz",
+      "name": "Cápsula de Mentiras",
+      "hp": 1,
+      "points": 70,
+      "color": "#cbd5e1",
+      "behavior": "march"
+    },
+    {
+      "id": "seringa_sabotada",
+      "name": "Disparador Antivacina",
+      "hp": 2,
+      "points": 170,
+      "color": "#ec4899",
+      "behavior": "dive"
+    },
+    {
+      "id": "tanque_obscurantista",
+      "name": "Câmara de Desinformação",
+      "hp": 5,
+      "points": 380,
+      "color": "#a855f7",
+      "behavior": "tank"
+    }
+  ],
+  "boss": {
+    "id": "quimera_obscurantismo",
+    "name": "A Quimera do Obscurantismo",
+    "title": "Bio-Destruidora Sanitária",
+    "hp": 45,
+    "points": 2800,
+    "attackPattern": "toxic_burst"
+  },
+  "palette": {
+    "primary": "#38bdf8",
+    "secondary": "#ec4899",
+    "background": "#1e1b4b"
+  }
+}

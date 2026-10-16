@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Levante 13: A Virada — O Jogo da Democracia e Resistência Popular</title>
+    <title>Levante 13: A Virada — O Jogo da Democracia e da Resistência Popular</title>
 
     <meta name="description"
         content="O arcade clássico da democracia brasileira. Dispute recordes no placar da resistência e fortaleça a luta pela soberania digital e tecnológica do Brasil.">
@@ -234,6 +234,16 @@
             <rect x="7" y="10" width="2" height="1" fill="currentColor" />
             <rect x="2" y="12" width="12" height="2" fill="currentColor" />
         </symbol>
+
+        <!-- Símbolo Pilotos Mobilizados / Usuários (Pixel Art) -->
+        <symbol id="px-users" viewBox="0 0 16 16">
+            <rect x="6" y="2" width="4" height="4" fill="currentColor" />
+            <rect x="4" y="7" width="8" height="6" fill="currentColor" />
+            <rect x="1" y="4" width="3" height="3" fill="currentColor" opacity="0.7" />
+            <rect x="0" y="8" width="4" height="5" fill="currentColor" opacity="0.7" />
+            <rect x="12" y="4" width="3" height="3" fill="currentColor" opacity="0.7" />
+            <rect x="12" y="8" width="4" height="5" fill="currentColor" opacity="0.7" />
+        </symbol>
     </svg>
 
     <!-- 1. CABEÇALHO SÓBRIO -->
@@ -246,7 +256,7 @@
 
             <nav class="nav">
                 <a href="#inicio">Início</a>
-                <a href="#placar" id="linkNavPlacar">Placar da Resistência</a>
+                <a href="#placar" id="linkNavPlacar" style="display: none;">Placar da Resistência</a>
                 <a href="#soberania">Mobilização & Soberania Digital</a>
                 <span class="btn-header btn-desativado" id="btnHeaderAcao" title="Lançamento oficial em breve!">
                     EM BREVE <svg class="px-icon">
@@ -261,13 +271,19 @@
         <!-- 2. HERO PRINCIPAL (VERSÃO EM BREVE COM BOTÃO DESATIVADO) -->
         <section id="inicio" class="hero">
             <div class="container">
-                <div class="hero-tag" id="heroBadgeStatus">
-                    ★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                    <div class="hero-tag" id="heroBadgeStatus">
+                        ★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE
+                    </div>
+                    <div id="boxContadorPilotosHero" class="hero-tag" style="display: none; background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.6); color: #4ade80;">
+                        <svg class="px-icon" style="color: #22c55e;"><use href="#px-users"></use></svg>
+                        <span><strong id="numContadorPilotosHero" style="color: #ffffff;">0</strong> PILOTOS CONVOCADOS</span>
+                    </div>
                 </div>
 
                 <h1 class="hero-title">
                     A esperança vai <span>virar o jogo</span><br>
-                    nas urnas e nas ruas.
+                    nas urnas. Vamos às ruas!
                 </h1>
 
                 <p class="hero-desc">
@@ -276,7 +292,7 @@
                     placar da resistência e virar votos de coração a coração.
                 </p>
 
-                <!-- Ações do Hero: Jogar Agora Desativado + Convocação no WhatsApp Ativa -->
+                <!-- Ações do Hero: Jogar Agora Desativado + Convocação no WhatsApp & Instagram -->
                 <div class="hero-actions" id="heroAcoes">
                     <button type="button" class="btn-cta btn-desativado" id="btnHeroPrincipal" disabled
                         title="Motores em aquecimento! Lançamento oficial nos próximos dias.">
@@ -290,6 +306,11 @@
                             <use href="#px-zap"></use>
                         </svg> Convoque no WhatsApp
                     </a>
+                    <button type="button" class="btn-sec btn-insta" id="btnHeroInsta" title="Compartilhar arte nos Stories do Instagram">
+                        <svg class="px-icon">
+                            <use href="#px-insta"></use>
+                        </svg> Convoque no Instagram
+                    </button>
                 </div>
 
                 <p class="hero-aviso-bloqueio">
@@ -309,8 +330,8 @@
                     <p class="em-breve-texto">
                         O <strong>Levante 13</strong> será liberado nos próximos dias para você jogar direto no
                         navegador — sem precisar baixar nada, sem cadastros e 100% livre.
-                        Enquanto afinamos os motores da esperança, fortaleça a trincheira: registre seus votos virados
-                        no <strong>Virômetro</strong> e acompanhe o <strong>Comitê de Tecnologia</strong>!
+                        Enquanto afinamos os motores da esperança, fortaleça a trincheira: registre no <strong>Virômetro</strong> a quantidade de votos que conseguiu virar
+                        e acompanhe o <strong>Comitê de Tecnologia</strong>!
                     </p>
 
                     <div class="em-breve-rodape-aviso">
@@ -320,8 +341,8 @@
             </div>
         </section>
 
-        <!-- 3. PLACAR GLOBAL (LEADERBOARD DO SQLite) -->
-        <section id="placar" class="secao">
+        <!-- 3. PLACAR GLOBAL (LEADERBOARD DO SQLite) - Exibido apenas com o jogo publicado -->
+        <section id="placar" class="secao" style="display: none;">
             <div class="container">
                 <div class="secao-header"
                     style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px;">
@@ -329,12 +350,18 @@
                         <h2 class="secao-titulo">Placar da Resistência</h2>
                         <p class="secao-sub">Os maiores recordes registrados pelos pilotos da democracia.</p>
                     </div>
-                    <button id="btnAtualizarRanking" class="btn-sec" type="button"
-                        style="padding: 8px 14px; font-size: 0.8rem; cursor: pointer;">
-                        <svg class="px-icon">
-                            <use href="#px-refresh"></use>
-                        </svg> Atualizar
-                    </button>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <div id="boxContadorPilotosPlacar" class="contador-pilotos-badge" style="display: none; align-items: center; gap: 6px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(56, 189, 248, 0.4); padding: 6px 12px; font-size: 0.82rem; color: #38bdf8;">
+                            <svg class="px-icon" style="color: var(--amarelo);"><use href="#px-users"></use></svg>
+                            <span><strong id="numContadorPilotosPlacar" style="color: #ffffff;">0</strong> PILOTOS MOBILIZADOS</span>
+                        </div>
+                        <button id="btnAtualizarRanking" class="btn-sec" type="button"
+                            style="padding: 8px 14px; font-size: 0.8rem; cursor: pointer;">
+                            <svg class="px-icon">
+                                <use href="#px-refresh"></use>
+                            </svg> Atualizar
+                        </button>
+                    </div>
                 </div>
 
                 <div class="tabela-ranking">
@@ -384,7 +411,7 @@
                                     <use href="#px-terminal"></use>
                                 </svg> Comitê Popular de Luta Tecnologia</h3>
                             <p class="comite-descricao">
-                                Espaço de auto-organização de programadores, designers, pesquisadores e militantes
+                                Espaço de auto-organização de programadores, designers, pesquisadores, comunicadores e militantes
                                 populares. Construímos a luta pela soberania digital, tecnologias livres, IA pública e
                                 defesa dos trabalhadores de plataformas.
                             </p>
@@ -626,10 +653,13 @@
             <p style="margin-bottom: 8px;">
                 <strong>LEVANTE 13: A VIRADA</strong> — O jogo livre e aberto da democracia popular brasileira.
             </p>
-            <p>
+            <p style="margin-bottom: 8px;">
                 Desenvolvido com apoio da militância popular, do <a href="https://comitedetecnologia.com.br"
                     target="_blank" rel="noopener noreferrer"
                     style="color: var(--amarelo); text-decoration: underline;">Comitê de Tecnologia</a>
+            </p>
+            <p style="font-size: 0.76rem; color: var(--texto-suave); max-width: 680px; margin: 12px auto 0 auto; line-height: 1.4; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 10px;">
+                ★ <em>Aviso legal e ético:</em> A presença e imagens dos mentores homenageados no jogo representam um tributo de admiração e respeito à sua trajetória pública de luta social e democrática. As personalidades retratadas não possuem vínculo direto, responsabilidade ou participação no desenvolvimento deste projeto voluntário independente.
             </p>
         </div>
     </footer>
@@ -637,7 +667,7 @@
     <!-- Toast flutuante de feedback de cópia -->
     <div id="toast" class="toast">Aviso</div>
 
-    <script src="js/home.js?v=20261014_2232"></script>
+    <script src="js/home.js?v=20261015_1520"></script>
 </body>
 
 </html>

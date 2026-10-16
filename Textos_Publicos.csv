@@ -1,0 +1,133 @@
+ID,Imagem / Arte,Página / Módulo,Componente / Elemento,Como é Exibido (Contexto Visual),Texto Atual (Público),Caminho do Arquivo / Imagem,Sugestão de Revisão / Notas (Equipe)
+PORTAL-01,,Portal (index.php),Título da Página (HTML Title),Aba do navegador e compartilhamento do portal,Levante 13: A Virada — O Jogo da Democracia e da Resistência Popular,assets/img/og-preview.png,
+PORTAL-02,,Portal (index.php),Header / Barra Superior,Logotipo e links de navegação do topo,LEVANTE 13 | Início | Placar da Resistência | Mobilização & Soberania Digital | EM BREVE,assets/images/hero_banner.jpg,
+PORTAL-03,,Portal (index.php),Hero Principal (Badge),Tag em destaque amarela acima do título principal,★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE,assets/images/hero_banner.jpg,
+PORTAL-04,,Portal (index.php),Hero Principal (Título H1),Título central de grande impacto visual na entrada,A esperança vai virar o jogo nas urnas. Vamos às ruas!,assets/images/hero_banner.jpg,
+PORTAL-05,,Portal (index.php),Hero Principal (Descrição),Parágrafo manifesto explicativo do jogo e da campanha,"O arcade clássico da democracia brasileira está nos ajustes finais para a decolagem! Nossos comitês populares estão afinando a Vanguarda 13 para você enfrentar os gabinetes de mentiras, disputar o placar da resistência e virar votos de coração a coração.",assets/images/hero_banner.jpg,
+PORTAL-06,,Portal (index.php),Botão de Convocação WhatsApp,Botão verde de ação rápida no Hero,"Convoque no WhatsApp
+(Texto enviado: Prepare-se! O jogo arcade da democracia brasileira está chegando: Levante 13: A Virada! Acompanhe em https://levante13.online)",assets/images/hero_banner.jpg,
+PORTAL-07,,Portal (index.php),Box de Pré-Lançamento (Hangar),Caixa com borda e destaque de software livre,"FASE FINAL DE PREPARAÇÃO: Prepare os controles: a decolagem está próxima! O Levante 13 será liberado nos próximos dias para você jogar direto no navegador — sem precisar baixar nada, sem cadastros e 100% livre. Enquanto afinamos os motores da esperança, fortaleça a trincheira: registre no Virômetro a quantidade de votos que conseguiu virar e acompanhe o Comitê de Tecnologia! ★ 100% Web • Celular e Computador • Software Livre da Resistência",assets/images/hero_banner.jpg,
+PORTAL-08,,Portal (index.php),Seção Placar da Resistência,Cabeçalho e aviso da tabela de ranking,Placar da Resistência: Os maiores recordes registrados pelos pilotos da democracia. ★ Placar aberto no lançamento oficial. Prepare seu codinome! Os pilotos da democracia poderão gravar seus codinomes assim que os motores forem liberados.,assets/img/og-preview.png,
+PORTAL-09,,Portal (index.php),Card Coletivo de Tecnologia,Card com link e botão para o comitê,"★ Coletivo de Base da Tecnologia Popular
+Comitê Popular de Luta Tecnologia
+Espaço de auto-organização de programadores, designers, pesquisadores, comunicadores e militantes populares. Construímos a luta pela soberania digital, tecnologias livres, IA pública e defesa dos trabalhadores de plataformas.
+Links: comitedetecnologia.com.br | Instagram @comitepopulartecnologia",assets/img/og-preview.png,
+PORTAL-10,,Portal (index.php),Card Virômetro (Vira Voto),Card de engajamento para cadastro de votos virados,"★ Termômetro da Campanha Popular
+Virômetro — Registre seu Voto Virado
+Virou um voto na família, no trabalho ou nas redes? Registre no Virômetro oficial e fortaleça o mapa nacional da virada popular. Cada voto consciente faz a esperança vencer!
+Link: Acessar virometro.com.br",assets/img/og-preview.png,
+PORTAL-11,,Portal (index.php),Card Bora Lula,Card oficial de kits de campanha e materiais,"★ Rede de Ação & Materiais
+Bora Lula — boralula.org
+A plataforma participativa da militância popular. Acesse adesivos, jingles, artes digitais para as redes sociais, manuais de rua e se conecte com voluntários de todo o Brasil para multiplicar a esperança.
+Link: Acessar boralula.org",assets/img/og-preview.png,
+PORTAL-12,,Portal (index.php),Pilares da Soberania Digital (3 Cards),Blocos temáticos de programa político,"1. Soberania Nacional & Dados Públicos: O Brasil não pode ser colônia digital. Centros de dados nacionais, nuvem pública estatal e IA soberana.
+2. Direitos na Era das Plataformas: Combate à uberização. Previdência pública, jornada com limites, remuneração digna e transparência algorítmica.
+3. Combate à Desinformação & Inclusão: Internet de alta velocidade nas periferias, letramento digital crítico e desarticulação dos gabinetes de ódio.",assets/img/og-preview.png,
+PORTAL-13,,Portal (index.php),Manifesto de Tecnologia Aberta,Box com borda dourada sobre o jogo,"Tecnologia Aberta a Serviço da Cidadania
+O Levante 13 foi desenvolvido com tecnologias web padronizadas, sem rastreamento de dados pessoais (em conformidade com a LGPD), sem publicidade comercial e sem dependência de plataformas proprietárias. É código livre feito para conscientizar, engajar e virar votos.",assets/img/og-preview.png,
+PORTAL-14,,Portal (index.php),Área de Compartilhamento Viral,Card Stories 9:16 e botões de compartilhamento,"★ Mobilização Viral: Compartilhe a Mensagem da Democracia
+Espalhe a arte oficial de campanha nos grupos de WhatsApp e nos Stories do Instagram. Cada compartilhamento fortalece a luta contra o fascismo e a desinformação.
+Botões: Compartilhar no WhatsApp | Postar no Instagram | Baixar Arte (9:16)
+Dica: Marque @lulaoficial e adicione o link para levante13.online!",assets/img/card_story.png,
+PORTAL-15,,Portal (index.php),Rodapé Institucional,Base de todas as páginas,"LEVANTE 13: A VIRADA — O jogo livre e aberto da democracia popular brasileira. Desenvolvido com apoio da militância popular, do Comitê de Tecnologia.",assets/images/hero_banner.jpg,
+ARCADE-01,,Arcade (game.html),Header do Arcade,Barra superior retrô do fliperama,PORTAL | ★ LEVANTE 13: A VIRADA ★ | Botões: Manual de Power-ups (?) | Placar Global (Troféu) | Som (Alto-falante),assets/images/hero_banner.jpg,
+ARCADE-02,,Arcade (game.html),HUD da Partida,Informações fixas no topo da tela do jogo,Vidas: ❤️❤️❤️ | Frente Atual: FRENTE 1 | Cronômetro: 03:00 | PTS: 0,levels/level_1/bg.png,
+ARCADE-03,,Arcade (game.html),Urna Eletrônica (Identificação),Modal interativo inicial de login do piloto,"JUSTIÇA ELEITORAL DA RESISTÊNCIA — IDENTIFICAÇÃO DO PILOTO
+Insira seu Codinome de Batalha (3 a 12 caracteres):
+[SUA TAG EX: LULA13]
+Botões: AVANÇAR / CONSULTAR | JOGAR COMO CONVIDADO",levels/level_6/mentor.png,
+ARCADE-04,,Arcade (game.html),Urna Eletrônica (Escolha de Proteção),Etapa 2 da Urna para definir se o nome terá PIN,"Deseja proteger este Codinome para uso futuro com uma senha de 4 números?
+Opções: [SIM, PROTEGER MEU CODINOME COM SENHA] | [NÃO, USAR COMO NOME PÚBLICO LIVRE]",levels/level_6/mentor.png,
+ARCADE-05,,Arcade (game.html),Urna Eletrônica (Teclado Numérico),Visor e botões numéricos com som de tecla da Urna,"DIGITE SEU PIN DE 4 NÚMEROS
+Visor: [_] [_] [_] [_]
+Teclas: 1 a 0 | [CORRIGE (Laranja)] | [CONFIRMA (Verde)] | [← Cancelar / Trocar Codinome]",levels/level_6/mentor.png,
+ARCADE-06,,Arcade (game.html),Manual de Power-ups (Tomo de Freire),Card explicativo da cápsula laser,"TOMO DE FREIRE
+Feixe Laser Perfurante contínuo por 8s que pulveriza colunas de inimigos.",levels/level_1/mentor.png,
+ARCADE-07,,Arcade (game.html),Manual de Power-ups (Escudo da CLT),Card explicativo da cápsula de defesa,"ESCUDO DA CLT
+Ergue barreira defletora que bloqueia até 2 tiros sem perder vigor.",levels/level_2/mentor.png,
+ARCADE-08,,Arcade (game.html),Manual de Power-ups (Megafone Popular),Card explicativo da cápsula de disparo triplo,"MEGAFONE POPULAR
+Disparo Triplo em leque por 10s, varrendo o quadrante estelar.",levels/level_3/mentor.png,
+ARCADE-09,,Arcade (game.html),Manual de Power-ups (Manto da Diversidade),Card explicativo da cápsula de lentidão,"MANTO DIVERSIDADE
+Onda do Estado Laico que desacelera todos os invasores em 50% por 8s.",levels/level_5/mentor.png,
+ARCADE-10,,Arcade (game.html),Manual de Power-ups (Urna Soberana),Card explicativo da cápsula de nuke / limpeza,"URNA SOBERANA
+Sinal sonoro PILILI: Limpeza total de todos os projéteis e frotas da tela!",levels/level_6/mentor.png,
+ARCADE-11,,Arcade (game.html),Manual de Power-ups (Cápsula do SUS),Card explicativo da cápsula de vida,"CÁPSULA DO SUS
+Biorregeneração pública que restaura +1 Ponto de Vida/Vigor da nave.",levels/level_4/mentor.png,
+ARCADE-12,,Arcade (game.html),Botão do Manual de Power-ups,Botão de fechamento / início de batalha,"No tutorial inicial da Fase 1: [ENTENDIDO! ÀS ARMAS] (Clique para iniciar a batalha)
+No botão de ajuda ? durante score/jogo: [FECHAR MANUAL] (Clique para fechar o manual e retornar à tela anterior)",levels/level_1/bg.png,
+ARCADE-13,,Arcade (game.html),Modal de Fim de Jogo (Game Over),Tela ao perder todas as vidas ou esgotar o tempo,"MISSÃO INTERROMPIDA: A Vanguarda 13 foi abatida em combate contra o obscurantismo.
+[Ou DEFESA ROMPIDA! / TEMPO ESGOTADO!]
+Pontos de Resistência: [SCORE]
+Piloto Registrado na Missão: [TAG] [PROTEGIDO / PÚBLICO]
+Botões: [REGISTRAR RECORDE] | [← Trocar de Codinome]",cards/card_teste_drauzio_card.png,
+ARCADE-14,,Arcade (game.html),Modal de Vitória Final,Tela ao derrotar o chefe supremo na Fase 6,"VITÓRIA! O BRASIL RESISTIU!
+A coragem venceu o medo e todas as frentes foram libertadas pela resistência!
+Pontos de Resistência: [SCORE]",levels/level_6/mentor.png,
+ARCADE-15,,Arcade (game.html),Arte Oficial de Convocação (Card),Imagem comemorativa 1200x630 gerada no Game Over,"★ ARTE OFICIAL DE CONVOCAÇÃO DA RESISTÊNCIA ★
+[Miniatura do Certificado Arcade com Nome do Piloto, Score, Frente Defendida, Foto do Mentor e Chamada de Recrutamento]
+Botões: [COMPARTILHAR NO WHATSAPP] | [COMPARTILHAR NO INSTAGRAM] | [⬇ Baixar Arte do Recorde (PNG)] | [REINICIAR MISSÃO]",cards/card_teste_drauzio_card.png,
+FASE1-01,,Fase 1: Setor das Redes: O Gabinete do Ódio,Mentor Oficial (Ana Elisa),Holotransmissão Sci-Fi no início da frente,"Mentor: Ana Elisa | Cargo: Oficial de Contrainteligência e Guerra Digital
+Subtítulo da Fase: Guerra da Informação e Desinformação em Massa",levels/level_1/mentor.png,
+FASE1-D01,,Fase 1: Setor das Redes: O Gabinete do Ódio,Diálogo 1/4,Texto teletipo com som eletrônico e voz sintetizada,Companheiras e companheiros da Vanguarda 13! Aqui é Ana Elisa na transmissão.,levels/level_1/mentor.png,
+FASE1-D02,,Fase 1: Setor das Redes: O Gabinete do Ódio,Diálogo 2/4,Texto teletipo com som eletrônico e voz sintetizada,O Gabinete Imperial ativou uma rede massiva de disparos de mentiras e ódio para confundir o povo trabalhador.,levels/level_1/mentor.png,
+FASE1-D03,,Fase 1: Setor das Redes: O Gabinete do Ódio,Diálogo 3/4,Texto teletipo com som eletrônico e voz sintetizada,Eles usam algoritmos clandestinos e fazendas de robôs para atacar a verdade. Quebrem a criptografia do ódio e destruam os servidores centrais!,levels/level_1/mentor.png,
+FASE1-D04,,Fase 1: Setor das Redes: O Gabinete do Ódio,Diálogo 4/4,Texto teletipo com som eletrônico e voz sintetizada,"Atenção aos POWER-UPS: colete as cápsulas da resistência ejetadas pelos inimigos (Tomo Laser, Escudo CLT, Megafone Triplo, Manto da Diversidade, Vacina SUS e Urna Soberana) para fortalecer sua nave!",levels/level_1/mentor.png,
+FASE1-CHEF,,Fase 1: Setor das Redes: O Gabinete do Ódio,Chefe da Fase (Boss),Alerta vermelho de combate ao final da frente,"ALERTA DE CHEFE!
+Inimigo: O Super-Robô da Mentira (Nave Capitânia da Desinformação)",levels/level_1/boss.png,
+FASE1-VIT,,Fase 1: Setor das Redes: O Gabinete do Ódio,Mensagem da Vitória na Frente,Tela de transição com contagem de 5 segundos,A verdade prevaleceu sobre as fazendas de mentiras! O povo agora tem acesso aos fatos.,levels/level_1/bg.png,
+FASE2-01,,Fase 2: Setor Fabril: O Desmonte do Trabalho,Mentor Oficial (Jones Manoel),Holotransmissão Sci-Fi no início da frente,"Mentor: Jones Manoel | Cargo: Comandante da Frente Operária
+Subtítulo da Fase: Uberização, Precarização e a Resistência da CLT",levels/level_2/mentor.png,
+FASE2-D01,,Fase 2: Setor Fabril: O Desmonte do Trabalho,Diálogo 1/3,Texto teletipo com som eletrônico e voz sintetizada,"Atenção, pilotos da resistência! Jones Manoel na escuta dos setores produtivos.",levels/level_2/mentor.png,
+FASE2-D02,,Fase 2: Setor Fabril: O Desmonte do Trabalho,Diálogo 2/3,Texto teletipo com som eletrônico e voz sintetizada,As frotas da especulação transformaram direitos históricos em cinzas: querem converter todo trabalhador em engrenagem descartável de aplicativo sem aposentadoria.,levels/level_2/mentor.png,
+FASE2-D03,,Fase 2: Setor Fabril: O Desmonte do Trabalho,Diálogo 3/3,Texto teletipo com som eletrônico e voz sintetizada,"Nossa bandeira é a Carteira de Trabalho, o salário digno e a jornada justa. Reestruturem as linhas de defesa operária e abatam as naves corporativas!",levels/level_2/mentor.png,
+FASE2-CHEF,,Fase 2: Setor Fabril: O Desmonte do Trabalho,Chefe da Fase (Boss),Alerta vermelho de combate ao final da frente,"ALERTA DE CHEFE!
+Inimigo: O Algoritmo da Precarização (Nave Capitânia Corporativa)",levels/level_2/boss.png,
+FASE2-VIT,,Fase 2: Setor Fabril: O Desmonte do Trabalho,Mensagem da Vitória na Frente,Tela de transição com contagem de 5 segundos,Direitos não se negociam! Os trabalhadores reconquistaram sua dignidade contra o capital especulativo.,levels/level_2/bg.png,
+FASE3-01,,Fase 3: Reserva Planetária: Chamas na Floresta,Mentor Oficial (Sônia Guajajara),Holotransmissão Sci-Fi no início da frente,"Mentor: Sônia Guajajara | Cargo: Ministra dos Povos Originários e Guardiã da Floresta
+Subtítulo da Fase: Defesa da Amazônia e Preservação dos Povos Originários",levels/level_3/mentor.png,
+FASE3-D01,,Fase 3: Reserva Planetária: Chamas na Floresta,Diálogo 1/3,Texto teletipo com som eletrônico e voz sintetizada,Saudações dos povos da terra! Aqui quem fala é Sônia Guajajara.,levels/level_3/mentor.png,
+FASE3-D02,,Fase 3: Reserva Planetária: Chamas na Floresta,Diálogo 2/3,Texto teletipo com som eletrônico e voz sintetizada,"Grileiros, garimpeiros ilegais e madeireiros clandestinos avançam com máquinas blindadas de destruição para queimar nosso futuro.",levels/level_3/mentor.png,
+FASE3-D03,,Fase 3: Reserva Planetária: Chamas na Floresta,Diálogo 3/3,Texto teletipo com som eletrônico e voz sintetizada,A floresta em pé é a vida do planeta. Expulsem os invasores das terras demarcadas e protejam as águas sagradas da humanidade!,levels/level_3/mentor.png,
+FASE3-CHEF,,Fase 3: Reserva Planetária: Chamas na Floresta,Chefe da Fase (Boss),Alerta vermelho de combate ao final da frente,"ALERTA DE CHEFE!
+Inimigo: O Correntão da Devastação (Fortaleza Mecânica do Desmatamento)",levels/level_3/boss.png,
+FASE3-VIT,,Fase 3: Reserva Planetária: Chamas na Floresta,Mensagem da Vitória na Frente,Tela de transição com contagem de 5 segundos,A floresta vive e respira! Os guardiões da terra expulsaram os invasores das áreas demarcadas.,levels/level_3/bg.png,
+FASE4-01,,Fase 4: Complexo da Vida: O Cerco Negacionista,Mentor Oficial (Dr. Drauzio Varella),Holotransmissão Sci-Fi no início da frente,"Mentor: Dr. Drauzio Varella | Cargo: Médico Oncologista, Sanitarista e Cientista Popular
+Subtítulo da Fase: A Ciência a Serviço do Povo e a Defesa do SUS",levels/level_4/mentor.png,
+FASE4-D01,,Fase 4: Complexo da Vida: O Cerco Negacionista,Diálogo 1/3,Texto teletipo com som eletrônico e voz sintetizada,Olá a todos da Vanguarda 13. Aqui é o Dr. Drauzio Varella.,levels/level_4/mentor.png,
+FASE4-D02,,Fase 4: Complexo da Vida: O Cerco Negacionista,Diálogo 2/3,Texto teletipo com som eletrônico e voz sintetizada,"O obscurantismo e o negacionismo atacaram as unidades do Sistema Único de Saúde, espalhando pânico contra vacinas e destruindo estoques de remédios essenciais.",levels/level_4/mentor.png,
+FASE4-D03,,Fase 4: Complexo da Vida: O Cerco Negacionista,Diálogo 3/3,Texto teletipo com som eletrônico e voz sintetizada,"A saúde é um direito constitucional de todos e um dever inegociável do Estado. Defendam nossos cientistas, vacinem a esperança e restaurem a vida!",levels/level_4/mentor.png,
+FASE4-CHEF,,Fase 4: Complexo da Vida: O Cerco Negacionista,Chefe da Fase (Boss),Alerta vermelho de combate ao final da frente,"ALERTA DE CHEFE!
+Inimigo: A Quimera do Obscurantismo (Bio-Destruidora Sanitária)",levels/level_4/boss.png,
+FASE4-VIT,,Fase 4: Complexo da Vida: O Cerco Negacionista,Mensagem da Vitória na Frente,Tela de transição com contagem de 5 segundos,A ciência e a vida venceram o obscurantismo! O SUS permanece firme como escudo do povo.,levels/level_4/bg.png,
+FASE5-01,,Fase 5: Santuário da Fé: O Cerco Fundamentalista,Mentor Oficial (Pastor Henrique Vieira),Holotransmissão Sci-Fi no início da frente,"Mentor: Pastor Henrique Vieira | Cargo: Emissário da Liberdade Espiritual e Deputado Federal
+Subtítulo da Fase: Liberdade Religiosa, Respeito aos Terreiros e Estado Laico",levels/level_5/mentor.png,
+FASE5-D01,,Fase 5: Santuário da Fé: O Cerco Fundamentalista,Diálogo 1/3,Texto teletipo com som eletrônico e voz sintetizada,"Irmãs e irmãos da resistência, a paz esteja com vocês. Pastor Henrique Vieira no ar.",levels/level_5/mentor.png,
+FASE5-D02,,Fase 5: Santuário da Fé: O Cerco Fundamentalista,Diálogo 2/3,Texto teletipo com som eletrônico e voz sintetizada,"Mercadores da fé e fundamentalistas sequestraram o sagrado para pregar ódio, discriminação e perseguição aos terreiros e à diversidade.",levels/level_5/mentor.png,
+FASE5-D03,,Fase 5: Santuário da Fé: O Cerco Fundamentalista,Diálogo 3/3,Texto teletipo com som eletrônico e voz sintetizada,O verdadeiro amor constrói pontes e acolhe os oprimidos. Garantam o Estado Laico e a liberdade de todas as manifestações de fé!,levels/level_5/mentor.png,
+FASE5-CHEF,,Fase 5: Santuário da Fé: O Cerco Fundamentalista,Chefe da Fase (Boss),Alerta vermelho de combate ao final da frente,"ALERTA DE CHEFE!
+Inimigo: O Falso Profeta do Ódio (Ídolo de Ouro do Fanatismo)",levels/level_5/boss.png,
+FASE5-VIT,,Fase 5: Santuário da Fé: O Cerco Fundamentalista,Mensagem da Vitória na Frente,Tela de transição com contagem de 5 segundos,O amor venceu a intolerância! O Estado Laico e o respeito a todas as crenças foram restaurados.,levels/level_5/bg.png,
+FASE6-01,,Fase 6: Fortaleza Soberana: A Esplanada da Democracia,Mentor Oficial (Lula),Holotransmissão Sci-Fi no início da frente,"Mentor: Lula | Cargo: Líder Histórico da Aliança e Presidente do Brasil
+Subtítulo da Fase: A Grande Virada Popular na Praça dos Três Poderes",levels/level_6/mentor.png,
+FASE6-D01,,Fase 6: Fortaleza Soberana: A Esplanada da Democracia,Diálogo 1/4,Texto teletipo com som eletrônico e voz sintetizada,"Meus companheiros e minhas companheiras de todo o Brasil, aqui é o Lula!",levels/level_6/mentor.png,
+FASE6-D02,,Fase 6: Fortaleza Soberana: A Esplanada da Democracia,Diálogo 2/4,Texto teletipo com som eletrônico e voz sintetizada,Chegamos à batalha final no coração de Brasília. Os golpistas cercaram o Palácio do Povo e o Congresso para tentar calar a vontade soberana das urnas.,levels/level_6/mentor.png,
+FASE6-D03,,Fase 6: Fortaleza Soberana: A Esplanada da Democracia,Diálogo 3/4,Texto teletipo com som eletrônico e voz sintetizada,"Eles podem tentar destruir prédios, mas nunca destruirão o sonho de um povo que quer comer, estudar, trabalhar e viver com dignidade.",levels/level_6/mentor.png,
+FASE6-D04,,Fase 6: Fortaleza Soberana: A Esplanada da Democracia,Diálogo 4/4,Texto teletipo com som eletrônico e voz sintetizada,Subam a rampa da democracia com coragem! O Brasil vai voltar a ser feliz! Vamos à vitória!,levels/level_6/mentor.png,
+FASE6-CHEF,,Fase 6: Fortaleza Soberana: A Esplanada da Democracia,Chefe da Fase (Boss),Alerta vermelho de combate ao final da frente,"ALERTA DE CHEFE!
+Inimigo: A Hidra Golpista (Fortaleza Imperial da Tirania)",levels/level_6/boss.png,
+FASE6-VIT,,Fase 6: Fortaleza Soberana: A Esplanada da Democracia,Mensagem da Vitória na Frente,Tela de transição com contagem de 5 segundos,"Nós vencemos o ódio, e a soberania popular é soberana. O Brasil voltou a sorrir com dignidade e justiça social!",levels/level_6/bg.png,
+SHARE-01,,Redes Sociais (WhatsApp),Mensagem Viral Padrão de WhatsApp,Texto pré-preenchido ao clicar em Compartilhar no WhatsApp após a partida,🚀 Pilotei a Vanguarda 13 e garanti [SCORE] pts na Frente [FASE]! Você consegue virar esse jogo? Jogue agora: https://levante13.online/share.php?id=[TOKEN],cards/card_teste_drauzio_card.png,
+SHARE-02,,Redes Sociais (Instagram),Legenda Padrão para Instagram (Feed/Stories),Texto copiado automaticamente para a área de transferência ao clicar em Compartilhar no Instagram,"🚀 Pilotei a Vanguarda 13 e registrei [SCORE] pts na Frente [FASE] do Levante 13!
+
+Você consegue superar minha marca e virar o jogo? Jogue grátis agora no navegador:
+https://levante13.online/share.php?id=[TOKEN]
+
+#Levante13 #AVirada #ResistenciaPopular #Democracia @lulaoficial",cards/card_teste_drauzio_card.png,
+SHARE-03,,Redes Sociais (Card GD),Textos Oficiais da Arte do Card (1200x630),Textos renderizados com a fonte militar VCR OSD Mono dentro da imagem PNG,"Topo: LEVANTE 13: A VIRADA — O JOGO DA RESISTÊNCIA POPULAR
+Sub: > BOLETIM OFICIAL DE COMBATE DA VANGUARDA POPULAR
+Campos: PILOTO DA RESISTÊNCIA: [NOME] | PONTOS ACUMULADOS: [SCORE] PTS | FRENTE DEFENDIDA: [FRENTE]
+Carimbo: [FOTO DO MENTOR] MENTOR DO SETOR
+Banner Inferior: [*] VOCÊ CONSEGUE SUPERAR ESSA MARCA? JOGUE AGORA! [*] ACESSE GRÁTIS NO NAVEGADOR: HTTPS://LEVANTE13.ONLINE
+Rodapé: COMPARTILHE NO WHATSAPP E INSTAGRAM @LULAOFICIAL | DEFENDENDO A DEMOCRACIA",cards/card_teste_drauzio_card.png,
+SHARE-04,,Página Pública de Compartilhamento (share.php),Meta Tags Open Graph (Título e Descrição),"Exibido no card de link do WhatsApp, Facebook, Twitter e Telegram","Título: O piloto [NOME] garantiu [SCORE] pts no Levante 13: A Virada!
+Descrição: As forças do obscurantismo estão avançando sobre o Brasil! O piloto [NOME] defendeu a Frente [FASE]. Você consegue virar esse jogo? Jogue agora!",assets/img/og-preview.png,

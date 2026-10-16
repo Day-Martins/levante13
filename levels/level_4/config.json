@@ -8,9 +8,9 @@
     "role": "Médico Oncologista, Sanitarista e Cientista Popular",
     "avatar": "levels/level_4/mentor.png",
     "dialogue": [
-      "Vanguarda 13, aqui é o Dr. Drauzio Varella na escuta.",
-      "As forças obscurantistas tentaram sabotar a imunização, asfixiar os leitos e enriquecer traficantes de remédios ineficazes.",
-      "A ciência pública e o SUS são as maiores trincheiras da humanidade. Dispersem a névoa tóxica e garantam a vacina e a vida nos braços do povo!"
+      "Olá a todos da Vanguarda 13. Aqui é o Dr. Drauzio Varella.",
+      "O obscurantismo e o negacionismo atacaram as unidades do Sistema Único de Saúde, espalhando pânico contra vacinas e destruindo estoques de remédios essenciais.",
+      "A saúde é um direito constitucional de todos e um dever inegociável do Estado. Defendam nossos cientistas, vacinem a esperança e restaurem a vida!"
     ]
   },
   "grid": {
@@ -23,7 +23,7 @@
     "initialSpeed": 0.95,
     "stepY": 4.5,
     "speedMultiplierPerKill": 1.022,
-    "diveChance": 0.10
+    "diveChance": 0.1
   },
   "enemyTypes": [
     {
