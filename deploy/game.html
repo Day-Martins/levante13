@@ -8,7 +8,7 @@
     <!-- FONTE RETRÔ VCR OSD MONO (https://www.dafont.com/vcr-osd-mono.font) -->
     <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/vcr-osd-mono">
-    <link rel="stylesheet" href="css/style.css?v=20261016_merge">
+    <link rel="stylesheet" href="css/style.css?v=20261016_cores">
 
     <!-- Open Graph Básico -->
     <meta property="og:type" content="website">
@@ -304,6 +304,9 @@
                         <span id="preloaderStatusTexto">Conectando aos satélites da resistência...</span>
                         <span id="preloaderPorcentagem" class="preloader-pct">0%</span>
                     </div>
+
+                    <!-- Navegadores só liberam som após um toque: este botão entra no jogo já com música -->
+                    <button type="button" id="btnEntrarComSom" class="btn-acao preloader-entrar" hidden>▶ ENTRAR COM SOM</button>
                 </div>
             </div>
 
@@ -613,10 +616,11 @@
     </div>
 
     <!-- Scripts do Jogo em JavaScript Puro -->
-    <script src="js/audio.js?v=20261016_merge"></script>
+    <script src="js/audio.js?v=20261016_cores"></script>
     <script src="js/auth.js?v=20261016_merge"></script>
+    <script src="js/efeitos-destruicao.js?v=20261016_cores"></script>
     <script src="js/entities.js?v=20261016_merge"></script>
-    <script src="js/game.js?v=20261016_fix"></script>
+    <script src="js/game.js?v=20261016_cores"></script>
 
     <!-- Script de Integração com as APIs Backend -->
     <script>

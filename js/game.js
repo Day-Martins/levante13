@@ -494,12 +494,46 @@ class MotorLevante13 {
      * Oculta a tela de carregamento e autoriza a interação com a tela inicial
      */
     finalizarPreloader() {
-        if (this.carregamentoConcluido) return;
+        if (this.carregamentoConcluido || this.aguardandoEntrada) return;
         clearTimeout(this.limitePreloader);
         if (this.intervaloCitacoes) {
             clearInterval(this.intervaloCitacoes);
             this.intervaloCitacoes = null;
         }
+
+        // O navegador só libera som depois de um toque/tecla. Se a pessoa já interagiu
+        // durante o carregamento, entra direto; senão, pede um toque em "ENTRAR COM SOM".
+        const jaInteragiu = navigator.userActivation && navigator.userActivation.hasBeenActive;
+        const botao = document.getElementById('btnEntrarComSom');
+        if (jaInteragiu || !botao) {
+            this.entrarNoJogo();
+            return;
+        }
+
+        this.aguardandoEntrada = true;
+        const status = document.getElementById('preloaderStatusTexto');
+        if (status) status.textContent = 'Tudo pronto! Toque para entrar.';
+        botao.hidden = false;
+        botao.addEventListener('click', () => this.entrarNoJogo(), { once: true });
+        const porTeclado = (e) => {
+            if (!this.aguardandoEntrada || (e.code !== 'Enter' && e.code !== 'Space')) return;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            window.removeEventListener('keydown', porTeclado, true);
+            this.entrarNoJogo();
+        };
+        window.addEventListener('keydown', porTeclado, true);
+        try { botao.focus({ preventScroll: true }); } catch (e) { /* sem foco, segue */ }
+    }
+
+    /**
+     * Fecha a tela de carregamento e começa a música do menu.
+     * Chamado dentro do toque do usuário, então o navegador libera o áudio.
+     */
+    entrarNoJogo() {
+        if (this.carregamentoConcluido) return;
+        this.aguardandoEntrada = false;
+        if (typeof audio !== 'undefined') audio.iniciar();
 
         const modalPreloader = document.getElementById('preloaderModal');
         if (modalPreloader) {
@@ -1016,9 +1050,7 @@ class MotorLevante13 {
         // Atualiza partículas de explosão
         for (let i = this.particulas.length - 1; i >= 0; i--) {
             const p = this.particulas[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vida--;
+            atualizarParticulaEfeito(p);
             if (p.vida <= 0) this.particulas.splice(i, 1);
         }
 
@@ -1213,7 +1245,7 @@ class MotorLevante13 {
                     if (inimigo.hp <= 0) {
                         this.pontos += inimigo.pontos;
                         audio.tocarExplosao();
-                        this.gerarParticulas(inimigo.x + 14, inimigo.y + 12, inimigo.cor, 14);
+                        this.gerarDestruicao(inimigo, 14);
 
                         // 8% de probabilidade de drop de artefato especial
                         if (Math.random() < 0.08) {
@@ -1272,7 +1304,7 @@ class MotorLevante13 {
                 this.tirosInimigos = [];
                 for (const inimigo of this.inimigos) {
                     this.pontos += inimigo.pontos;
-                    this.gerarParticulas(inimigo.x + 14, inimigo.y + 12, '#22c55e', 10);
+                    this.gerarDestruicao(inimigo, 6);
                 }
                 this.inimigos = [];
                 if (this.chefe) {
@@ -1600,6 +1632,24 @@ class MotorLevante13 {
         }
     }
 
+    /**
+     * Destruição de um robô com o efeito temático da frente (js/efeitos-destruicao.js).
+     * Sem efeito definido, usa a explosão padrão.
+     */
+    gerarDestruicao(inimigo, quantidade = 14) {
+        if (this.particulas.length > 700) quantidade = Math.min(quantidade, 4); // limite para celulares
+        const efeito = this.dadosFaseAtual && this.dadosFaseAtual.destruicao;
+        const resultado = (typeof criarDestruicaoTematica === 'function')
+            ? criarDestruicaoTematica(efeito, inimigo.x + inimigo.largura / 2, inimigo.y + inimigo.altura / 2, quantidade)
+            : null;
+        if (!resultado) {
+            this.gerarParticulas(inimigo.x + 14, inimigo.y + 12, inimigo.cor, quantidade);
+            return;
+        }
+        this.particulas.push(...resultado.particulas);
+        if (resultado.tremor) this.shakeTela = Math.max(this.shakeTela, resultado.tremor);
+    }
+
     gerarParticulas(x, y, cor, quantidade) {
         for (let i = 0; i < quantidade; i++) {
             this.particulas.push({
@@ -1873,9 +1923,7 @@ class MotorLevante13 {
 
         // Desenha Partículas
         for (const p of this.particulas) {
-            this.ctx.fillStyle = p.cor;
-            this.ctx.globalAlpha = p.vida / p.maxVida;
-            this.ctx.fillRect(p.x, p.y, 2, 2);
+            desenharParticulaEfeito(this.ctx, p);
         }
         this.ctx.globalAlpha = 1;
 

@@ -3,6 +3,7 @@
   "name": "Complexo da Vida: O Cerco Negacionista",
   "subtitle": "A Ciência a Serviço do Povo e a Defesa do SUS",
   "theme": "bio_hazard",
+  "destructionEffect": "nevoa",
   "holotransmission": {
     "mentor": "Dr. Drauzio Varella",
     "role": "Médico Oncologista, Sanitarista e Cientista Popular",
@@ -31,7 +32,7 @@
       "name": "Cápsula de Mentiras",
       "hp": 1,
       "points": 70,
-      "color": "#cbd5e1",
+      "color": "#f472b6",
       "behavior": "march"
     },
     {
@@ -39,7 +40,7 @@
       "name": "Disparador Antivacina",
       "hp": 2,
       "points": 170,
-      "color": "#ec4899",
+      "color": "#a855f7",
       "behavior": "dive"
     },
     {
@@ -47,7 +48,7 @@
       "name": "Câmara de Desinformação",
       "hp": 5,
       "points": 380,
-      "color": "#a855f7",
+      "color": "#7e22ce",
       "behavior": "tank"
     }
   ],

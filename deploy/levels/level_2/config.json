@@ -3,6 +3,7 @@
   "name": "Setor Fabril: O Desmonte do Trabalho",
   "subtitle": "Uberização, Precarização e a Resistência da CLT",
   "theme": "industrial_dark",
+  "destructionEffect": "papel",
   "holotransmission": {
     "mentor": "Jones Manoel",
     "role": "Comandante da Frente Operária",
@@ -31,7 +32,7 @@
       "name": "Contrato Sem Direitos",
       "hp": 1,
       "points": 60,
-      "color": "#cbd5e1",
+      "color": "#e7d7b1",
       "behavior": "march"
     },
     {
@@ -39,7 +40,7 @@
       "name": "Mochila da Uberização",
       "hp": 2,
       "points": 150,
-      "color": "#fb923c",
+      "color": "#ea580c",
       "behavior": "dive"
     },
     {
@@ -47,7 +48,7 @@
       "name": "Triturador de Direitos",
       "hp": 4,
       "points": 300,
-      "color": "#ea580c",
+      "color": "#c2410c",
       "behavior": "tank"
     }
   ],

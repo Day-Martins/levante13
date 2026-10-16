@@ -160,6 +160,8 @@ class GerenciadorAudio {
         };
 
         if (this.ctx && this.ctx.state === 'suspended') {
+            // Chama play() ainda dentro do toque do usuário: Safari/iOS recusam se vier depois
+            tentarTocar();
             this.ctx.resume().then(tentarTocar).catch(tentarTocar);
         } else {
             tentarTocar();

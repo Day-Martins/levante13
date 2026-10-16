@@ -1,0 +1,69 @@
+{
+  "id": 99,
+  "name": "Setor de Testes: Operação Alvorada",
+  "subtitle": "Homologação de Novos Vetores de Resistência Popular",
+  "theme": "cyber_matrix",
+  "destructionEffect": "glitch",
+  "holotransmission": {
+    "mentor": "Camarada Instrutor",
+    "role": "Comissário de Engenharia Tática da Vanguarda",
+    "avatar": "levels/level_exemplo/mentor.png",
+    "dialogue": [
+      "Atenção, combatentes da Vanguarda 13! Este é o módulo de treinamento tático da resistência.",
+      "As forças reacionárias tentam sabotar nossa soberania digital e territorial com frotas autônomas.",
+      "Mantenham a formação, coletem as cápsulas de apoio popular e neutralizem o protótipo imperial!",
+      "A vitória depende da disciplina da nossa classe trabalhadora. Fogo sem trégua!"
+    ]
+  },
+  "grid": {
+    "rows": 4,
+    "cols": 8,
+    "spacingX": 42,
+    "spacingY": 36,
+    "pattern": "zigzag",
+    "duration": 180,
+    "initialSpeed": 0.65,
+    "stepY": 4,
+    "speedMultiplierPerKill": 1.015,
+    "diveChance": 0.03
+  },
+  "enemyTypes": [
+    {
+      "id": "drone_provocador",
+      "name": "Drone de Provocação Barata",
+      "hp": 1,
+      "points": 50,
+      "color": "#94a3b8",
+      "behavior": "march"
+    },
+    {
+      "id": "troll_infiltrado",
+      "name": "Agitador Desestabilizador",
+      "hp": 2,
+      "points": 120,
+      "color": "#f87171",
+      "behavior": "dive"
+    },
+    {
+      "id": "servidor_reacionario",
+      "name": "Bastilha da Desinformação",
+      "hp": 3,
+      "points": 250,
+      "color": "#ef4444",
+      "behavior": "tank"
+    }
+  ],
+  "boss": {
+    "id": "leviata_imperial_teste",
+    "name": "O Leviatã do Capital Parasitário",
+    "title": "Fortaleza Móvel dos Especuladores",
+    "hp": 35,
+    "points": 2500,
+    "attackPattern": "circular_spread"
+  },
+  "palette": {
+    "primary": "#38bdf8",
+    "secondary": "#ef4444",
+    "background": "#070b19"
+  }
+}

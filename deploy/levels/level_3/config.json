@@ -3,6 +3,7 @@
   "name": "Reserva Planetária: Chamas na Floresta",
   "subtitle": "Defesa da Amazônia e Preservação dos Povos Originários",
   "theme": "forest_fire",
+  "destructionEffect": "brasa",
   "holotransmission": {
     "mentor": "Sônia Guajajara",
     "role": "Ministra dos Povos Originários e Guardiã da Floresta",
@@ -31,7 +32,7 @@
       "name": "Motosserra Clandestina",
       "hp": 1,
       "points": 70,
-      "color": "#a1a1aa",
+      "color": "#fb923c",
       "behavior": "march"
     },
     {
@@ -39,7 +40,7 @@
       "name": "Balsa do Mercúrio",
       "hp": 2,
       "points": 160,
-      "color": "#eab308",
+      "color": "#b45309",
       "behavior": "dive"
     },
     {
@@ -47,7 +48,7 @@
       "name": "Trator de Grilagem",
       "hp": 4,
       "points": 350,
-      "color": "#ca8a04",
+      "color": "#92400e",
       "behavior": "tank"
     }
   ],

@@ -120,7 +120,8 @@ foreach ($pastasEncontradas as $pasta) {
         ],
         'grade'       => $dadosConfig['grid'],
         'inimigos'    => $dadosConfig['enemyTypes'],
-        'chefe'       => $dadosConfig['boss'] ?? null
+        'chefe'       => $dadosConfig['boss'] ?? null,
+        'destruicao'  => $dadosConfig['destructionEffect'] ?? null
     ];
 }
 

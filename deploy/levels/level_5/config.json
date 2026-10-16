@@ -3,6 +3,7 @@
   "name": "Santuário da Fé: O Cerco Fundamentalista",
   "subtitle": "Liberdade Religiosa, Respeito aos Terreiros e Estado Laico",
   "theme": "mystic_sacred",
+  "destructionEffect": "fumaca",
   "holotransmission": {
     "mentor": "Pastor Henrique Vieira",
     "role": "Emissário da Liberdade Espiritual e Deputado Federal",
@@ -31,7 +32,7 @@
       "name": "Tocha Inquisitória",
       "hp": 2,
       "points": 80,
-      "color": "#f97316",
+      "color": "#cd7f32",
       "behavior": "march"
     },
     {
@@ -39,7 +40,7 @@
       "name": "Megafone do Fanatismo",
       "hp": 2,
       "points": 180,
-      "color": "#e11d48",
+      "color": "#be123c",
       "behavior": "dive"
     },
     {
@@ -47,7 +48,7 @@
       "name": "Templo da Intolerância",
       "hp": 5,
       "points": 400,
-      "color": "#be123c",
+      "color": "#9f1239",
       "behavior": "tank"
     }
   ],

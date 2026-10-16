@@ -3,6 +3,7 @@
   "name": "Setor das Redes: O Gabinete do Ódio",
   "subtitle": "Guerra da Informação e Desinformação em Massa",
   "theme": "cyber_matrix",
+  "destructionEffect": "glitch",
   "holotransmission": {
     "mentor": "Ana Elisa",
     "role": "Oficial de Contrainteligência e Guerra Digital",
@@ -40,7 +41,7 @@
       "name": "Troll de Disparo em Massa",
       "hp": 2,
       "points": 120,
-      "color": "#f87171",
+      "color": "#ff2bd6",
       "behavior": "dive"
     },
     {
@@ -48,7 +49,7 @@
       "name": "Servidor da Mentira",
       "hp": 3,
       "points": 250,
-      "color": "#ef4444",
+      "color": "#64748b",
       "behavior": "tank"
     }
   ],

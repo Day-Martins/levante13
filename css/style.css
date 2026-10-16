@@ -1235,6 +1235,28 @@ input, button, select, textarea {
     font-size: 0.76rem;
 }
 
+/* Botão de entrada com som (fim do carregamento) */
+.preloader-entrar {
+    margin: 14px 0 0;
+    padding: 14px;
+    font-size: 1rem;
+    animation: pulsarEntrada 0.9s infinite alternate ease-in-out;
+}
+.preloader-entrar[hidden] {
+    display: none;
+}
+.preloader-entrar:focus-visible {
+    outline: 3px solid var(--cor-dourado);
+    outline-offset: 3px;
+}
+@keyframes pulsarEntrada {
+    from { box-shadow: 0 0 0 rgba(250, 204, 21, 0); }
+    to   { box-shadow: 0 0 20px rgba(250, 204, 21, 0.6); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .preloader-entrar { animation: none; }
+}
+
 /* =============================================================================
    HOLOTRANSMISSÃO EM TELA CHEIA
    O jogo fica pausado durante a fala dos mentores, então a transmissão ocupa a

@@ -3,6 +3,7 @@
   "name": "Fortaleza Soberana: A Esplanada da Democracia",
   "subtitle": "A Grande Virada Popular na Praça dos Três Poderes",
   "theme": "sovereign_flag",
+  "destructionEffect": "sucata",
   "holotransmission": {
     "mentor": "Lula",
     "role": "Líder Histórico da Aliança e Presidente do Brasil",
@@ -32,7 +33,7 @@
       "name": "Invasor Golpista",
       "hp": 2,
       "points": 90,
-      "color": "#84cc16",
+      "color": "#a1a1aa",
       "behavior": "march"
     },
     {
@@ -40,7 +41,7 @@
       "name": "Patriota do Caminhão",
       "hp": 3,
       "points": 200,
-      "color": "#eab308",
+      "color": "#ea580c",
       "behavior": "dive"
     },
     {
@@ -48,7 +49,7 @@
       "name": "Blindado Antidemocrático",
       "hp": 6,
       "points": 450,
-      "color": "#15803d",
+      "color": "#71717a",
       "behavior": "tank"
     }
   ],
