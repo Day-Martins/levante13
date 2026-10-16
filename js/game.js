@@ -1537,12 +1537,35 @@ class MotorLevante13 {
     }
 }
 
-// Inicia o motor após o carregamento da janela
+// Inicia o motor após o carregamento da janela com Time Step Fixo (60 FPS)
+// Isso impede que telas móveis com taxa dinâmica (120Hz ao tocar na tela / 60Hz ocioso)
+// acelerem a velocidade dos inimigos e da física do jogo.
 window.addEventListener('DOMContentLoaded', () => {
     window.jogo = new MotorLevante13();
 
-    function loop() {
-        window.jogo.atualizar();
+    const PASSO_FIXO_MS = 1000 / 60; // 60 atualizações lógicas por segundo (~16.66ms)
+    let tempoAnterior = 0;
+    let acumulador = 0;
+
+    function loop(timestamp) {
+        if (!tempoAnterior) tempoAnterior = timestamp;
+        let delta = timestamp - tempoAnterior;
+        tempoAnterior = timestamp;
+
+        // Limita o delta máximo (250ms) para evitar congelamentos ao alternar abas
+        if (delta > 250) delta = 250;
+
+        acumulador += delta;
+
+        // Consome o tempo acumulado em passos exatos de 60Hz
+        let atualizacoes = 0;
+        while (acumulador >= PASSO_FIXO_MS && atualizacoes < 5) {
+            window.jogo.atualizar();
+            acumulador -= PASSO_FIXO_MS;
+            atualizacoes++;
+        }
+
+        // Renderização fluida a cada quadro do navegador
         window.jogo.desenhar();
         requestAnimationFrame(loop);
     }
