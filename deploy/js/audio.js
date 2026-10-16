@@ -37,8 +37,8 @@ class GerenciadorAudio {
     vincularDesbloqueioAutomatico() {
         const desbloquear = () => {
             this.iniciar();
-            // Se estiver na tela de menu/início ou holotransmissão inicial e a música não começou a tocar
-            const emMenuOuInicio = !window.jogo || window.jogo.estado === 'INICIO' || window.jogo.estado === 'HOLOTRANSMISSAO';
+            // Se estiver estritamente na tela de menu/início e a música não começou a tocar
+            const emMenuOuInicio = !window.jogo || window.jogo.estado === 'INICIO';
             if (emMenuOuInicio && (!this.musicaAtual || (this.audioMenu && this.audioMenu.paused))) {
                 this.tocarMusicaMenu();
             }

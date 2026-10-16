@@ -420,9 +420,12 @@ class MotorLevante13 {
             this.spriteChefe = null;
         }
 
-        // Configura a Holotransmissão
+        // Configura a Holotransmissão: para a música para dar foco aos diálogos do mentor
         this.estado = 'HOLOTRANSMISSAO';
         this.dialogoIndice = 0;
+        if (typeof audio !== 'undefined') {
+            audio.pararMusica(0.4);
+        }
         this.prepararLinhaDialogo();
 
         // Atualiza interface do DOM
