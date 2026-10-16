@@ -111,8 +111,13 @@
 
 ## 🚀 FASE 6: POLIMENTO AUDIOVISUAL, EXPERIÊNCIA DE COMBATE & GAMEPLAY
 
-#### [POL-01] Sequência Épica de Destruição da Nave Capitânia (Boss Death Animation) — ⏳ EM ANDAMENTO
-* **Descrição:** Criar animação dramática de colapso do chefe ao ser derrotado (múltiplas explosões secundárias em cadeia, screen-shake persistente, faíscas incandescentes, flash de tela e som de detonação massiva), retardando intencionalmente a transição de fase para que o jogador celebre e presencie a aniquilação completa da nave opressora antes de abrir o modal de vitória/motivação.
+#### [POL-01] Sequência Épica de Destruição da Nave Capitânia (Boss Death Animation) — ✅ CONCLUÍDO
+* **Descrição:** Animação dramática de colapso do chefe ao ser derrotado (múltiplas explosões secundárias em cadeia, screen-shake persistente, faíscas incandescentes, flash de tela e som de detonação massiva), retardando intencionalmente a transição de fase para que o jogador celebre e presencie a aniquilação completa da nave opressora antes de abrir o modal de vitória/motivação.
 * **Arquivos envolvidos:** `js/game.js`, `js/entities.js`, `js/audio.js`
+* **Prioridade:** P1
+
+#### [POL-02] Tela de Carregamento Prévio de Assets (Preloader) com Progresso e Citações Revolucionárias — ⏳ EM ANDAMENTO
+* **Descrição:** Para garantir excelente experiência em conexões móveis e lentas, implementar tela de pré-carregamento com indicador visual de progresso (0% a 100%), status de sincronização de cada recurso (fases, imagens, sprites procedurais e áudios OGG) e carrossel dinâmico com frases motivacionais e revolucionárias da luta popular brasileira passando aleatoriamente durante o carregamento. A tela inicial do jogo só é liberada quando todos os recursos essenciais estiverem prontos no cache da sessão.
+* **Arquivos envolvidos:** `game.html`, `js/game.js`, `css/style.css`
 * **Prioridade:** P1
 

@@ -51,6 +51,60 @@ const MENSAGENS_MOTIVACIONAIS_FASE = [
     }
 ];
 
+// =============================================================================
+// REPOSITÓRIO DE CITAÇÕES MOTIVACIONAIS E REVOLUCIONÁRIAS (TELA DE PRELOADER)
+// =============================================================================
+const CITACOES_REVOLUCIONARIAS = [
+    {
+        frase: "Se o homem é formado pelas circunstâncias, é preciso formar as circunstâncias humanamente.",
+        autor: "KARL MARX • FILÓSOFO DA EMANCIPAÇÃO HUMANA"
+    },
+    {
+        frase: "Quando a educação não é libertadora, o sonho do oprimido é ser o opressor. Mas nós escolhemos transformar o mundo!",
+        autor: "PAULO FREIRE • PATRONO DA EDUCAÇÃO BRASILEIRA"
+    },
+    {
+        frase: "Eles podem tentar cortar todas as flores, mas não conseguirão deter a primavera que brota do povo.",
+        autor: "LULA • COMANDO SUPREMO DA DEMOCRACIA"
+    },
+    {
+        frase: "Só os que são capazes de amar a humanidade são capazes de transformar a história com bravura e ternura.",
+        autor: "CHE GUEVARA • REVOLUCIONÁRIO LATINO-AMERICANO"
+    },
+    {
+        frase: "Não serei livre enquanto alguma mulher for prisioneira, mesmo que as correntes dela sejam diferentes das minhas.",
+        autor: "AUDRE LORDE • ESCRITORA E ATIVISTA POPULAR"
+    },
+    {
+        frase: "Não me pergunte se as forças são suficientes, mas se a causa é justa. A nossa causa é o povo soberano!",
+        autor: "CARLOS MARIGHELLA • GUERRILHEIRO DA LIBERDADE"
+    },
+    {
+        frase: "Eu sou porque nós somos. Quantos mais de nós terão que resistir para que essa guerra acabe?",
+        autor: "MARIELLE FRANCO • VEREADORA E SEMENTE DA RESISTÊNCIA"
+    },
+    {
+        frase: "No começo pensei que estivesse lutando para salvar seringueiras; depois pensei que lutava pela Amazônia; hoje percebo que luto pela humanidade.",
+        autor: "CHICO MENDES • LÍDER AMBIENTALISTA E SERINGUEIRO"
+    },
+    {
+        frase: "A força da alienação vem dessa fragilidade dos indivíduos, que apenas conseguem identificar o que os separa, e não o que os une.",
+        autor: "MILTON SANTOS • GEÓGRAFO E INTELECTUAL POPULAR"
+    },
+    {
+        frase: "O Brasil é o único país do mundo onde a esperança não é uma virtude teologal: é um dever cívico e revolucionário.",
+        autor: "DARCY RIBEIRO • ANTROPÓLOGO E EDUCADOR DA NAÇÃO"
+    },
+    {
+        frase: "O amor ao povo trabalhador não se proclama com discursos, prova-se na trincheira da luta e da solidariedade.",
+        autor: "FLORESTAN FERNANDES • SOCIÓLOGO E MILITANTE SOCIALISTA"
+    },
+    {
+        frase: "Democracia de verdade é barriga cheia, salário digno, saúde pública e a juventude na universidade!",
+        autor: "VANGUARDA 13 • VOZ DA RESISTÊNCIA POPULAR"
+    }
+];
+
 class MotorLevante13 {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
@@ -122,15 +176,14 @@ class MotorLevante13 {
         this.dialogoIndice = 0;
         this.textoAtualExibido = '';
         this.caractereIndice = 0;
-        this.temporizadorTeletipo = 0;
+        // Sistema de Pré-carregamento (Preloader) de Assets e Conexões
+        this.carregamentoConcluido = false;
+        this.indiceCitacaoAtual = 0;
+        this.intervaloCitacoes = null;
+        this.assetsCarregados = {};
 
         this.configurarEventos();
-        this.carregarFasesDoServidor();
-
-        // Música padrão Arcade Menu antes do início da partida
-        if (typeof audio !== 'undefined') {
-            audio.tocarMusicaMenu();
-        }
+        this.iniciarPreloaderECarregarTudo();
     }
 
     /**
@@ -160,6 +213,7 @@ class MotorLevante13 {
 
             // 1. Iniciar partida a partir da tela inicial via teclado (solicita codinome/urna)
             if ((e.code === 'Space' || e.code === 'Enter') && this.estado === 'INICIO') {
+                if (!this.carregamentoConcluido) return;
                 if (audio.audioMenu && audio.audioMenu.paused) {
                     audio.tocarMusicaMenu();
                 }
@@ -208,6 +262,7 @@ class MotorLevante13 {
 
         // Suporte a clique de mouse no Desktop
         this.canvas.addEventListener('click', () => {
+            if (!this.carregamentoConcluido) return;
             audio.iniciar();
             if (this.estado === 'INICIO') {
                 if (audio.audioMenu && audio.audioMenu.paused) {
@@ -257,6 +312,7 @@ class MotorLevante13 {
             if (this.estado === 'HOLOTRANSMISSAO') {
                 this.avancarHolotransmissao();
             } else if (this.estado === 'INICIO') {
+                if (!this.carregamentoConcluido) return;
                 if (audio.audioMenu && audio.audioMenu.paused) {
                     audio.tocarMusicaMenu();
                 }
@@ -274,6 +330,165 @@ class MotorLevante13 {
             this.touchX = null;
             this.touchY = null;
         }, { passive: false });
+    }
+
+    /**
+     * Cicla e exibe frases revolucionárias e motivacionais aleatórias durante o carregamento
+     */
+    iniciarRotacaoCitacoes() {
+        const elFrase = document.getElementById('preloaderFraseTexto');
+        const elAutor = document.getElementById('preloaderFraseAutor');
+        if (!elFrase || !elAutor) return;
+
+        const exibirAleatoria = () => {
+            const index = Math.floor(Math.random() * CITACOES_REVOLUCIONARIAS.length);
+            const citacao = CITACOES_REVOLUCIONARIAS[index];
+
+            elFrase.style.opacity = '0';
+            elAutor.style.opacity = '0';
+
+            setTimeout(() => {
+                elFrase.textContent = `“${citacao.frase}”`;
+                elAutor.textContent = `— ${citacao.autor}`;
+                elFrase.style.opacity = '1';
+                elAutor.style.opacity = '1';
+            }, 300);
+        };
+
+        exibirAleatoria();
+        this.intervaloCitacoes = setInterval(exibirAleatoria, 2800);
+    }
+
+    /**
+     * Atualiza os indicadores visuais de progresso (barra e porcentagem) na tela de carregamento
+     */
+    atualizarProgressoPreloader(concluidos, total, mensagemStatus) {
+        const pct = Math.min(100, Math.floor((concluidos / Math.max(1, total)) * 100));
+        const barFill = document.getElementById('preloaderBarraPreenchimento');
+        const pctText = document.getElementById('preloaderPorcentagem');
+        const statusText = document.getElementById('preloaderStatusTexto');
+
+        if (barFill) barFill.style.width = `${pct}%`;
+        if (pctText) pctText.textContent = `${pct}%`;
+        if (statusText && mensagemStatus) statusText.textContent = mensagemStatus;
+    }
+
+    /**
+     * Pré-carrega uma imagem de forma assíncrona, tolerante a falhas
+     */
+    carregarImagem(url) {
+        return new Promise((resolve) => {
+            if (!url) return resolve(null);
+            if (this.assetsCarregados[url]) return resolve(this.assetsCarregados[url]);
+
+            const img = new Image();
+            img.onload = () => {
+                this.assetsCarregados[url] = img;
+                resolve(img);
+            };
+            img.onerror = () => {
+                console.warn(`[Preloader] Não foi possível pré-carregar imagem: ${url}`);
+                resolve(null);
+            };
+            img.src = url;
+        });
+    }
+
+    /**
+     * Executa o pré-carregamento abrangente de fases, imagens e áudios antes de liberar a tela inicial
+     */
+    async iniciarPreloaderECarregarTudo() {
+        this.iniciarRotacaoCitacoes();
+        this.atualizarProgressoPreloader(5, 100, 'Sintonizando frequências com a base da resistência...');
+
+        // 1. Busca manifesto de fases do servidor
+        await this.carregarFasesDoServidor();
+        this.atualizarProgressoPreloader(20, 100, 'Fases e setores táticos identificados...');
+
+        // 2. Monta lista completa de imagens para pré-carregamento
+        const listaUrlsImagens = [
+            'assets/fonts/vcr_osd_mono.ttf',
+            'assets/images/mentor_padrao.png'
+        ];
+
+        if (this.fases && this.fases.length > 0) {
+            this.fases.forEach(f => {
+                if (f.assets) {
+                    if (f.assets.fundo) listaUrlsImagens.push(f.assets.fundo);
+                    if (f.assets.inimigo) listaUrlsImagens.push(f.assets.inimigo);
+                    if (f.assets.chefe) listaUrlsImagens.push(f.assets.chefe);
+                }
+                if (f.holotransmissao && f.holotransmissao.avatar) {
+                    listaUrlsImagens.push(f.holotransmissao.avatar);
+                }
+            });
+        }
+
+        // Sprites multifase do Chefe Final (Fase 6)
+        listaUrlsImagens.push(
+            'levels/level_6/boss_phase1.png',
+            'levels/level_6/boss_phase2.png',
+            'levels/level_6/boss_phase3.png',
+            'levels/level_6/boss_phase4.png',
+            'levels/level_6/boss_piece_wing_left.png',
+            'levels/level_6/boss_piece_wing_right.png',
+            'levels/level_6/boss_piece_core_plate.png'
+        );
+
+        // Remove duplicatas
+        const urlsUnicas = [...new Set(listaUrlsImagens.filter(Boolean))];
+        const totalPassos = urlsUnicas.length + 3; // +3 para fases, áudios e finalização
+        let passosConcluidos = 1;
+
+        // Pré-carrega cada imagem reportando progresso
+        for (const url of urlsUnicas) {
+            await this.carregarImagem(url);
+            passosConcluidos++;
+            const nomeCurto = url.split('/').pop() || 'asset';
+            this.atualizarProgressoPreloader(
+                passosConcluidos,
+                totalPassos,
+                `Carregando artefatos: ${nomeCurto}...`
+            );
+        }
+
+        // 3. Pré-carrega referências de áudio (OGG)
+        this.atualizarProgressoPreloader(totalPassos - 1, totalPassos, 'Calibrando sintetizadores e trilhas de áudio...');
+        if (typeof audio !== 'undefined' && typeof audio.inicializarElementosMusica === 'function') {
+            audio.inicializarElementosMusica();
+        }
+
+        // Pequena pausa para garantir visualização do 100%
+        this.atualizarProgressoPreloader(totalPassos, totalPassos, 'Sistemas online! A resistência está pronta!');
+        await new Promise(r => setTimeout(r, 450));
+
+        // Finaliza o Preloader e revela a tela inicial
+        this.finalizarPreloader();
+    }
+
+    /**
+     * Oculta a tela de carregamento e autoriza a interação com a tela inicial
+     */
+    finalizarPreloader() {
+        if (this.intervaloCitacoes) {
+            clearInterval(this.intervaloCitacoes);
+            this.intervaloCitacoes = null;
+        }
+
+        const modalPreloader = document.getElementById('preloaderModal');
+        if (modalPreloader) {
+            modalPreloader.classList.add('oculto');
+            setTimeout(() => {
+                modalPreloader.style.display = 'none';
+            }, 500);
+        }
+
+        this.carregamentoConcluido = true;
+
+        // Inicia trilha do menu
+        if (typeof audio !== 'undefined') {
+            audio.tocarMusicaMenu();
+        }
     }
 
     /**
