@@ -1639,9 +1639,11 @@ class MotorLevante13 {
             this.ctx.fillRect(0, 0, this.cw, this.ch);
         }
 
-        // Tela Inicial / Espera
+        // Tela Inicial / Espera (só renderiza após carregamento concluído dos assets)
         if (this.estado === 'INICIO') {
-            this.desenharTelaInicial();
+            if (this.carregamentoConcluido) {
+                this.desenharTelaInicial();
+            }
             this.ctx.restore();
             return;
         }
@@ -1844,6 +1846,7 @@ class MotorLevante13 {
     }
 
     desenharTelaInicial() {
+        if (!this.carregamentoConcluido) return;
         this.ctx.fillStyle = '#facc15';
         this.ctx.font = '700 24px "VCR OSD Mono", monospace';
         this.ctx.textAlign = 'center';
