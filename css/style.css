@@ -1114,62 +1114,20 @@ input, button, select, textarea {
     font-size: 0.72rem;
     color: var(--cor-ciano);
     letter-spacing: 1px;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     text-transform: uppercase;
-}
-
-.preloader-radar-wrapper {
-    margin-bottom: 14px;
-}
-
-.preloader-radar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    border: 2px solid var(--cor-ciano);
-    position: relative;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(5, 8, 19, 0.8) 70%);
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.preloader-sweep {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(from 0deg, transparent 70%, rgba(56, 189, 248, 0.45) 100%);
-    animation: radarGiro 1.6s linear infinite;
-}
-
-@keyframes radarGiro {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.preloader-ship-icon {
-    font-size: 1.5rem;
-    z-index: 2;
-    animation: pulseNave 1.2s ease-in-out infinite alternate;
-}
-
-@keyframes pulseNave {
-    0% { transform: scale(0.92); filter: drop-shadow(0 0 2px #facc15); }
-    100% { transform: scale(1.1); filter: drop-shadow(0 0 8px #facc15); }
 }
 
 .preloader-frase-cartao {
     background: rgba(15, 23, 42, 0.96);
     border: 2px solid #27354a;
     border-left: 4px solid var(--cor-dourado);
-    padding: 12px 14px;
-    margin-bottom: 16px;
+    padding: 16px 14px;
+    margin-bottom: 18px;
     width: 100%;
     text-align: left;
     position: relative;
-    min-height: 84px;
+    min-height: 96px;
     display: flex;
     flex-direction: column;
     justify-content: center;
