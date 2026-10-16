@@ -537,6 +537,10 @@ class MotorLevante13 {
         this.temporizadorSegundo = 0;
         this.tempoFaseRestante = 180;
         this.indiceFaseAtual = 0;
+        this.tempoAlertaChefe = 0;
+        this.textoAlertaChefe = '';
+        this.subtextoAlertaChefe = '';
+        this.animacaoDestruicaoChefe = null;
         audio.pararMusica(0.5);
 
         // Limpa a tela imediatamente com o fundo escuro do espaço
@@ -616,6 +620,10 @@ class MotorLevante13 {
         this.itens = [];
         this.particulas = [];
         this.chefe = null;
+        this.tempoAlertaChefe = 0;
+        this.textoAlertaChefe = '';
+        this.subtextoAlertaChefe = '';
+        this.animacaoDestruicaoChefe = null;
 
         // Reseta posição de âncora da grade e temporizadores
         this.gradeX = 0;
