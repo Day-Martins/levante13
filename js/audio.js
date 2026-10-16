@@ -12,6 +12,20 @@ class GerenciadorAudio {
         this.mutado = false;
         this.inicializado = false;
 
+        // Gerenciamento de Trilha Sonora / BGM
+        this.musicaAtual = null; // 'menu' | 'gameplay' | 'boss' | null
+        this.audioMenu = null;
+        this.audioGameplay = null;
+        this.audioBoss = null;
+        this.sourceMenu = null;
+        this.sourceGameplay = null;
+        this.sourceBoss = null;
+        this.gainMenu = null;
+        this.gainGameplay = null;
+        this.gainBoss = null;
+        this.volumeBaseMusica = 0.18; // Volume mais baixo que os FX para equilibrar gameplay
+        this.timeoutsFade = {};
+
         // Auto-vincula eventos globais de primeira interação para desbloquear o AudioContext instantaneamente
         this.vincularDesbloqueioAutomatico();
     }
@@ -23,6 +37,10 @@ class GerenciadorAudio {
     vincularDesbloqueioAutomatico() {
         const desbloquear = () => {
             this.iniciar();
+            // Se estiver na tela de menu/início, toca a música do menu imediatamente na primeira interação
+            if (window.jogo && window.jogo.estado === 'INICIO' && !this.musicaAtual) {
+                this.tocarMusicaMenu();
+            }
             window.removeEventListener('click', desbloquear);
             window.removeEventListener('touchstart', desbloquear);
             window.removeEventListener('touchend', desbloquear);
@@ -46,6 +64,7 @@ class GerenciadorAudio {
                 try {
                     this.ctx = new AudioContextClass();
                     this.inicializado = true;
+                    this.inicializarElementosMusica();
                 } catch (e) {
                     console.warn('Erro ao instanciar AudioContext:', e);
                 }
@@ -53,6 +72,199 @@ class GerenciadorAudio {
         }
         if (this.ctx && this.ctx.state === 'suspended') {
             this.ctx.resume().catch(() => {});
+        }
+    }
+
+    /**
+     * Prepara os elementos de áudio HTML5 e conecta-os ao grafo da Web Audio API
+     */
+    inicializarElementosMusica() {
+        if (!this.ctx) return;
+        if (this.gainMenu && this.gainGameplay && this.gainBoss) return;
+
+        try {
+            // Cria elementos de áudio em formato OGG otimizado sem espaços
+            this.audioMenu = new Audio('sounds/arcade_menu.ogg');
+            this.audioMenu.loop = true;
+            this.audioMenu.preload = 'auto';
+
+            this.audioGameplay = new Audio('sounds/game_play.ogg');
+            this.audioGameplay.loop = true;
+            this.audioGameplay.preload = 'auto';
+
+            this.audioBoss = new Audio('sounds/boss.ogg');
+            this.audioBoss.loop = true;
+            this.audioBoss.preload = 'auto';
+
+            // Nós de ganho para crossfade suave
+            this.gainMenu = this.ctx.createGain();
+            this.gainMenu.gain.setValueAtTime(0, this.ctx.currentTime);
+
+            this.gainGameplay = this.ctx.createGain();
+            this.gainGameplay.gain.setValueAtTime(0, this.ctx.currentTime);
+
+            this.gainBoss = this.ctx.createGain();
+            this.gainBoss.gain.setValueAtTime(0, this.ctx.currentTime);
+
+            // Conecta os nós ao destino de áudio
+            this.sourceMenu = this.ctx.createMediaElementSource(this.audioMenu);
+            this.sourceMenu.connect(this.gainMenu);
+            this.gainMenu.connect(this.ctx.destination);
+
+            this.sourceGameplay = this.ctx.createMediaElementSource(this.audioGameplay);
+            this.sourceGameplay.connect(this.gainGameplay);
+            this.gainGameplay.connect(this.ctx.destination);
+
+            this.sourceBoss = this.ctx.createMediaElementSource(this.audioBoss);
+            this.sourceBoss.connect(this.gainBoss);
+            this.gainBoss.connect(this.ctx.destination);
+        } catch (e) {
+            console.warn('Aviso: Áudio via WebAudio MediaElementSource fallback para elemento direto:', e);
+            if (this.audioMenu) this.audioMenu.volume = this.volumeBaseMusica;
+            if (this.audioGameplay) this.audioGameplay.volume = this.volumeBaseMusica;
+            if (this.audioBoss) this.audioBoss.volume = this.volumeBaseMusica;
+        }
+    }
+
+    /**
+     * Executa crossfade suave entre as faixas e para completamente a execução das faixas anteriores
+     */
+    executarTransicaoMusica(tipoDestino, duracaoFade = 1.5) {
+        this.musicaAtual = tipoDestino;
+        const volAlvo = this.mutado ? 0 : this.volumeBaseMusica;
+
+        const mapeamento = {
+            menu: { el: this.audioMenu, gain: this.gainMenu, vol: volAlvo },
+            gameplay: { el: this.audioGameplay, gain: this.gainGameplay, vol: volAlvo },
+            boss: { el: this.audioBoss, gain: this.gainBoss, vol: volAlvo * 1.15 }
+        };
+
+        const destino = mapeamento[tipoDestino];
+        if (!destino || !destino.el) return;
+
+        // Inicia reprodução da música de destino se ainda não estiver tocando
+        if (destino.el.paused) {
+            destino.el.play().catch(() => {});
+        }
+
+        if (this.ctx && this.gainMenu && this.gainGameplay && this.gainBoss) {
+            const agora = this.ctx.currentTime;
+
+            // Fade in na música de destino
+            destino.gain.gain.cancelScheduledValues(agora);
+            destino.gain.gain.setValueAtTime(destino.gain.gain.value, agora);
+            destino.gain.gain.linearRampToValueAtTime(destino.vol, agora + duracaoFade);
+
+            // Fade out e parada nas outras músicas
+            Object.keys(mapeamento).forEach(chave => {
+                if (chave !== tipoDestino) {
+                    const outra = mapeamento[chave];
+                    if (outra.gain) {
+                        outra.gain.gain.cancelScheduledValues(agora);
+                        outra.gain.gain.setValueAtTime(outra.gain.gain.value, agora);
+                        outra.gain.gain.linearRampToValueAtTime(0, agora + duracaoFade);
+                    }
+
+                    // Limpa timeout anterior se houver
+                    if (this.timeoutsFade[chave]) {
+                        clearTimeout(this.timeoutsFade[chave]);
+                    }
+
+                    // Após o crossfade, para de vez a execução da música anterior e reseta o tempo
+                    this.timeoutsFade[chave] = setTimeout(() => {
+                        if (this.musicaAtual !== chave && outra.el && !outra.el.paused) {
+                            outra.el.pause();
+                            outra.el.currentTime = 0;
+                        }
+                    }, duracaoFade * 1000 + 80);
+                }
+            });
+        } else {
+            // Fallback sem Web Audio nodes
+            Object.keys(mapeamento).forEach(chave => {
+                const item = mapeamento[chave];
+                if (item.el) {
+                    if (chave === tipoDestino) {
+                        item.el.volume = item.vol;
+                    } else {
+                        item.el.pause();
+                        item.el.currentTime = 0;
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Toca ou faz crossfade para a música padrão de menu Arcade Menu
+     * @param {number} duracaoFade - duração do crossfade em segundos
+     */
+    tocarMusicaMenu(duracaoFade = 1.2) {
+        if (!this.podeTocar()) return;
+        this.inicializarElementosMusica();
+        this.executarTransicaoMusica('menu', duracaoFade);
+    }
+
+    /**
+     * Inicia ou realiza crossfade para a música de gameplay normal e para o menu anterior
+     * @param {number} duracaoFade - duração do crossfade em segundos
+     */
+    tocarMusicaGameplay(duracaoFade = 1.8) {
+        if (!this.podeTocar()) return;
+        this.inicializarElementosMusica();
+        this.executarTransicaoMusica('gameplay', duracaoFade);
+    }
+
+    /**
+     * Realiza crossfade da música de gameplay para a música de confronto contra o Chefe e para a anterior
+     * @param {number} duracaoFade - duração do crossfade em segundos
+     */
+    tocarMusicaBoss(duracaoFade = 2.0) {
+        if (!this.podeTocar()) return;
+        this.inicializarElementosMusica();
+        this.executarTransicaoMusica('boss', duracaoFade);
+    }
+
+    /**
+     * Para suavemente qualquer música de fundo ativa e pausa execução
+     * @param {number} duracaoFade - duração do fade out em segundos
+     */
+    pararMusica(duracaoFade = 1.0) {
+        this.musicaAtual = null;
+
+        const lista = [
+            { el: this.audioMenu, gain: this.gainMenu },
+            { el: this.audioGameplay, gain: this.gainGameplay },
+            { el: this.audioBoss, gain: this.gainBoss }
+        ];
+
+        if (this.ctx && this.gainMenu && this.gainGameplay && this.gainBoss) {
+            const agora = this.ctx.currentTime;
+            lista.forEach(item => {
+                if (item.gain) {
+                    item.gain.gain.cancelScheduledValues(agora);
+                    item.gain.gain.setValueAtTime(item.gain.gain.value, agora);
+                    item.gain.gain.linearRampToValueAtTime(0, agora + duracaoFade);
+                }
+            });
+
+            setTimeout(() => {
+                if (!this.musicaAtual) {
+                    lista.forEach(item => {
+                        if (item.el) {
+                            item.el.pause();
+                            item.el.currentTime = 0;
+                        }
+                    });
+                }
+            }, duracaoFade * 1000 + 80);
+        } else {
+            lista.forEach(item => {
+                if (item.el) {
+                    item.el.pause();
+                    item.el.currentTime = 0;
+                }
+            });
         }
     }
 
@@ -72,6 +284,28 @@ class GerenciadorAudio {
     alternarMudo() {
         this.iniciar();
         this.mutado = !this.mutado;
+
+        if (this.ctx && this.gainMenu && this.gainGameplay && this.gainBoss) {
+            const agora = this.ctx.currentTime;
+            if (this.mutado) {
+                this.gainMenu.gain.setValueAtTime(0, agora);
+                this.gainGameplay.gain.setValueAtTime(0, agora);
+                this.gainBoss.gain.setValueAtTime(0, agora);
+            } else {
+                if (this.musicaAtual === 'menu') {
+                    this.gainMenu.gain.setValueAtTime(this.volumeBaseMusica, agora);
+                } else if (this.musicaAtual === 'gameplay') {
+                    this.gainGameplay.gain.setValueAtTime(this.volumeBaseMusica, agora);
+                } else if (this.musicaAtual === 'boss') {
+                    this.gainBoss.gain.setValueAtTime(this.volumeBaseMusica * 1.15, agora);
+                }
+            }
+        } else {
+            if (this.audioMenu) this.audioMenu.muted = this.mutado;
+            if (this.audioGameplay) this.audioGameplay.muted = this.mutado;
+            if (this.audioBoss) this.audioBoss.muted = this.mutado;
+        }
+
         return this.mutado;
     }
 

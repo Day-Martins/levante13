@@ -123,6 +123,11 @@ class MotorLevante13 {
 
         this.configurarEventos();
         this.carregarFasesDoServidor();
+
+        // Música padrão Arcade Menu antes do início da partida
+        if (typeof audio !== 'undefined') {
+            audio.tocarMusicaMenu();
+        }
     }
 
     /**
@@ -302,6 +307,7 @@ class MotorLevante13 {
         this.temporizadorSegundo = 0;
         this.tempoFaseRestante = 180;
         this.indiceFaseAtual = 0;
+        audio.pararMusica(0.5);
 
         // Limpa a tela imediatamente com o fundo escuro do espaço
         this.ctx.fillStyle = '#070b19';
@@ -445,6 +451,7 @@ class MotorLevante13 {
             } else {
                 this.montarGradeInimigos();
                 this.estado = 'JOGANDO';
+                audio.tocarMusicaGameplay();
             }
         }
     }
@@ -505,6 +512,7 @@ class MotorLevante13 {
         if (!this.modoConsultaManual && this.estado === 'TUTORIAL_POWERUPS') {
             this.montarGradeInimigos();
             this.estado = 'JOGANDO';
+            audio.tocarMusicaGameplay();
             return;
         }
 
@@ -1036,8 +1044,9 @@ class MotorLevante13 {
         this.shakeTela = 22;
         this.temporizadorSuprimentoChefe = 0;
 
-        // Dispara som de sirene tática retrô Sci-Fi
+        // Dispara som de sirene tática retrô Sci-Fi e faz crossfade para a música do chefe
         audio.tocarAlertaChefe();
+        audio.tocarMusicaBoss();
 
         // Configura banner de alerta de grande impacto (duração de ~2 segundos antes do combate iniciar)
         this.textoAlertaChefe = `⚠️ ALERTA DE CHEFE: ${this.chefe.nome.toUpperCase()}`;
@@ -1083,7 +1092,8 @@ class MotorLevante13 {
         this.pontos += bonusPontos;
         this.atualizarHUD();
 
-        // Toca fanfarra triunfal retrô sintetizada
+        // Para a música de combate para destacar a fanfarra triunfal retrô sintetizada
+        audio.pararMusica(1.0);
         audio.tocarVitoriaFase();
 
         // Identifica mensagem motivacional correspondente
@@ -1160,6 +1170,7 @@ class MotorLevante13 {
 
     exibirFimDeJogo(vitoria, motivo = '') {
         this.estado = 'FIM_DE_JOGO';
+        audio.tocarMusicaMenu(1.5);
 
         // Fecha modal de transição se estivesse aberto e cancela contagem
         if (this.intervaloContagemTransicao) {
