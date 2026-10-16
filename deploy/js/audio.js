@@ -26,7 +26,7 @@ class GerenciadorAudio {
         this.volumeBaseMusica = 0.18; // Volume mais baixo que os FX para equilibrar gameplay
         this.timeoutsFade = {};
 
-        // Auto-vincula eventos globais de primeira interação para desbloquear o AudioContext instantaneamente
+        // Auto-vincula eventos globais de primeira interação para desbloquear o áudio e iniciar trilha
         this.vincularDesbloqueioAutomatico();
     }
 
@@ -37,20 +37,16 @@ class GerenciadorAudio {
     vincularDesbloqueioAutomatico() {
         const desbloquear = () => {
             this.iniciar();
-            // Se estiver na tela de menu/início, toca a música do menu imediatamente na primeira interação
-            if (window.jogo && window.jogo.estado === 'INICIO' && !this.musicaAtual) {
+            // Se estiver na tela de menu/início ou holotransmissão inicial e a música não começou a tocar
+            const emMenuOuInicio = !window.jogo || window.jogo.estado === 'INICIO' || window.jogo.estado === 'HOLOTRANSMISSAO';
+            if (emMenuOuInicio && (!this.musicaAtual || (this.audioMenu && this.audioMenu.paused))) {
                 this.tocarMusicaMenu();
             }
-            window.removeEventListener('click', desbloquear);
-            window.removeEventListener('touchstart', desbloquear);
-            window.removeEventListener('touchend', desbloquear);
-            window.removeEventListener('keydown', desbloquear);
         };
 
-        window.addEventListener('click', desbloquear, { once: true, passive: true });
-        window.addEventListener('touchstart', desbloquear, { once: true, passive: true });
-        window.addEventListener('touchend', desbloquear, { once: true, passive: true });
-        window.addEventListener('keydown', desbloquear, { once: true, passive: true });
+        ['click', 'touchstart', 'touchend', 'keydown', 'pointerdown'].forEach(evento => {
+            window.addEventListener(evento, desbloquear, { passive: true });
+        });
     }
 
     /**
@@ -64,7 +60,6 @@ class GerenciadorAudio {
                 try {
                     this.ctx = new AudioContextClass();
                     this.inicializado = true;
-                    this.inicializarElementosMusica();
                 } catch (e) {
                     console.warn('Erro ao instanciar AudioContext:', e);
                 }
@@ -73,6 +68,7 @@ class GerenciadorAudio {
         if (this.ctx && this.ctx.state === 'suspended') {
             this.ctx.resume().catch(() => {});
         }
+        this.inicializarElementosMusica();
     }
 
     /**
@@ -142,9 +138,31 @@ class GerenciadorAudio {
         const destino = mapeamento[tipoDestino];
         if (!destino || !destino.el) return;
 
+        // Se havia algum timeout agendado para parar esta mesma música, cancela imediatamente
+        if (this.timeoutsFade[tipoDestino]) {
+            clearTimeout(this.timeoutsFade[tipoDestino]);
+            this.timeoutsFade[tipoDestino] = null;
+        }
+
+        // Garante que o elemento HTML5 Audio está desmutado
+        destino.el.muted = false;
+
         // Inicia reprodução da música de destino se ainda não estiver tocando
-        if (destino.el.paused) {
-            destino.el.play().catch(() => {});
+        const tentarTocar = () => {
+            if (destino.el.paused) {
+                const promessa = destino.el.play();
+                if (promessa !== undefined) {
+                    promessa.catch(err => {
+                        console.warn(`[Audio] Reprodução de ${tipoDestino} aguardando gesto do usuário:`, err.message);
+                    });
+                }
+            }
+        };
+
+        if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume().then(tentarTocar).catch(tentarTocar);
+        } else {
+            tentarTocar();
         }
 
         if (this.ctx && this.gainMenu && this.gainGameplay && this.gainBoss) {
@@ -152,7 +170,8 @@ class GerenciadorAudio {
 
             // Fade in na música de destino
             destino.gain.gain.cancelScheduledValues(agora);
-            destino.gain.gain.setValueAtTime(destino.gain.gain.value, agora);
+            const valAtual = Number.isFinite(destino.gain.gain.value) ? destino.gain.gain.value : 0;
+            destino.gain.gain.setValueAtTime(valAtual, agora);
             destino.gain.gain.linearRampToValueAtTime(destino.vol, agora + duracaoFade);
 
             // Fade out e parada nas outras músicas
@@ -161,7 +180,8 @@ class GerenciadorAudio {
                     const outra = mapeamento[chave];
                     if (outra.gain) {
                         outra.gain.gain.cancelScheduledValues(agora);
-                        outra.gain.gain.setValueAtTime(outra.gain.gain.value, agora);
+                        const valOutra = Number.isFinite(outra.gain.gain.value) ? outra.gain.gain.value : 0;
+                        outra.gain.gain.setValueAtTime(valOutra, agora);
                         outra.gain.gain.linearRampToValueAtTime(0, agora + duracaoFade);
                     }
 

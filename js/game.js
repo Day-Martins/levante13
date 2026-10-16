@@ -157,6 +157,9 @@ class MotorLevante13 {
 
             // 1. Iniciar partida a partir da tela inicial via teclado (solicita codinome/urna)
             if ((e.code === 'Space' || e.code === 'Enter') && this.estado === 'INICIO') {
+                if (audio.audioMenu && audio.audioMenu.paused) {
+                    audio.tocarMusicaMenu();
+                }
                 this.solicitarInicioPartida();
                 return;
             }
@@ -204,6 +207,9 @@ class MotorLevante13 {
         this.canvas.addEventListener('click', () => {
             audio.iniciar();
             if (this.estado === 'INICIO') {
+                if (audio.audioMenu && audio.audioMenu.paused) {
+                    audio.tocarMusicaMenu();
+                }
                 this.solicitarInicioPartida();
             }
         });
@@ -248,6 +254,9 @@ class MotorLevante13 {
             if (this.estado === 'HOLOTRANSMISSAO') {
                 this.avancarHolotransmissao();
             } else if (this.estado === 'INICIO') {
+                if (audio.audioMenu && audio.audioMenu.paused) {
+                    audio.tocarMusicaMenu();
+                }
                 this.solicitarInicioPartida();
             }
         }, { passive: false });
