@@ -99,10 +99,20 @@
 
 ## 🛡️ FASE 5: AUDITORIA DE SEGURANÇA E LGPD
 
-#### [SEC-01] Homologação de Privacidade por Design (LGPD)
+#### [SEC-01] Homologação de Privacidade por Design (LGPD) — ✅ CONCLUÍDO
 * **Descrição:** Verificar minuciosamente a ausência de cookies de rastreamento de terceiros, ausência de coleta de e-mails ou dados pessoais identificáveis.
 * **Prioridade:** P1
 
-#### [SEC-02] Testes de Penetração e Blindagem de Banco
+#### [SEC-02] Testes de Penetração e Blindagem de Banco — ✅ CONCLUÍDO
 * **Descrição:** Testar exaustivamente tentativas de SQL Injection, Cross-Site Scripting (XSS), Path Traversal e confirmar a impossibilidade de download do arquivo `.db`.
 * **Prioridade:** P1
+
+---
+
+## 🚀 FASE 6: POLIMENTO AUDIOVISUAL, EXPERIÊNCIA DE COMBATE & GAMEPLAY
+
+#### [POL-01] Sequência Épica de Destruição da Nave Capitânia (Boss Death Animation) — ⏳ EM ANDAMENTO
+* **Descrição:** Criar animação dramática de colapso do chefe ao ser derrotado (múltiplas explosões secundárias em cadeia, screen-shake persistente, faíscas incandescentes, flash de tela e som de detonação massiva), retardando intencionalmente a transição de fase para que o jogador celebre e presencie a aniquilação completa da nave opressora antes de abrir o modal de vitória/motivação.
+* **Arquivos envolvidos:** `js/game.js`, `js/entities.js`, `js/audio.js`
+* **Prioridade:** P1
+

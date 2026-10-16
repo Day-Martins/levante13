@@ -109,6 +109,9 @@ class MotorLevante13 {
         this.tempoMantoLentidao = 0;
         this.shakeTela = 0;
 
+        // Sequência Cinematográfica de Destruição do Chefe (Boss Death)
+        this.animacaoDestruicaoChefe = null;
+
         // Controles de Entrada
         this.teclas = {};
         this.touchX = null;
@@ -767,6 +770,11 @@ class MotorLevante13 {
             if (p.vida <= 0) this.particulas.splice(i, 1);
         }
 
+        // Atualiza sequência cinematográfica de destruição da capitânia (se em andamento)
+        if (this.animacaoDestruicaoChefe) {
+            this.atualizarAnimacaoDestruicaoChefe();
+        }
+
         // Atualiza painel HUD em tempo real
         this.atualizarHUD();
 
@@ -1068,17 +1076,108 @@ class MotorLevante13 {
     }
 
     derrotarChefe() {
-        audio.tocarExplosao();
+        if (!this.chefe) return;
+
+        // Limpa projéteis inimigos remanescentes para segurança do jogador durante o espetáculo da vitória
+        this.tirosInimigos = [];
         this.pontos += this.chefe.pontos;
-        this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#facc15', 50);
-        this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#ef4444', 40);
-        this.shakeTela = 25;
+        this.atualizarHUD();
+
+        // Para imediatamente a música do boss para destacar as explosões massivas
+        audio.pararMusica(0.5);
+
+        // Clona dados visuais e físicos do Chefe para animação cinematográfica desacoplada
+        this.animacaoDestruicaoChefe = {
+            x: this.chefe.x,
+            y: this.chefe.y,
+            largura: this.chefe.largura,
+            altura: this.chefe.altura,
+            sprite: this.chefe.sprite,
+            idFase: this.chefe.idFase,
+            faseDano: this.chefe.faseDano || 1,
+            spritesFases: this.chefe.spritesFases || [],
+            pedacosAtivos: this.chefe.pedacosAtivos || [],
+            quadro: 0,
+            duracaoTotal: 160, // ~2.6 segundos a 60 FPS
+            flashBranco: 0,
+            particulasLocais: []
+        };
+
+        // Remove a entidade ativa de combate do Chefe (cessa disparos e colisões)
         this.chefe = null;
+
+        // Configura banner triunfal de destruição da capitânia
         this.textoAlertaChefe = '⭐ NAVE CAPITÂNIA DESTRUÍDA!';
         this.subtextoAlertaChefe = 'O POVO AVANÇA! FRENTE LIBERTADA!';
         this.tipoAlertaChefe = 'vitoria';
-        this.tempoAlertaChefe = 140;
-        this.avancarParaProximaFase();
+        this.tempoAlertaChefe = 180;
+    }
+
+    /**
+     * Atualiza a sequência cinematográfica de explosões em cadeia e colapso do Chefe
+     */
+    atualizarAnimacaoDestruicaoChefe() {
+        const anim = this.animacaoDestruicaoChefe;
+        if (!anim) return;
+
+        anim.quadro++;
+
+        // Tremor contínuo de tela durante toda a sequência
+        this.shakeTela = Math.max(this.shakeTela, 8);
+
+        // Desce lentamente com leve deriva
+        anim.y += 0.35;
+        anim.x += (Math.random() - 0.5) * 1.5;
+
+        // Atualiza pedaços que já estavam se soltando
+        for (let i = anim.pedacosAtivos.length - 1; i >= 0; i--) {
+            const p = anim.pedacosAtivos[i];
+            p.atualizar();
+            if (p.removido) anim.pedacosAtivos.splice(i, 1);
+        }
+
+        // Explosões secundárias em cadeia distribuídas pela carcaça do chefe a cada ~6 a 10 quadros
+        if (anim.quadro < 130 && anim.quadro % 7 === 0) {
+            const ox = anim.x + Math.random() * anim.largura;
+            const oy = anim.y + Math.random() * anim.altura;
+            const corExplosao = ['#facc15', '#ef4444', '#f97316', '#ffffff'][Math.floor(Math.random() * 4)];
+
+            this.gerarParticulas(ox, oy, corExplosao, 14);
+            audio.tocarExplosao();
+
+            // Adiciona clarão de impacto
+            anim.flashBranco = 4;
+        }
+
+        // Grande detonação final por volta do quadro 130
+        if (anim.quadro === 130) {
+            this.shakeTela = 28;
+            anim.flashBranco = 12;
+
+            const centroX = anim.x + anim.largura / 2;
+            const centroY = anim.y + anim.altura / 2;
+
+            // Onda maciça de faíscas incandescentes e destroços
+            this.gerarParticulas(centroX, centroY, '#ffffff', 40);
+            this.gerarParticulas(centroX, centroY, '#facc15', 50);
+            this.gerarParticulas(centroX, centroY, '#ef4444', 45);
+            this.gerarParticulas(centroX, centroY, '#38bdf8', 25);
+
+            if (typeof audio.tocarDestruicaoBoss === 'function') {
+                audio.tocarDestruicaoBoss();
+            } else {
+                audio.tocarExplosao();
+            }
+        }
+
+        // Decrementa clarão branco
+        if (anim.flashBranco > 0) anim.flashBranco--;
+
+        // Conclusão da animação: somente após todos os quadros, prossegue para a transição de fase
+        if (anim.quadro >= anim.duracaoTotal) {
+            this.animacaoDestruicaoChefe = null;
+            this.avancarParaProximaFase();
+        }
     }
 
     avancarParaProximaFase() {
@@ -1388,6 +1487,47 @@ class MotorLevante13 {
             this.ctx.strokeStyle = '#facc15';
             this.ctx.lineWidth = 1;
             this.ctx.strokeRect(barX, barY, barW, 6);
+        }
+
+        // Desenha Sequência Cinematográfica de Destruição do Chefe (Boss Death)
+        if (this.animacaoDestruicaoChefe) {
+            const anim = this.animacaoDestruicaoChefe;
+
+            // Desenha pedaços que se soltaram e caem
+            for (const pedaco of anim.pedacosAtivos) {
+                pedaco.desenhar(this.ctx);
+            }
+
+            // Desenha a carcaça do chefe com tremores e piscamento dramático
+            this.ctx.save();
+            const sx = (Math.random() - 0.5) * 4;
+            const sy = (Math.random() - 0.5) * 4;
+            this.ctx.translate(anim.x + sx, anim.y + sy);
+
+            // Sprite do chefe no momento da queda
+            let spriteDesenho = anim.sprite;
+            if (anim.idFase === 6 && anim.spritesFases.length >= anim.faseDano) {
+                const sf = anim.spritesFases[anim.faseDano - 1];
+                if (sf && sf.complete && sf.naturalWidth > 0) spriteDesenho = sf;
+            }
+
+            // Se ainda não houve a detonação final completa (quadro 130), desenha a carcaça
+            if (anim.quadro < 130) {
+                if (spriteDesenho && spriteDesenho.complete && spriteDesenho.naturalWidth > 0) {
+                    this.ctx.drawImage(spriteDesenho, 0, 0, anim.largura, anim.altura);
+                } else {
+                    this.ctx.fillStyle = '#dc2626';
+                    this.ctx.fillRect(0, 0, anim.largura, anim.altura);
+                }
+
+                // Clarão de impacto sobre a carcaça durante explosões
+                if (anim.flashBranco > 0) {
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+                    this.ctx.fillRect(0, 0, anim.largura, anim.altura);
+                }
+            }
+
+            this.ctx.restore();
         }
 
         // Alerta Tático da Batalha (Entrada do Chefe, Dano Crítico ou Power-ups)
