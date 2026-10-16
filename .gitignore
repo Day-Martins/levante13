@@ -6,6 +6,7 @@ Thumbs.db
 database/*.db
 database/*.db-wal
 database/*.db-shm
+database/.segredo
 !database/.htaccess
 
 # Cards gerados dinamicamente pelo backend

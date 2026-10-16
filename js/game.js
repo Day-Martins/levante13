@@ -185,6 +185,16 @@ class MotorLevante13 {
 
         this.configurarEventos();
         this.iniciarPreloaderECarregarTudo();
+
+        // Segurança: se algo travar (servidor lento, rede ruim), libera a tela inicial em 15 s
+        this.limitePreloader = setTimeout(() => {
+            if (this.carregamentoConcluido) return;
+            console.warn('[Preloader] Limite de 15 s atingido: liberando o jogo com o que já carregou.');
+            if (!this.fases || this.fases.length === 0) {
+                this.fases = [this.obterFaseFallback()];
+            }
+            this.finalizarPreloader();
+        }, 15000);
     }
 
     /**
@@ -385,13 +395,25 @@ class MotorLevante13 {
             if (this.assetsCarregados[url]) return resolve(this.assetsCarregados[url]);
 
             const img = new Image();
+            let resolvido = false;
+            const concluir = (resultado) => {
+                if (resolvido) return;
+                resolvido = true;
+                clearTimeout(limite);
+                resolve(resultado);
+            };
+            // Rede ruim: se a imagem não responder em 8 s, segue sem ela (o jogo tenta de novo ao usar)
+            const limite = setTimeout(() => {
+                console.warn(`[Preloader] Tempo esgotado ao pré-carregar imagem: ${url}`);
+                concluir(null);
+            }, 8000);
             img.onload = () => {
                 this.assetsCarregados[url] = img;
-                resolve(img);
+                concluir(img);
             };
             img.onerror = () => {
                 console.warn(`[Preloader] Não foi possível pré-carregar imagem: ${url}`);
-                resolve(null);
+                concluir(null);
             };
             img.src = url;
         });
@@ -443,9 +465,8 @@ class MotorLevante13 {
         const totalPassos = urlsUnicas.length + 3; // +3 para fases, áudios e finalização
         let passosConcluidos = 1;
 
-        // Pré-carrega cada imagem reportando progresso
-        for (const url of urlsUnicas) {
-            await this.carregarImagem(url);
+        // Pré-carrega as imagens em paralelo (bem mais rápido no celular), reportando o progresso
+        await Promise.all(urlsUnicas.map((url) => this.carregarImagem(url).then(() => {
             passosConcluidos++;
             const nomeCurto = url.split('/').pop() || 'asset';
             this.atualizarProgressoPreloader(
@@ -453,7 +474,7 @@ class MotorLevante13 {
                 totalPassos,
                 `Carregando artefatos: ${nomeCurto}...`
             );
-        }
+        })));
 
         // 3. Pré-carrega referências de áudio (OGG)
         this.atualizarProgressoPreloader(totalPassos - 1, totalPassos, 'Calibrando sintetizadores e trilhas de áudio...');
@@ -473,6 +494,8 @@ class MotorLevante13 {
      * Oculta a tela de carregamento e autoriza a interação com a tela inicial
      */
     finalizarPreloader() {
+        if (this.carregamentoConcluido) return;
+        clearTimeout(this.limitePreloader);
         if (this.intervaloCitacoes) {
             clearInterval(this.intervaloCitacoes);
             this.intervaloCitacoes = null;
@@ -849,7 +872,8 @@ class MotorLevante13 {
         if (this.estado !== 'JOGANDO' && this.estado !== 'CHEFE') return;
 
         // Gerenciamento do cronômetro de 3 minutos (~180s) por fase com derrota por time-out
-        this.temporizadorSegundo++;
+        // (pausado durante a animação de destruição do chefe: a frente já foi vencida)
+        if (!this.animacaoDestruicaoChefe) this.temporizadorSegundo++;
         if (this.temporizadorSegundo >= 60) {
             this.temporizadorSegundo = 0;
             if (this.tempoFaseRestante > 0) {
