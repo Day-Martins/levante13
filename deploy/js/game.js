@@ -176,6 +176,7 @@ class MotorLevante13 {
         this.dialogoIndice = 0;
         this.textoAtualExibido = '';
         this.caractereIndice = 0;
+        this.temporizadorTeletipo = 0;
         // Sistema de Pré-carregamento (Preloader) de Assets e Conexões
         this.carregamentoConcluido = false;
         this.indiceCitacaoAtual = 0;
@@ -269,6 +270,8 @@ class MotorLevante13 {
                     audio.tocarMusicaMenu();
                 }
                 this.solicitarInicioPartida();
+            } else if (this.estado === 'HOLOTRANSMISSAO') {
+                this.avancarHolotransmissao();
             }
         });
 
@@ -656,6 +659,8 @@ class MotorLevante13 {
         this.textoCompleto = dialogos[this.dialogoIndice] || '';
         this.textoAtualExibido = '';
         this.caractereIndice = 0;
+        this.temporizadorTeletipo = 0;
+        this.renderizarTextoHolotransmissao();
     }
 
     avancarHolotransmissao() {

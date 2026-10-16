@@ -257,7 +257,7 @@ input, button, select, textarea {
     display: none;
     flex-direction: column;
     box-shadow: 0 0 20px rgba(56, 189, 248, 0.45);
-    z-index: 30;
+    z-index: 100;
     cursor: pointer;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
