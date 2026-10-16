@@ -8,7 +8,7 @@
     <!-- FONTE RETRÔ VCR OSD MONO (https://www.dafont.com/vcr-osd-mono.font) -->
     <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/vcr-osd-mono">
-    <link rel="stylesheet" href="css/style.css?v=20261016_holo">
+    <link rel="stylesheet" href="css/style.css?v=20261016_merge">
 
     <!-- Open Graph Básico -->
     <meta property="og:type" content="website">
@@ -280,6 +280,33 @@
 
         <!-- Área de Tela com Canvas -->
         <main class="game-screen">
+            <!-- Tela de Pré-carregamento com Indicador de Progresso e Citações Revolucionárias -->
+            <div id="preloaderModal" class="preloader-overlay">
+                <div class="preloader-caixa">
+                    <div class="preloader-badge">★ HANGAR DA RESISTÊNCIA POPULAR ★</div>
+                    <div class="preloader-subtitulo">CARREGANDO DADOS DA RESISTÊNCIA 13</div>
+
+                    <!-- Citação Revolucionária Dinâmica -->
+                    <div class="preloader-frase-cartao">
+                        <div class="preloader-citacao-aspas">“</div>
+                        <p id="preloaderFraseTexto" class="preloader-frase">
+                            A esperança vai vencer o medo e a soberania popular é inegociável!
+                        </p>
+                        <div id="preloaderFraseAutor" class="preloader-autor">— LULA • COMANDO SUPREMO DA DEMOCRACIA</div>
+                    </div>
+
+                    <!-- Barra de Progresso Retrô Neon -->
+                    <div class="preloader-barra-moldura">
+                        <div id="preloaderBarraPreenchimento" class="preloader-barra-fill" style="width: 0%;"></div>
+                    </div>
+
+                    <div class="preloader-status-linha">
+                        <span id="preloaderStatusTexto">Conectando aos satélites da resistência...</span>
+                        <span id="preloaderPorcentagem" class="preloader-pct">0%</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Painel HUD Superior -->
             <div class="hud-overlay">
                 <div class="hud-item"><span id="hudVidas" style="display: inline-flex; align-items: center;"><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg><svg class="px-icon px-icon-heart"><use href="#px-heart"/></svg></span></div>
@@ -586,10 +613,10 @@
     </div>
 
     <!-- Scripts do Jogo em JavaScript Puro -->
-    <script src="js/audio.js?v=20261016_rev"></script>
-    <script src="js/auth.js?v=20261016_rev"></script>
-    <script src="js/entities.js?v=20261016_rev"></script>
-    <script src="js/game.js?v=20261016_rev"></script>
+    <script src="js/audio.js?v=20261016_merge"></script>
+    <script src="js/auth.js?v=20261016_merge"></script>
+    <script src="js/entities.js?v=20261016_merge"></script>
+    <script src="js/game.js?v=20261016_merge"></script>
 
     <!-- Script de Integração com as APIs Backend -->
     <script>

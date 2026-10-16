@@ -411,6 +411,64 @@ class GerenciadorAudio {
     }
 
     /**
+     * Explosão massiva e estrondosa para a destruição de chefes (Boss Death).
+     * Combina estrondo grave de baixa frequência e ruído estéreo ressonante.
+     */
+    tocarDestruicaoBoss() {
+        if (!this.podeTocar()) return;
+
+        try {
+            const agora = this.ctx.currentTime;
+
+            // 1. Onda subsônica de choque (sub-bass drop 120Hz -> 20Hz)
+            const osc = this.ctx.createOscillator();
+            const gainOsc = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(130, agora);
+            osc.frequency.exponentialRampToValueAtTime(20, agora + 0.8);
+
+            gainOsc.gain.setValueAtTime(0.5, agora);
+            gainOsc.gain.exponentialRampToValueAtTime(0.001, agora + 0.8);
+
+            osc.connect(gainOsc);
+            gainOsc.connect(this.ctx.destination);
+
+            osc.start(agora);
+            osc.stop(agora + 0.85);
+
+            // 2. Ruído de detonação estendida e cascata de fogo
+            const duracao = 0.7;
+            const tamanhoBuffer = Math.floor(this.ctx.sampleRate * duracao);
+            const buffer = this.ctx.createBuffer(1, tamanhoBuffer, this.ctx.sampleRate);
+            const dados = buffer.getChannelData(0);
+            for (let i = 0; i < tamanhoBuffer; i++) {
+                dados[i] = Math.random() * 2 - 1;
+            }
+
+            const ruido = this.ctx.createBufferSource();
+            ruido.buffer = buffer;
+
+            const filtro = this.ctx.createBiquadFilter();
+            filtro.type = 'lowpass';
+            filtro.frequency.setValueAtTime(1200, agora);
+            filtro.frequency.exponentialRampToValueAtTime(60, agora + duracao);
+
+            const gainRuido = this.ctx.createGain();
+            gainRuido.gain.setValueAtTime(0.45, agora);
+            gainRuido.gain.exponentialRampToValueAtTime(0.001, agora + duracao);
+
+            ruido.connect(filtro);
+            filtro.connect(gainRuido);
+            gainRuido.connect(this.ctx.destination);
+
+            ruido.start(agora);
+            ruido.stop(agora + duracao);
+        } catch (e) {
+            console.warn('Erro ao tocar explosão do boss:', e);
+        }
+    }
+
+    /**
      * Coleta de item especial (Power-up).
      */
     tocarPowerup() {

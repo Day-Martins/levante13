@@ -51,6 +51,60 @@ const MENSAGENS_MOTIVACIONAIS_FASE = [
     }
 ];
 
+// =============================================================================
+// REPOSITÓRIO DE CITAÇÕES MOTIVACIONAIS E REVOLUCIONÁRIAS (TELA DE PRELOADER)
+// =============================================================================
+const CITACOES_REVOLUCIONARIAS = [
+    {
+        frase: "Se o homem é formado pelas circunstâncias, é preciso formar as circunstâncias humanamente.",
+        autor: "KARL MARX • FILÓSOFO DA EMANCIPAÇÃO HUMANA"
+    },
+    {
+        frase: "Quando a educação não é libertadora, o sonho do oprimido é ser o opressor. Mas nós escolhemos transformar o mundo!",
+        autor: "PAULO FREIRE • PATRONO DA EDUCAÇÃO BRASILEIRA"
+    },
+    {
+        frase: "Eles podem tentar cortar todas as flores, mas não conseguirão deter a primavera que brota do povo.",
+        autor: "LULA • COMANDO SUPREMO DA DEMOCRACIA"
+    },
+    {
+        frase: "Só os que são capazes de amar a humanidade são capazes de transformar a história com bravura e ternura.",
+        autor: "CHE GUEVARA • REVOLUCIONÁRIO LATINO-AMERICANO"
+    },
+    {
+        frase: "Não serei livre enquanto alguma mulher for prisioneira, mesmo que as correntes dela sejam diferentes das minhas.",
+        autor: "AUDRE LORDE • ESCRITORA E ATIVISTA POPULAR"
+    },
+    {
+        frase: "Não me pergunte se as forças são suficientes, mas se a causa é justa. A nossa causa é o povo soberano!",
+        autor: "CARLOS MARIGHELLA • GUERRILHEIRO DA LIBERDADE"
+    },
+    {
+        frase: "Eu sou porque nós somos. Quantos mais de nós terão que resistir para que essa guerra acabe?",
+        autor: "MARIELLE FRANCO • VEREADORA E SEMENTE DA RESISTÊNCIA"
+    },
+    {
+        frase: "No começo pensei que estivesse lutando para salvar seringueiras; depois pensei que lutava pela Amazônia; hoje percebo que luto pela humanidade.",
+        autor: "CHICO MENDES • LÍDER AMBIENTALISTA E SERINGUEIRO"
+    },
+    {
+        frase: "A força da alienação vem dessa fragilidade dos indivíduos, que apenas conseguem identificar o que os separa, e não o que os une.",
+        autor: "MILTON SANTOS • GEÓGRAFO E INTELECTUAL POPULAR"
+    },
+    {
+        frase: "O Brasil é o único país do mundo onde a esperança não é uma virtude teologal: é um dever cívico e revolucionário.",
+        autor: "DARCY RIBEIRO • ANTROPÓLOGO E EDUCADOR DA NAÇÃO"
+    },
+    {
+        frase: "O amor ao povo trabalhador não se proclama com discursos, prova-se na trincheira da luta e da solidariedade.",
+        autor: "FLORESTAN FERNANDES • SOCIÓLOGO E MILITANTE SOCIALISTA"
+    },
+    {
+        frase: "Democracia de verdade é barriga cheia, salário digno, saúde pública e a juventude na universidade!",
+        autor: "VANGUARDA 13 • VOZ DA RESISTÊNCIA POPULAR"
+    }
+];
+
 class MotorLevante13 {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
@@ -109,6 +163,9 @@ class MotorLevante13 {
         this.tempoMantoLentidao = 0;
         this.shakeTela = 0;
 
+        // Sequência Cinematográfica de Destruição do Chefe (Boss Death)
+        this.animacaoDestruicaoChefe = null;
+
         // Controles de Entrada
         this.teclas = {};
         this.touchX = null;
@@ -120,14 +177,14 @@ class MotorLevante13 {
         this.textoAtualExibido = '';
         this.caractereIndice = 0;
         this.temporizadorTeletipo = 0;
+        // Sistema de Pré-carregamento (Preloader) de Assets e Conexões
+        this.carregamentoConcluido = false;
+        this.indiceCitacaoAtual = 0;
+        this.intervaloCitacoes = null;
+        this.assetsCarregados = {};
 
         this.configurarEventos();
-        this.carregarFasesDoServidor();
-
-        // Música padrão Arcade Menu antes do início da partida
-        if (typeof audio !== 'undefined') {
-            audio.tocarMusicaMenu();
-        }
+        this.iniciarPreloaderECarregarTudo();
     }
 
     /**
@@ -157,6 +214,7 @@ class MotorLevante13 {
 
             // 1. Iniciar partida a partir da tela inicial via teclado (solicita codinome/urna)
             if ((e.code === 'Space' || e.code === 'Enter') && this.estado === 'INICIO') {
+                if (!this.carregamentoConcluido) return;
                 if (audio.audioMenu && audio.audioMenu.paused) {
                     audio.tocarMusicaMenu();
                 }
@@ -205,12 +263,15 @@ class MotorLevante13 {
 
         // Suporte a clique de mouse no Desktop
         this.canvas.addEventListener('click', () => {
+            if (!this.carregamentoConcluido) return;
             audio.iniciar();
             if (this.estado === 'INICIO') {
                 if (audio.audioMenu && audio.audioMenu.paused) {
                     audio.tocarMusicaMenu();
                 }
                 this.solicitarInicioPartida();
+            } else if (this.estado === 'HOLOTRANSMISSAO') {
+                this.avancarHolotransmissao();
             }
         });
 
@@ -254,6 +315,7 @@ class MotorLevante13 {
             if (this.estado === 'HOLOTRANSMISSAO') {
                 this.avancarHolotransmissao();
             } else if (this.estado === 'INICIO') {
+                if (!this.carregamentoConcluido) return;
                 if (audio.audioMenu && audio.audioMenu.paused) {
                     audio.tocarMusicaMenu();
                 }
@@ -271,6 +333,165 @@ class MotorLevante13 {
             this.touchX = null;
             this.touchY = null;
         }, { passive: false });
+    }
+
+    /**
+     * Cicla e exibe frases revolucionárias e motivacionais aleatórias durante o carregamento
+     */
+    iniciarRotacaoCitacoes() {
+        const elFrase = document.getElementById('preloaderFraseTexto');
+        const elAutor = document.getElementById('preloaderFraseAutor');
+        if (!elFrase || !elAutor) return;
+
+        const exibirAleatoria = () => {
+            const index = Math.floor(Math.random() * CITACOES_REVOLUCIONARIAS.length);
+            const citacao = CITACOES_REVOLUCIONARIAS[index];
+
+            elFrase.style.opacity = '0';
+            elAutor.style.opacity = '0';
+
+            setTimeout(() => {
+                elFrase.textContent = `“${citacao.frase}”`;
+                elAutor.textContent = `— ${citacao.autor}`;
+                elFrase.style.opacity = '1';
+                elAutor.style.opacity = '1';
+            }, 300);
+        };
+
+        exibirAleatoria();
+        this.intervaloCitacoes = setInterval(exibirAleatoria, 2800);
+    }
+
+    /**
+     * Atualiza os indicadores visuais de progresso (barra e porcentagem) na tela de carregamento
+     */
+    atualizarProgressoPreloader(concluidos, total, mensagemStatus) {
+        const pct = Math.min(100, Math.floor((concluidos / Math.max(1, total)) * 100));
+        const barFill = document.getElementById('preloaderBarraPreenchimento');
+        const pctText = document.getElementById('preloaderPorcentagem');
+        const statusText = document.getElementById('preloaderStatusTexto');
+
+        if (barFill) barFill.style.width = `${pct}%`;
+        if (pctText) pctText.textContent = `${pct}%`;
+        if (statusText && mensagemStatus) statusText.textContent = mensagemStatus;
+    }
+
+    /**
+     * Pré-carrega uma imagem de forma assíncrona, tolerante a falhas
+     */
+    carregarImagem(url) {
+        return new Promise((resolve) => {
+            if (!url) return resolve(null);
+            if (this.assetsCarregados[url]) return resolve(this.assetsCarregados[url]);
+
+            const img = new Image();
+            img.onload = () => {
+                this.assetsCarregados[url] = img;
+                resolve(img);
+            };
+            img.onerror = () => {
+                console.warn(`[Preloader] Não foi possível pré-carregar imagem: ${url}`);
+                resolve(null);
+            };
+            img.src = url;
+        });
+    }
+
+    /**
+     * Executa o pré-carregamento abrangente de fases, imagens e áudios antes de liberar a tela inicial
+     */
+    async iniciarPreloaderECarregarTudo() {
+        this.iniciarRotacaoCitacoes();
+        this.atualizarProgressoPreloader(5, 100, 'Sintonizando frequências com a base da resistência...');
+
+        // 1. Busca manifesto de fases do servidor
+        await this.carregarFasesDoServidor();
+        this.atualizarProgressoPreloader(20, 100, 'Fases e setores táticos identificados...');
+
+        // 2. Monta lista completa de imagens para pré-carregamento
+        const listaUrlsImagens = [
+            'assets/fonts/vcr_osd_mono.ttf',
+            'assets/images/mentor_padrao.png'
+        ];
+
+        if (this.fases && this.fases.length > 0) {
+            this.fases.forEach(f => {
+                if (f.assets) {
+                    if (f.assets.fundo) listaUrlsImagens.push(f.assets.fundo);
+                    if (f.assets.inimigo) listaUrlsImagens.push(f.assets.inimigo);
+                    if (f.assets.chefe) listaUrlsImagens.push(f.assets.chefe);
+                }
+                if (f.holotransmissao && f.holotransmissao.avatar) {
+                    listaUrlsImagens.push(f.holotransmissao.avatar);
+                }
+            });
+        }
+
+        // Sprites multifase do Chefe Final (Fase 6)
+        listaUrlsImagens.push(
+            'levels/level_6/boss_phase1.png',
+            'levels/level_6/boss_phase2.png',
+            'levels/level_6/boss_phase3.png',
+            'levels/level_6/boss_phase4.png',
+            'levels/level_6/boss_piece_wing_left.png',
+            'levels/level_6/boss_piece_wing_right.png',
+            'levels/level_6/boss_piece_core_plate.png'
+        );
+
+        // Remove duplicatas
+        const urlsUnicas = [...new Set(listaUrlsImagens.filter(Boolean))];
+        const totalPassos = urlsUnicas.length + 3; // +3 para fases, áudios e finalização
+        let passosConcluidos = 1;
+
+        // Pré-carrega cada imagem reportando progresso
+        for (const url of urlsUnicas) {
+            await this.carregarImagem(url);
+            passosConcluidos++;
+            const nomeCurto = url.split('/').pop() || 'asset';
+            this.atualizarProgressoPreloader(
+                passosConcluidos,
+                totalPassos,
+                `Carregando artefatos: ${nomeCurto}...`
+            );
+        }
+
+        // 3. Pré-carrega referências de áudio (OGG)
+        this.atualizarProgressoPreloader(totalPassos - 1, totalPassos, 'Calibrando sintetizadores e trilhas de áudio...');
+        if (typeof audio !== 'undefined' && typeof audio.inicializarElementosMusica === 'function') {
+            audio.inicializarElementosMusica();
+        }
+
+        // Pequena pausa para garantir visualização do 100%
+        this.atualizarProgressoPreloader(totalPassos, totalPassos, 'Sistemas online! A resistência está pronta!');
+        await new Promise(r => setTimeout(r, 450));
+
+        // Finaliza o Preloader e revela a tela inicial
+        this.finalizarPreloader();
+    }
+
+    /**
+     * Oculta a tela de carregamento e autoriza a interação com a tela inicial
+     */
+    finalizarPreloader() {
+        if (this.intervaloCitacoes) {
+            clearInterval(this.intervaloCitacoes);
+            this.intervaloCitacoes = null;
+        }
+
+        const modalPreloader = document.getElementById('preloaderModal');
+        if (modalPreloader) {
+            modalPreloader.classList.add('oculto');
+            setTimeout(() => {
+                modalPreloader.style.display = 'none';
+            }, 500);
+        }
+
+        this.carregamentoConcluido = true;
+
+        // Inicia trilha do menu
+        if (typeof audio !== 'undefined') {
+            audio.tocarMusicaMenu();
+        }
     }
 
     /**
@@ -316,6 +537,10 @@ class MotorLevante13 {
         this.temporizadorSegundo = 0;
         this.tempoFaseRestante = 180;
         this.indiceFaseAtual = 0;
+        this.tempoAlertaChefe = 0;
+        this.textoAlertaChefe = '';
+        this.subtextoAlertaChefe = '';
+        this.animacaoDestruicaoChefe = null;
         audio.pararMusica(0.5);
 
         // Limpa a tela imediatamente com o fundo escuro do espaço
@@ -395,6 +620,10 @@ class MotorLevante13 {
         this.itens = [];
         this.particulas = [];
         this.chefe = null;
+        this.tempoAlertaChefe = 0;
+        this.textoAlertaChefe = '';
+        this.subtextoAlertaChefe = '';
+        this.animacaoDestruicaoChefe = null;
 
         // Reseta posição de âncora da grade e temporizadores
         this.gradeX = 0;
@@ -438,6 +667,8 @@ class MotorLevante13 {
         this.textoCompleto = dialogos[this.dialogoIndice] || '';
         this.textoAtualExibido = '';
         this.caractereIndice = 0;
+        this.temporizadorTeletipo = 0;
+        this.renderizarTextoHolotransmissao();
     }
 
     avancarHolotransmissao() {
@@ -767,6 +998,11 @@ class MotorLevante13 {
             if (p.vida <= 0) this.particulas.splice(i, 1);
         }
 
+        // Atualiza sequência cinematográfica de destruição da capitânia (se em andamento)
+        if (this.animacaoDestruicaoChefe) {
+            this.atualizarAnimacaoDestruicaoChefe();
+        }
+
         // Atualiza painel HUD em tempo real
         this.atualizarHUD();
 
@@ -1068,17 +1304,108 @@ class MotorLevante13 {
     }
 
     derrotarChefe() {
-        audio.tocarExplosao();
+        if (!this.chefe) return;
+
+        // Limpa projéteis inimigos remanescentes para segurança do jogador durante o espetáculo da vitória
+        this.tirosInimigos = [];
         this.pontos += this.chefe.pontos;
-        this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#facc15', 50);
-        this.gerarParticulas(this.chefe.x + this.chefe.largura / 2, this.chefe.y + this.chefe.altura / 2, '#ef4444', 40);
-        this.shakeTela = 25;
+        this.atualizarHUD();
+
+        // Para imediatamente a música do boss para destacar as explosões massivas
+        audio.pararMusica(0.5);
+
+        // Clona dados visuais e físicos do Chefe para animação cinematográfica desacoplada
+        this.animacaoDestruicaoChefe = {
+            x: this.chefe.x,
+            y: this.chefe.y,
+            largura: this.chefe.largura,
+            altura: this.chefe.altura,
+            sprite: this.chefe.sprite,
+            idFase: this.chefe.idFase,
+            faseDano: this.chefe.faseDano || 1,
+            spritesFases: this.chefe.spritesFases || [],
+            pedacosAtivos: this.chefe.pedacosAtivos || [],
+            quadro: 0,
+            duracaoTotal: 160, // ~2.6 segundos a 60 FPS
+            flashBranco: 0,
+            particulasLocais: []
+        };
+
+        // Remove a entidade ativa de combate do Chefe (cessa disparos e colisões)
         this.chefe = null;
+
+        // Configura banner triunfal de destruição da capitânia
         this.textoAlertaChefe = '⭐ NAVE CAPITÂNIA DESTRUÍDA!';
         this.subtextoAlertaChefe = 'O POVO AVANÇA! FRENTE LIBERTADA!';
         this.tipoAlertaChefe = 'vitoria';
-        this.tempoAlertaChefe = 140;
-        this.avancarParaProximaFase();
+        this.tempoAlertaChefe = 180;
+    }
+
+    /**
+     * Atualiza a sequência cinematográfica de explosões em cadeia e colapso do Chefe
+     */
+    atualizarAnimacaoDestruicaoChefe() {
+        const anim = this.animacaoDestruicaoChefe;
+        if (!anim) return;
+
+        anim.quadro++;
+
+        // Tremor contínuo de tela durante toda a sequência
+        this.shakeTela = Math.max(this.shakeTela, 8);
+
+        // Desce lentamente com leve deriva
+        anim.y += 0.35;
+        anim.x += (Math.random() - 0.5) * 1.5;
+
+        // Atualiza pedaços que já estavam se soltando
+        for (let i = anim.pedacosAtivos.length - 1; i >= 0; i--) {
+            const p = anim.pedacosAtivos[i];
+            p.atualizar();
+            if (p.removido) anim.pedacosAtivos.splice(i, 1);
+        }
+
+        // Explosões secundárias em cadeia distribuídas pela carcaça do chefe a cada ~6 a 10 quadros
+        if (anim.quadro < 130 && anim.quadro % 7 === 0) {
+            const ox = anim.x + Math.random() * anim.largura;
+            const oy = anim.y + Math.random() * anim.altura;
+            const corExplosao = ['#facc15', '#ef4444', '#f97316', '#ffffff'][Math.floor(Math.random() * 4)];
+
+            this.gerarParticulas(ox, oy, corExplosao, 14);
+            audio.tocarExplosao();
+
+            // Adiciona clarão de impacto
+            anim.flashBranco = 4;
+        }
+
+        // Grande detonação final por volta do quadro 130
+        if (anim.quadro === 130) {
+            this.shakeTela = 28;
+            anim.flashBranco = 12;
+
+            const centroX = anim.x + anim.largura / 2;
+            const centroY = anim.y + anim.altura / 2;
+
+            // Onda maciça de faíscas incandescentes e destroços
+            this.gerarParticulas(centroX, centroY, '#ffffff', 40);
+            this.gerarParticulas(centroX, centroY, '#facc15', 50);
+            this.gerarParticulas(centroX, centroY, '#ef4444', 45);
+            this.gerarParticulas(centroX, centroY, '#38bdf8', 25);
+
+            if (typeof audio.tocarDestruicaoBoss === 'function') {
+                audio.tocarDestruicaoBoss();
+            } else {
+                audio.tocarExplosao();
+            }
+        }
+
+        // Decrementa clarão branco
+        if (anim.flashBranco > 0) anim.flashBranco--;
+
+        // Conclusão da animação: somente após todos os quadros, prossegue para a transição de fase
+        if (anim.quadro >= anim.duracaoTotal) {
+            this.animacaoDestruicaoChefe = null;
+            this.avancarParaProximaFase();
+        }
     }
 
     avancarParaProximaFase() {
@@ -1325,9 +1652,11 @@ class MotorLevante13 {
             this.ctx.fillRect(0, 0, this.cw, this.ch);
         }
 
-        // Tela Inicial / Espera
+        // Tela Inicial / Espera (só renderiza após carregamento concluído dos assets)
         if (this.estado === 'INICIO') {
-            this.desenharTelaInicial();
+            if (this.carregamentoConcluido) {
+                this.desenharTelaInicial();
+            }
             this.ctx.restore();
             return;
         }
@@ -1388,6 +1717,47 @@ class MotorLevante13 {
             this.ctx.strokeStyle = '#facc15';
             this.ctx.lineWidth = 1;
             this.ctx.strokeRect(barX, barY, barW, 6);
+        }
+
+        // Desenha Sequência Cinematográfica de Destruição do Chefe (Boss Death)
+        if (this.animacaoDestruicaoChefe) {
+            const anim = this.animacaoDestruicaoChefe;
+
+            // Desenha pedaços que se soltaram e caem
+            for (const pedaco of anim.pedacosAtivos) {
+                pedaco.desenhar(this.ctx);
+            }
+
+            // Desenha a carcaça do chefe com tremores e piscamento dramático
+            this.ctx.save();
+            const sx = (Math.random() - 0.5) * 4;
+            const sy = (Math.random() - 0.5) * 4;
+            this.ctx.translate(anim.x + sx, anim.y + sy);
+
+            // Sprite do chefe no momento da queda
+            let spriteDesenho = anim.sprite;
+            if (anim.idFase === 6 && anim.spritesFases.length >= anim.faseDano) {
+                const sf = anim.spritesFases[anim.faseDano - 1];
+                if (sf && sf.complete && sf.naturalWidth > 0) spriteDesenho = sf;
+            }
+
+            // Se ainda não houve a detonação final completa (quadro 130), desenha a carcaça
+            if (anim.quadro < 130) {
+                if (spriteDesenho && spriteDesenho.complete && spriteDesenho.naturalWidth > 0) {
+                    this.ctx.drawImage(spriteDesenho, 0, 0, anim.largura, anim.altura);
+                } else {
+                    this.ctx.fillStyle = '#dc2626';
+                    this.ctx.fillRect(0, 0, anim.largura, anim.altura);
+                }
+
+                // Clarão de impacto sobre a carcaça durante explosões
+                if (anim.flashBranco > 0) {
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+                    this.ctx.fillRect(0, 0, anim.largura, anim.altura);
+                }
+            }
+
+            this.ctx.restore();
         }
 
         // Alerta Tático da Batalha (Entrada do Chefe, Dano Crítico ou Power-ups)
@@ -1489,6 +1859,7 @@ class MotorLevante13 {
     }
 
     desenharTelaInicial() {
+        if (!this.carregamentoConcluido) return;
         this.ctx.fillStyle = '#facc15';
         this.ctx.font = '700 24px "VCR OSD Mono", monospace';
         this.ctx.textAlign = 'center';
