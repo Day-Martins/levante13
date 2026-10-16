@@ -26,6 +26,7 @@ class GerenciadorIdentidadeUrna {
 
         this.inputCodename = document.getElementById('inputCodenameIdent');
         this.btnAvancarCodename = document.getElementById('btnAvancarCodename');
+        this.btnJogarConvidado = document.getElementById('btnJogarConvidado');
         this.statusMsg = document.getElementById('credencialStatusMsg');
 
         this.btnOptarSim = document.getElementById('btnOptarSim');
@@ -51,6 +52,10 @@ class GerenciadorIdentidadeUrna {
     }
 
     vincularEventos() {
+        if (this.btnJogarConvidado) {
+            this.btnJogarConvidado.addEventListener('click', () => this.jogarComoConvidado());
+        }
+
         if (this.btnAvancarCodename) {
             this.btnAvancarCodename.addEventListener('click', () => {
                 const som = this.obterAudio();
@@ -224,6 +229,25 @@ class GerenciadorIdentidadeUrna {
         }
     }
 
+    /**
+     * Joga sem codinome. O recorde só é registrado se o piloto escolher um codinome no fim da partida.
+     * O codinome salvo neste navegador (se houver) continua guardado para a próxima vez.
+     */
+    jogarComoConvidado() {
+        this.codename = '';
+        this.pin = '';
+        this.protegido = false;
+        this.convidado = true;
+
+        const som = this.obterAudio();
+        if (som) som.tocarPowerup();
+        this.fecharModal();
+
+        if (typeof this.onSucessoCallback === 'function') {
+            this.onSucessoCallback(this.obterPiloto());
+        }
+    }
+
     exibirEtapaEscolha() {
         if (this.etapaCodename) this.etapaCodename.style.display = 'none';
         if (this.etapaEscolha) this.etapaEscolha.style.display = 'block';
@@ -236,6 +260,7 @@ class GerenciadorIdentidadeUrna {
     }
 
     concluirSemSenha() {
+        this.convidado = false;
         this.codename = this.codenamePendente;
         this.pin = '';
         this.protegido = false;
@@ -337,6 +362,7 @@ class GerenciadorIdentidadeUrna {
                 // Toca o clássico som de confirmação da Urna Eletrônica ("Pilili... Confirma" do TSE)
                 if (som) som.tocarUrnaConfirma();
 
+                this.convidado = false;
                 this.codename = this.codenamePendente;
                 this.pin = this.pinDigitado;
                 this.protegido = true;
@@ -379,7 +405,8 @@ class GerenciadorIdentidadeUrna {
 
     obterPiloto() {
         return {
-            codename: this.codename || 'PILOTO 13',
+            codename: this.codename || '',
+            convidado: !this.codename,
             pin: this.pin || '',
             protegido: this.protegido
         };

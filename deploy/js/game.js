@@ -1216,7 +1216,7 @@ class MotorLevante13 {
         }
         if (motivoEl) {
             if (vitoria) {
-                motivoEl.textContent = 'A esperança venceu o medo e todas as frentes foram libertadas pela resistência!';
+                motivoEl.textContent = 'A coragem venceu o medo e todas as frentes foram libertadas pela resistência!';
                 motivoEl.style.color = '#22c55e';
             } else if (motivo === 'TEMPO ESGOTADO!') {
                 motivoEl.textContent = 'O tempo limite de 3 minutos esgotou e as forças invasoras consolidaram o cerco.';
@@ -1236,7 +1236,7 @@ class MotorLevante13 {
             const piloto = window.authUrna.obterPiloto();
             const elNome = document.getElementById('identGameOverNome');
             const elStatus = document.getElementById('identGameOverStatus');
-            if (elNome) elNome.textContent = piloto.codename || 'PILOTO 13';
+            if (elNome) elNome.textContent = piloto.codename || 'CONVIDADO';
             if (elStatus) {
                 if (piloto.protegido) {
                     elStatus.className = 'ident-badge ident-badge-protegido';
