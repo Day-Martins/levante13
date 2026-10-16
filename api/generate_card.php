@@ -117,7 +117,7 @@ function gerarCardResistencia(
         // Título Principal com Sombra
         imagettftext($img, 32, 0, 60, 92, $corSombra, FONTE_PADRAO, 'LEVANTE 13: A VIRADA');
         imagettftext($img, 32, 0, 58, 90, $corDourado, FONTE_PADRAO, 'LEVANTE 13: A VIRADA');
-        imagettftext($img, 15, 0, 780, 90, $corBranco, FONTE_PADRAO, 'O JOGO DA RESISTENCIA POPULAR');
+        imagettftext($img, 15, 0, 780, 90, $corBranco, FONTE_PADRAO, 'O JOGO DA RESISTÊNCIA POPULAR');
 
         // Subtítulo
         imagettftext($img, 18, 0, 60, 160, $corCiano, FONTE_PADRAO, '> BOLETIM OFICIAL DE COMBATE DA VANGUARDA POPULAR');
@@ -128,7 +128,7 @@ function gerarCardResistencia(
         imagerectangle($img, 60, 190, $largura - 60, 440, $corCiano);
 
         // Coluna 1: Piloto e Frente Defendida
-        imagettftext($img, 18, 0, 90, 235, $corCinza, FONTE_PADRAO, 'PILOTO DA RESISTENCIA:');
+        imagettftext($img, 18, 0, 90, 235, $corCinza, FONTE_PADRAO, 'PILOTO DA RESISTÊNCIA:');
         imagettftext($img, 32, 0, 90, 275, $corBranco, FONTE_PADRAO, $tagPiloto);
 
         imagettftext($img, 18, 0, 90, 345, $corCinza, FONTE_PADRAO, 'FRENTE DEFENDIDA:');
@@ -139,7 +139,7 @@ function gerarCardResistencia(
         imagettftext($img, 46, 0, 520, 290, $corDourado, FONTE_PADRAO, $scoreFormatado);
 
         imagettftext($img, 16, 0, 520, 355, $corBranco, FONTE_PADRAO, 'DATA: ' . date('d/m/Y'));
-        imagettftext($img, 14, 0, 520, 395, $corCinza, FONTE_PADRAO, 'STATUS: RESISTENCIA ATIVA');
+        imagettftext($img, 14, 0, 520, 395, $corCinza, FONTE_PADRAO, 'STATUS: RESISTÊNCIA ATIVA');
 
         // Estampa do Mentor da Frente (se existir)
         $mentorPath = LEVELS_DIR . "/level_{$levelReached}/mentor.png";
@@ -157,8 +157,8 @@ function gerarCardResistencia(
         imagefilledrectangle($img, 60, 460, $largura - 60, 560, $ctaBg);
         imagerectangle($img, 60, 460, $largura - 60, 560, $corDourado);
 
-        imagettftext($img, 24, 0, 90, 508, $corDourado, FONTE_PADRAO, '[*] VOCE CONSEGUE SUPERAR ESSA MARCA? JOGUE AGORA! [*]');
-        imagettftext($img, 20, 0, 90, 542, $corBranco, FONTE_PADRAO, 'ACESSE GRATIS NO NAVEGADOR: HTTPS://LEVANTE13.ONLINE');
+        imagettftext($img, 24, 0, 90, 508, $corDourado, FONTE_PADRAO, '[*] VOCÊ CONSEGUE SUPERAR ESSA MARCA? JOGUE AGORA! [*]');
+        imagettftext($img, 20, 0, 90, 542, $corBranco, FONTE_PADRAO, 'ACESSE GRÁTIS NO NAVEGADOR: HTTPS://LEVANTE13.ONLINE');
 
         // 6. Rodapé
         imagettftext($img, 13, 0, 60, 595, $corCinza, FONTE_PADRAO, 'COMPARTILHE NO WHATSAPP E INSTAGRAM @LULAOFICIAL | DEFENDENDO A DEMOCRACIA');

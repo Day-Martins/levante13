@@ -735,6 +735,11 @@ input, button, select, textarea {
    SISTEMA DE IDENTIFICAÇÃO E TECLADO DA URNA ELETRÔNICA
    ============================================================================= */
 
+/* A identificação também abre por cima da tela de fim de jogo (registrar como convidado / trocar codinome) */
+#modalCredencial {
+    z-index: 70;
+}
+
 .modal-credencial {
     max-width: 340px;
     padding: 20px 16px;

@@ -9,6 +9,7 @@
     <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/vcr-osd-mono">
     <link rel="stylesheet" href="css/style.css?v=20261015_2210">
+    <link rel="stylesheet" href="css/style.css?v=20261016_rev">
 
     <!-- Open Graph Básico -->
     <meta property="og:type" content="website">
@@ -365,22 +366,23 @@
             <!-- Modal de Identificação da Vanguarda 13 (Codinome & Teclado da Urna) -->
             <div id="modalCredencial" class="modal-overlay" style="display: none;">
                 <div class="modal-caixa modal-credencial">
-                    <div class="credencial-badge">★ ALISTAMENTO DA VANGUARDA 13 ★</div>
-                    <h2 id="credencialTitulo" class="modal-titulo">CREDENCIAL DO PILOTO</h2>
+                    <div class="credencial-badge">JUSTIÇA ELEITORAL DA RESISTÊNCIA</div>
+                    <h2 id="credencialTitulo" class="modal-titulo">IDENTIFICAÇÃO DO PILOTO</h2>
 
                     <!-- Etapa 1: Digitar Codinome -->
                     <div id="etapaCodename">
-                        <p class="credencial-sub">Informe seu Codinome de batalha para os registros da resistência popular:</p>
+                        <p class="credencial-sub">Insira seu Codinome de Batalha (3 a 12 caracteres):</p>
                         <input type="text" 
                                id="inputCodenameIdent" 
                                class="input-tag" 
-                               placeholder="SEU CODINOME (3-12)" 
+                               placeholder="SUA TAG EX: LULA13" 
                                maxlength="12" 
                                autocomplete="off">
                         <div id="credencialStatusMsg" class="credencial-status-msg"></div>
                         <button type="button" id="btnAvancarCodename" class="btn-acao" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                            AVANÇAR <svg class="px-icon"><use href="#px-play"/></svg>
+                            AVANÇAR / CONSULTAR <svg class="px-icon"><use href="#px-play"/></svg>
                         </button>
+                        <button type="button" id="btnJogarConvidado" class="btn-link">JOGAR COMO CONVIDADO</button>
                     </div>
 
                     <!-- Etapa 2: Escolha de Proteção (se codinome livre) -->
@@ -393,10 +395,10 @@
                         </p>
                         <div class="escolha-botoes">
                             <button type="button" id="btnOptarSim" class="btn-acao btn-sucesso" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                                <svg class="px-icon"><use href="#px-lock"/></svg> SIM, PROTEGER COM SENHA
+                                <svg class="px-icon"><use href="#px-lock"/></svg> SIM, PROTEGER MEU CODINOME COM SENHA
                             </button>
                             <button type="button" id="btnOptarNao" class="btn-acao btn-secundario" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                                <svg class="px-icon"><use href="#px-play"/></svg> NÃO, JOGAR SEM SENHA
+                                <svg class="px-icon"><use href="#px-play"/></svg> NÃO, USAR COMO NOME PÚBLICO LIVRE
                             </button>
                         </div>
                         <button type="button" id="btnVoltarCodename" class="btn-link">← Trocar Codinome</button>
@@ -615,6 +617,10 @@
     <script src="js/auth.js?v=20261015_2210"></script>
     <script src="js/entities.js?v=20261015_2210"></script>
     <script src="js/game.js?v=20261015_2210"></script>
+    <script src="js/audio.js?v=20261016_rev"></script>
+    <script src="js/auth.js?v=20261016_rev"></script>
+    <script src="js/entities.js?v=20261016_rev"></script>
+    <script src="js/game.js?v=20261016_rev"></script>
 
     <!-- Script de Integração com as APIs Backend -->
     <script>
@@ -743,8 +749,14 @@
                 const tag = (piloto.codename || '').trim().toUpperCase();
 
                 if (!tag || tag.length < 3) {
-                    alert('Nenhum codinome válido configurado para o piloto.');
-                    if (window.authUrna) window.authUrna.abrirModal();
+                    // Convidado: escolhe um codinome agora e o recorde é registrado logo em seguida
+                    if (window.authUrna) {
+                        window.authUrna.abrirModal((novoPiloto) => {
+                            const elNome = document.getElementById('identGameOverNome');
+                            if (elNome) elNome.textContent = novoPiloto.codename;
+                            if (novoPiloto.codename) formScore.requestSubmit();
+                        });
+                    }
                     return;
                 }
 
