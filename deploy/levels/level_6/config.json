@@ -1,69 +1,66 @@
 {
   "id": 6,
-  "name": "Fortaleza Soberana: A Esplanada da Democracia",
-  "subtitle": "A Grande Virada Popular na Praça dos Três Poderes",
-  "theme": "sovereign_flag",
-  "destructionEffect": "sucata",
+  "name": "Setor de Convocação: As Redes da Virada",
+  "subtitle": "O Exército de Lula e a Soberania da Comunicação Popular",
+  "theme": "cyber_matrix",
+  "destructionEffect": "glitch",
   "holotransmission": {
-    "mentor": "Lula",
-    "role": "Líder Histórico da Aliança e Presidente do Brasil",
+    "mentor": "André Janones",
+    "role": "Comandante da Mobilização Digital e Voz do Povo",
     "avatar": "levels/level_6/mentor.png",
     "dialogue": [
-      "Meus companheiros e minhas companheiras de todo o Brasil, aqui é o Lula!",
-      "Chegamos à batalha final no coração de Brasília. Os golpistas cercaram o Palácio do Povo e o Congresso para tentar calar a vontade soberana das urnas.",
-      "Eles podem tentar destruir prédios, mas nunca destruirão o sonho de um povo que quer comer, estudar, trabalhar e viver com dignidade.",
-      "Subam a rampa da democracia com coragem! O Brasil vai voltar a ser feliz! Vamos à vitória!"
+      "Atenção, povo brasileiro! Aqui fala André Janones, direto das trincheiras da internet!",
+      "Os gabinetes de ódio achavam que eram donos das redes, mas eles não contavam com a força do trabalhador conectado! O algoritmo deles não aguenta a verdade.",
+      "Ativem os canais, disparem a mensagem de coragem e chamem cada amigo, vizinho e colega de trabalho! É hora de unir todas as frentes no grande Exército de Lula!",
+      "Vamos quebrar o bloqueio digital e marchar com o presidente até a vitória! O Brasil é do povo!"
     ]
   },
   "grid": {
-    "rows": 6,
+    "rows": 4,
     "cols": 8,
     "spacingX": 42,
-    "spacingY": 36,
-    "pattern": "chaos",
+    "spacingY": 34,
+    "pattern": "pincer",
     "duration": 180,
-    "initialSpeed": 1.15,
-    "stepY": 5,
-    "speedMultiplierPerKill": 1.028,
-    "diveChance": 0.15
+    "initialSpeed": 0.85,
+    "stepY": 3.0,
+    "speedMultiplierPerKill": 1.015,
+    "diveChance": 0.06
   },
   "enemyTypes": [
     {
-      "id": "troll_patriota",
-      "name": "Invasor Golpista",
-      "hp": 2,
-      "points": 90,
-      "color": "#a1a1aa",
+      "id": "canal_fake_news",
+      "name": "Canal de Fake News",
+      "hp": 1,
+      "points": 85,
+      "color": "#a855f7",
       "behavior": "march"
     },
     {
-      "id": "caminhao_golpista",
-      "name": "Patriota do Caminhão",
-      "hp": 3,
-      "points": 200,
-      "color": "#ea580c",
+      "id": "disparo_automatizado",
+      "name": "Disparo Automatizado",
+      "hp": 2,
+      "points": 190,
+      "color": "#ec4899",
       "behavior": "dive"
     },
     {
-      "id": "blindado_insurreicao",
-      "name": "Blindado Antidemocrático",
-      "hp": 6,
-      "points": 450,
-      "color": "#71717a",
+      "id": "torre_desinformacao",
+      "name": "Torre de Desinformação",
+      "hp": 3,
+      "points": 420,
+      "color": "#7e22ce",
       "behavior": "tank"
     }
   ],
   "boss": {
-    "id": "hidra_golpista",
-    "name": "A Hidra Golpista",
-    "title": "Fortaleza Imperial da Tirania",
-    "hp": 70,
-    "points": 5000,
-    "attackPattern": "sovereign_annihilation_barrage"
-  },
-  "palette": {
-    "primary": "#ef4444",
-    "secondary": "#22c55e",
-    "background": "#0b0f19"
+    "id": "algoritmo_panico",
+    "name": "O Algoritmo do Pânico",
+    "title": "Nuvem Imperial de Censura e Manipulação",
+    "hp": 60,
+    "points": 3500,
+    "speed": 1.9,
+    "bulletSpeed": 3.7,
+    "shootInterval": 900
   }
 }

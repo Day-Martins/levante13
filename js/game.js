@@ -44,6 +44,13 @@ const MENSAGENS_MOTIVACIONAIS_FASE = [
     },
     {
         fase: 6,
+        titulo: "REDES DA VIRADA CONQUISTADAS!",
+        sub: "A Mobilização Popular Venceu o Algoritmo do Pânico",
+        frase: "O algoritmo do pânico foi quebrado! Milhões de vozes com coragem se uniram nas redes e o Exército de Lula avança para o coração de Brasília!",
+        autor: "ANDRÉ JANONES • COMUNICAÇÃO POPULAR"
+    },
+    {
+        fase: 7,
         titulo: "GRANDE VIRADA CONQUISTADA!",
         sub: "A Soberania Popular e a Democracia Triunfaram",
         frase: "Nós vencemos o ódio, e a soberania popular é soberana. O Brasil voltou a sorrir com dignidade e justiça social!",
@@ -449,15 +456,15 @@ class MotorLevante13 {
             });
         }
 
-        // Sprites multifase do Chefe Final (Fase 6)
+        // Sprites multifase do Chefe Final (Fase 7 - Lula)
         listaUrlsImagens.push(
-            'levels/level_6/boss_phase1.png',
-            'levels/level_6/boss_phase2.png',
-            'levels/level_6/boss_phase3.png',
-            'levels/level_6/boss_phase4.png',
-            'levels/level_6/boss_piece_wing_left.png',
-            'levels/level_6/boss_piece_wing_right.png',
-            'levels/level_6/boss_piece_core_plate.png'
+            'levels/level_7/boss_phase1.png',
+            'levels/level_7/boss_phase2.png',
+            'levels/level_7/boss_phase3.png',
+            'levels/level_7/boss_phase4.png',
+            'levels/level_7/boss_piece_wing_left.png',
+            'levels/level_7/boss_piece_wing_right.png',
+            'levels/level_7/boss_piece_core_plate.png'
         );
 
         // Remove duplicatas
@@ -652,10 +659,27 @@ class MotorLevante13 {
         }
     }
 
-    iniciarPartida() {
+    iniciarPartida(indiceFaseCustomizado = null) {
         audio.iniciar();
         this.resetarJogo();
-        this.iniciarFase(0);
+
+        // Permite testes diretos de fases via URL: game.html?fase=6 ou game.html?level=6
+        let faseInicial = 0;
+        if (indiceFaseCustomizado !== null && Number.isInteger(indiceFaseCustomizado)) {
+            faseInicial = indiceFaseCustomizado;
+        } else {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramFase = urlParams.get('fase') || urlParams.get('level');
+            if (paramFase) {
+                const num = parseInt(paramFase, 10);
+                // Converte 1-indexado (ex: ?fase=6) para 0-indexado (índice 5)
+                if (!isNaN(num) && num >= 1 && num <= this.fases.length) {
+                    faseInicial = num - 1;
+                }
+            }
+        }
+
+        this.iniciarFase(faseInicial);
     }
 
     /**
@@ -681,6 +705,14 @@ class MotorLevante13 {
         this.textoAlertaChefe = '';
         this.subtextoAlertaChefe = '';
         this.animacaoDestruicaoChefe = null;
+
+        // Reseta posição da nave do jogador para o ponto inicial padrão em qualquer fase
+        if (this.jogador) {
+            this.jogador.resetarPosicao();
+        }
+        this.touchX = null;
+        this.touchY = null;
+        this.teclas = {};
 
         // Reseta posição de âncora da grade e temporizadores
         this.gradeX = 0;

@@ -22,8 +22,8 @@ function inicializarModoSite() {
     const forcarPublicado = params.get('publicado') === '1' || params.get('modo') === 'jogar';
     const forcarEspera = params.get('espera') === '1' || params.get('modo') === 'espera';
 
-    // Padrão do site solicitado pelo usuário: Modo de Espera / Em Breve ATIVADO por padrão!
-    let modoEsperaAtivo = true;
+    // Padrão do site: Jogo LIBERADO para jogar por padrão!
+    let modoEsperaAtivo = false;
     if (forcarPublicado) {
         modoEsperaAtivo = false;
     } else if (forcarEspera) {

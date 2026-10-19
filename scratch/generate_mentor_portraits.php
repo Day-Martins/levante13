@@ -60,9 +60,20 @@ $mentores = [
         'gamma'    => 1.0
     ],
     [
+        'id' => 'janones',
+        'ref' => $baseDir . '/RefImg/Janones.png',
+        'level' => 6,
+        'nome' => 'JANONES',
+        'crop' => ['x' => 55, 'y' => 10, 'w' => 230, 'h' => 230],
+        'corBorda' => [56, 189, 248], // ciano neon da resistência digital
+        'corNome'  => [255, 255, 255],
+        'paleta'   => 36,
+        'gamma'    => 1.0
+    ],
+    [
         'id' => 'lula',
         'ref' => $baseDir . '/RefImg/Lula.png',
-        'level' => 6,
+        'level' => 7,
         'nome' => 'LULA',
         'crop' => ['x' => 245, 'y' => 45, 'w' => 230, 'h' => 230],
         'corBorda' => [250, 204, 21], // dourado oficial do comandante supremo
@@ -170,5 +181,11 @@ foreach ($mentores as $m) {
     $dest = $baseDir . "/levels/level_{$m['level']}/mentor.png";
     imagepng($final, $dest, 9);
     echo "Sucesso: $dest\n";
+
+    $destDeploy = $baseDir . "/deploy/levels/level_{$m['level']}/mentor.png";
+    if (is_dir(dirname($destDeploy))) {
+        imagepng($final, $destDeploy, 9);
+        echo "Sucesso Deploy: $destDeploy\n";
+    }
 }
 echo "Geração completa!\n";

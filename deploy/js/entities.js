@@ -30,6 +30,15 @@ class Jogador {
         this.particulas = [];
     }
 
+    /**
+     * Restaura a posição da nave para o centro inferior do canvas (usado no início de cada fase)
+     */
+    resetarPosicao() {
+        this.x = this.cw / 2 - this.largura / 2;
+        this.y = this.ch - 84;
+        this.particulas = [];
+    }
+
     atualizar(teclas, touchX, touchY = null) {
         // Movimentação via Teclado
         if (teclas['ArrowLeft'] || teclas['KeyA']) {
@@ -443,17 +452,17 @@ class ChefeSetor {
         // Pré-carrega fases visuais e destroços do Chefe Final
         this.spritesFases = [];
         this.spritesDestrocos = {};
-        if (this.idFase === 6) {
+        if (this.idFase === 7 || this.idFase === 6 && !dadosChefe.attackPattern) {
             this.carregarAssetsChefeFinal();
         }
     }
 
     carregarAssetsChefeFinal() {
         const caminhos = [
-            'levels/level_6/boss_phase1.png',
-            'levels/level_6/boss_phase2.png',
-            'levels/level_6/boss_phase3.png',
-            'levels/level_6/boss_phase4.png'
+            'levels/level_7/boss_phase1.png',
+            'levels/level_7/boss_phase2.png',
+            'levels/level_7/boss_phase3.png',
+            'levels/level_7/boss_phase4.png'
         ];
         this.spritesFases = caminhos.map(src => {
             const img = new Image();
@@ -462,11 +471,11 @@ class ChefeSetor {
         });
 
         const imgAsaEsq = new Image();
-        imgAsaEsq.src = 'levels/level_6/boss_piece_wing_left.png';
+        imgAsaEsq.src = 'levels/level_7/boss_piece_wing_left.png';
         const imgAsaDir = new Image();
-        imgAsaDir.src = 'levels/level_6/boss_piece_wing_right.png';
+        imgAsaDir.src = 'levels/level_7/boss_piece_wing_right.png';
         const imgPlaca = new Image();
-        imgPlaca.src = 'levels/level_6/boss_piece_core_plate.png';
+        imgPlaca.src = 'levels/level_7/boss_piece_core_plate.png';
 
         this.spritesDestrocos = {
             asaEsquerda: imgAsaEsq,

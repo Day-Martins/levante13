@@ -17,14 +17,14 @@
   "grid": {
     "rows": 5,
     "cols": 8,
-    "spacingX": 42,
-    "spacingY": 38,
+    "spacingX": 40,
+    "spacingY": 35,
     "pattern": "pincer",
     "duration": 180,
     "initialSpeed": 1.05,
     "stepY": 5,
-    "speedMultiplierPerKill": 1.025,
-    "diveChance": 0.12
+    "speedMultiplierPerKill": 1.0,
+    "diveChance": 0.09
   },
   "enemyTypes": [
     {

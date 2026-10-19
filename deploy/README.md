@@ -1,90 +1,62 @@
-# 🚀 LEVANTE 13: A VIRADA — PACOTE DE DEPLOY (TESTE & PRODUÇÃO)
+# Levante 13: A Virada
 
-Este pacote contém o projeto completo **Levante 13: A Virada**, incluindo o arcade vertical, backend PHP, APIs, gerador de cards via GD, banco SQLite e a **Página Principal com os links desabilitados por padrão** (Modo de Espera / Hangar de Pré-Lançamento).
+Arcade vertical para navegador: HTML5 Canvas + JavaScript puro no front, PHP 8.3+ com SQLite no back.
 
----
+## Rodar localmente (macOS)
 
-## 🎯 Objetivo Deste Pacote
-
-Permitir que você publique o site em seu servidor web (Apache / Nginx + PHP 8.1+) e envie o link **diretamente para os testadores**, enquanto visitantes comuns que acessam a raiz do site verão a página de espera com os botões "JOGAR AGORA" desativados indicando *"EM BREVE"*.
-
----
-
-## 🔗 Como Testar
-
-| Cenário | URL de Acesso | O que acontece |
-|---|---|---|
-| **Público Geral (Página de Espera)** | `https://seusite.com/` | Entra no Hangar da Resistência. Todos os botões de jogar ficam desabilitados ("EM BREVE"). |
-| **Acesso Direto ao Jogo (Para Testadores)** | `https://seusite.com/game.html` | Abre diretamente a tela do arcade espacial pronta para jogar. |
-| **Desbloqueio Secreto da Home (Para Testadores)** | `https://seusite.com/?modo=jogar` | Abre a Home com os botões "JOGAR AGORA" habilitados exclusivamente para quem usou este link. |
-| **Voltar a Bloquear a Home** | `https://seusite.com/?modo=espera` | Força a Home de volta ao modo bloqueado no navegador. |
-
----
-
-## 📂 Estrutura de Arquivos
-
-```text
-deploy/
-├── index.php                  # Entrada principal (carrega a Home com modo espera ativo)
-├── home.html                  # Landing page de campanha e mobilização
-├── game.html                  # O arcade clássico completo com áudio, chefes e mentores
-├── share.php                  # Página de compartilhamento social (Open Graph / WhatsApp)
-├── .htaccess                  # Configuração do Apache (gzip, cache, segurança)
-├── api/                       # Endpoints PHP (leaderboard, fases, cards, jogador)
-│   ├── config.php
-│   ├── db.php
-│   ├── fases.php
-│   ├── generate_card.php
-│   ├── leaderboard.php
-│   └── player.php
-├── css/
-│   ├── home.css               # Estilos da landing page
-│   └── style.css              # Estilos do arcade
-├── js/
-│   ├── audio.js               # Sintetizador procedural Web Audio API (música + SFX + sirene)
-│   ├── auth.js                # Teclado Urna Eletrônica PIN + Codinome
-│   ├── entities.js            # Naves inimigas, chefes, mentores e tiros
-│   ├── game.js                # Loop principal do jogo, colisões e pontuação
-│   └── home.js                # Lógica da landing page (modo espera ativo por padrão)
-├── assets/
-│   ├── fonts/                 # Fonte VCR OSD Mono
-│   ├── images/                # Banner do hero
-│   └── img/                   # Artes de compartilhamento (WhatsApp e Instagram Stories)
-├── levels/                    # Fases 1 a 6 (fundos, sprites, chefes e diálogos)
-│   ├── level_1 .. level_6
-│   └── .htaccess              # Impede execução de scripts maliciosos na pasta de níveis
-├── database/
-│   ├── game.db                # Banco de dados SQLite com tabelas criadas
-│   └── .htaccess              # Impede download direto do banco via navegador
-└── cards/
-    └── .htaccess              # Diretório onde os cards gerados pelo PHP GD são salvos
-```
-
----
-
-## 🛠️ Requisitos do Servidor
-
-1. **PHP:** Versão 8.1 ou superior.
-2. **Extensões PHP necessárias:**
-   - `pdo_sqlite` (para o ranking e autenticação de pilotos)
-   - `gd` com suporte a FreeType / PNG (para geração dos cards de vitória/compartilhamento)
-3. **Servidor Web:** Apache (com `mod_rewrite` e suporte a `.htaccess`) ou Nginx equivalente.
-
----
-
-## ⚙️ Permissões de Escrita (Importante!)
-
-Para que o SQLite grave os recordes e o PHP gere os cards de compartilhamento, certifique-se de que o usuário do servidor web (`www-data`, `nobody` ou o seu usuário cPanel) tenha permissão de escrita nas seguintes pastas:
+Requisitos: PHP 8.3 ou mais novo com `pdo_sqlite` e `gd` (`brew install php` já traz os dois).
 
 ```bash
-chmod 775 database database/game.db
-chmod 775 cards
+./dev-p.sh
 ```
-*(No cPanel / Gerenciador de Arquivos, certifique-se de que as permissões de `database` e `cards` estejam como `755` ou `775`).*
 
----
+O script abre `http://localhost:8080` no navegador. Ele usa o `router.php`, que bloqueia o acesso à pasta `database/` e a arquivos ocultos. O servidor embutido do PHP ignora os `.htaccess`, então **não rode `php -S` sem o roteador**.
 
-## 🔒 Segurança Integrada
-- O arquivo `database/.htaccess` bloqueia qualquer tentativa de download de `game.db`, `game.db-wal` ou arquivos ocultos.
-- As pastas `cards/` e `levels/` possuem regras que proíbem a execução de qualquer script PHP.
-- Todas as APIs utilizam Prepared Statements PDO contra SQL Injection e sanitização contra XSS.
+O banco (`database/game.db`) é criado sozinho na primeira requisição e não vai para o Git.
+
+## Criar uma frente nova
+
+Crie `levels/level_7/` com `bg.png` (360×640), `enemy.png`, `mentor.png` (128×128) e `config.json` no mesmo formato das fases existentes. As pastas são lidas em ordem natural (`level_10` vem depois de `level_9`).
+
+A API (`api/levels.php`) ignora a pasta se o `config.json` não existir, não for um JSON válido ou não tiver os campos `name`, `grid` e `enemyTypes`. Os valores dentro deles não são conferidos, então revise os números antes de publicar. O chefe da fase usa `boss.png`, se existir.
+
+A linha `r` da grade usa o tipo `enemyTypes[r % total]`.
+
+## Pontuação e placar
+
+O placar (`api/leaderboard.php`) aceita pontuações de 0 a 50 milhões e no máximo um registro a cada 15 segundos por origem. Codinomes protegidos na urna exigem o PIN. A pontuação enviada pelo jogo **não é recalculada no servidor**, então quem editar a requisição no navegador consegue registrar um valor falso.
+
+## Publicar
+
+1. O domínio `https://levante13.online` está fixo em `api/leaderboard.php` e `share.php` (links de compartilhamento e cards). Para outro domínio, troque nesses dois arquivos.
+2. **Apache:** os `.htaccess` de `database/`, `cards/` e `levels/` já fazem os bloqueios. **Nginx:** os `.htaccess` não valem; bloqueie `/database/` e a execução de PHP em `/cards/` e `/levels/` na configuração do servidor.
+3. As pastas `database/` e `cards/` precisam ter permissão de escrita para o PHP.
+4. Use HTTPS. O WhatsApp só mostra a prévia de links públicos.
+
+## Funcionalidades em Destaque
+
+### 🗳️ Autenticação de Codinome com Urna Eletrônica
+- Ao iniciar a partida, o jogador insere seu **Codinome** de piloto (3 a 12 caracteres).
+- **Proteção Opcional com Senha:** O jogador pode optar por registrar uma senha numérica de 4 dígitos na interface realista da **Urna Eletrônica** (display de dígitos, botões 0-9, CORRIGE e CONFIRMA com efeitos sonoros de bipes e o clássico *"Pililili... Confirma"*).
+- **Codinomes Livres:** Se optar por não proteger, o codinome permanece aberto e pode ser reutilizado por qualquer jogador.
+- **Validação Segura:** Armazenamento com hash criptográfico Bcrypt no SQLite (`players`). No envio do placar, pontuações de codinomes protegidos exigem a autenticação correspondente.
+
+### 👾 Chefes Únicos das 6 Frentes e Desmembramento Progressivo
+- Cada frente possui seu próprio Chefe de final de fase com design e paleta inspirados na temática do setor.
+- **Chefe Final (Frente 6):** Apresenta 4 fases com mecânica de **desmembramento progressivo** — perde peças da blindagem conforme sofre dano (asas laterais, núcleo e placa frontal) enquanto suas armas ganham maior cadência e poder de fogo, com surgimento de cápsulas de power-up para apoiar a resistência.
+
+### ✊ Mentores da Resistência em Pixel Art
+- Transmissões holográficas no início de cada frente com retratos em pixel art de referências históricas e contemporâneas:
+  - **Frente 1:** Ana Prestes (Historiadora e Socióloga)
+  - **Frente 2:** Jones Manoel (Educador Popular e Historiador)
+  - **Frente 3:** Sonia Guajajara (Liderança Indígena e Ministra)
+  - **Frente 4:** Dr. Drauzio Varella (Médico Sanitarista e Cientista da Saúde)
+  - **Frente 5:** Pastor Henrique Vieira (Teólogo e Ativista)
+  - **Frente 6:** Presidente Lula (Liderança Popular e Soberania)
+
+### 🌊 Movimentação Errática de Manada
+- Conforme o número de invasores na grade diminui, a movimentação torna-se progressivamente mais errática e imprevisível, simulando a quebra do efeito de manada fascista.
+
+## LGPD e Privacidade
+
+O jogo segue estritamente as diretrizes da LGPD com minimização de dados: armazena apenas o codinome, a pontuação, o PIN em hash Bcrypt e a frente alcançada. Para limitar abusos, utiliza rate-limiting com hash temporário. Não há coleta de e-mail, rastreadores invasivos nem cookies de terceiros.

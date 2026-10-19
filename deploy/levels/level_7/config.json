@@ -1,0 +1,69 @@
+{
+  "id": 7,
+  "name": "Fortaleza Soberana: A Esplanada da Democracia",
+  "subtitle": "A Grande Virada Popular na Praça dos Três Poderes",
+  "theme": "sovereign_flag",
+  "destructionEffect": "sucata",
+  "holotransmission": {
+    "mentor": "Lula",
+    "role": "Líder Histórico da Aliança e Presidente do Brasil",
+    "avatar": "levels/level_7/mentor.png",
+    "dialogue": [
+      "Meus companheiros e minhas companheiras de todo o Brasil, aqui é o Lula!",
+      "Chegamos à batalha final no coração de Brasília. Os golpistas cercaram o Palácio do Povo e o Congresso para tentar calar a vontade soberana das urnas.",
+      "Eles podem tentar destruir prédios, mas nunca destruirão o sonho de um povo que quer comer, estudar, trabalhar e viver com dignidade.",
+      "Subam a rampa da democracia com coragem! O Brasil vai voltar a ser feliz! Vamos à vitória!"
+    ]
+  },
+  "grid": {
+    "rows": 4,
+    "cols": 8,
+    "spacingX": 42,
+    "spacingY": 34,
+    "pattern": "chaos",
+    "duration": 180,
+    "initialSpeed": 0.9,
+    "stepY": 3.0,
+    "speedMultiplierPerKill": 1.016,
+    "diveChance": 0.07
+  },
+  "enemyTypes": [
+    {
+      "id": "troll_patriota",
+      "name": "Invasor Golpista",
+      "hp": 1,
+      "points": 90,
+      "color": "#a1a1aa",
+      "behavior": "march"
+    },
+    {
+      "id": "caminhao_golpista",
+      "name": "Patriota do Caminhão",
+      "hp": 2,
+      "points": 200,
+      "color": "#ea580c",
+      "behavior": "dive"
+    },
+    {
+      "id": "blindado_insurreicao",
+      "name": "Blindado Antidemocrático",
+      "hp": 4,
+      "points": 450,
+      "color": "#71717a",
+      "behavior": "tank"
+    }
+  ],
+  "boss": {
+    "id": "hidra_golpista",
+    "name": "A Hidra Golpista",
+    "title": "Fortaleza Imperial da Tirania",
+    "hp": 70,
+    "points": 5000,
+    "attackPattern": "sovereign_annihilation_barrage"
+  },
+  "palette": {
+    "primary": "#ef4444",
+    "secondary": "#22c55e",
+    "background": "#0b0f19"
+  }
+}

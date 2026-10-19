@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /home.html
+Allow: /game.html
+Allow: /share.php
+Disallow: /database/
+Disallow: /api/
+Disallow: /cards/
+Disallow: /dev/
+
+Sitemap: https://levante13.online/sitemap.xml
