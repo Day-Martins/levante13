@@ -26,10 +26,11 @@ function obterNomeFrente(int $levelReached): string
     $nomes = [
         1 => 'FRENTE 1 (DEMOCRACIA)',
         2 => 'FRENTE 2 (TRABALHO)',
-        3 => 'FRENTE 3 (AMAZONIA)',
-        4 => 'FRENTE 4 (SUS / SAUDE)',
+        3 => 'FRENTE 3 (AMAZÔNIA)',
+        4 => 'FRENTE 4 (SUS / SAÚDE)',
         5 => 'FRENTE 5 (ESTADO LAICO)',
-        6 => 'FRENTE 6 (SOBERANIA)'
+        6 => 'FRENTE 6 (REDES DA VIRADA)',
+        7 => 'FRENTE 7 (SOBERANIA)'
     ];
     return $nomes[$levelReached] ?? "FRENTE {$levelReached}";
 }

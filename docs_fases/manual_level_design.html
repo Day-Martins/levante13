@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>MANUAL DO OPERADOR TÁTICO: CONSTRUÇÃO DE FASES — LEVANTE 13</title>
+    <style>
+        :root {
+            --vermelho-campanha: #dc2626;
+            --dourado: #facc15;
+            --ciano: #38bdf8;
+            --papel: #fbf8ef;
+            --tinta: #1c1917;
+            --cinza-escuro: #292524;
+            --borda-retro: #44403c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 0; /* Controlamos as margens dentro de cada .pagina */
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace, sans-serif;
+            background: #d6cdbe;
+            color: var(--tinta);
+            line-height: 1.35;
+            font-size: 10pt;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .pagina {
+            background: var(--papel);
+            width: 210mm;
+            height: 297mm;
+            max-height: 297mm;
+            margin: 0 auto;
+            padding: 16mm 18mm 16mm 18mm;
+            position: relative;
+            page-break-after: always;
+            page-break-inside: avoid;
+            overflow: hidden; /* Garante que nada transborde para criar página fantasma */
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px solid #bbb; /* sutil no preview web */
+        }
+
+        @media screen {
+            .pagina {
+                margin: 20px auto;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                border: 4px solid var(--borda-retro);
+            }
+        }
+
+        .borda-decorativa {
+            border: 2px solid var(--borda-retro);
+            height: 100%;
+            padding: 12mm 14mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .conteudo-pagina {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rodape-pagina {
+            text-align: center;
+            font-size: 7.5pt;
+            letter-spacing: 2px;
+            color: #78716c;
+            border-top: 1px dashed #a8a29e;
+            padding-top: 6px;
+            margin-top: 10px;
+            flex-shrink: 0;
+        }
+
+        /* Capa anos 90 */
+        .capa-moldura {
+            border: 6px double var(--vermelho-campanha);
+            height: 100%;
+            padding: 16mm 14mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .carimbo-secreto {
+            display: inline-block;
+            border: 3px solid var(--vermelho-campanha);
+            color: var(--vermelho-campanha);
+            padding: 6px 18px;
+            font-weight: 900;
+            font-size: 12pt;
+            letter-spacing: 4px;
+            transform: rotate(-2deg);
+            margin-bottom: 15px;
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .titulo-jogo {
+            font-size: 30pt;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--vermelho-campanha);
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px #000;
+            margin-bottom: 4px;
+        }
+
+        .subtitulo-jogo {
+            font-size: 12pt;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: var(--cinza-escuro);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .box-manual {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 16px;
+            border: 3px solid var(--dourado);
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .box-manual h2 {
+            font-size: 15pt;
+            color: var(--dourado);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .box-manual p {
+            font-size: 9.5pt;
+            line-height: 1.45;
+            color: #e2e8f0;
+            text-align: justify;
+        }
+
+        .rodape-capa {
+            font-size: 8.5pt;
+            font-weight: bold;
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
+
+        /* Títulos de Seção Estilo 90s */
+        h1.secao-titulo {
+            font-size: 15pt;
+            background: var(--vermelho-campanha);
+            color: #fff;
+            padding: 5px 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-left: 6px solid var(--cinza-escuro);
+            flex-shrink: 0;
+        }
+
+        h2.secao-subtitulo {
+            font-size: 11pt;
+            color: var(--cinza-escuro);
+            border-bottom: 2px solid var(--vermelho-campanha);
+            padding-bottom: 3px;
+            margin: 12px 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+
+        p {
+            margin-bottom: 8px;
+            text-align: justify;
+            font-size: 9.5pt;
+        }
+
+        /* Tabelas Retrô */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0 12px 0;
+            font-size: 8.5pt;
+        }
+
+        th, td {
+            border: 1px solid var(--borda-retro);
+            padding: 5px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #334155;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        code {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 1px 4px;
+            font-size: 8.5pt;
+            font-weight: bold;
+            border: 1px solid #cbd5e1;
+        }
+
+        pre {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 10px;
+            border-left: 3px solid var(--dourado);
+            font-size: 8pt;
+            line-height: 1.35;
+            margin: 8px 0 10px 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .caixa-aviso {
+            border: 2px dashed var(--vermelho-campanha);
+            background: rgba(220, 38, 38, 0.05);
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 8.5pt;
+        }
+
+        .caixa-aviso strong {
+            color: var(--vermelho-campanha);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .diagrama-grid {
+            border: 2px solid #000;
+            background: #090d16;
+            color: #22c55e;
+            padding: 10px;
+            font-family: monospace;
+            text-align: center;
+            margin: 8px 0;
+            font-size: 7.8pt;
+            line-height: 1.3;
+        }
+
+        .duas-colunas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .card-tatico {
+            border: 1px solid var(--borda-retro);
+            padding: 8px;
+            background: rgba(255,255,255,0.7);
+        }
+
+        .card-tatico h4 {
+            color: var(--vermelho-campanha);
+            margin-bottom: 3px;
+            font-size: 9pt;
+            text-transform: uppercase;
+        }
+
+        .card-tatico p {
+            font-size: 8pt;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .card-tatico code {
+            font-size: 7.5pt;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PÁGINA 1: CAPA CLÁSSICA ANOS 90 -->
+    <div class="pagina">
+        <div class="capa-moldura">
+            <div>
+                <div class="carimbo-secreto">DOCUMENTO DE VANGUARDA Nº 13-T</div>
+                <div class="titulo-jogo">LEVANTE 13</div>
+                <div class="subtitulo-jogo">A Virada — O Jogo da Resistência Popular</div>
+                <div style="border-top: 2px solid var(--cinza-escuro); width: 60%; margin: 0 auto 15px auto;"></div>
+            </div>
+
+            <div class="box-manual">
+                <h2>MANUAL DO OPERADOR TÁTICO</h2>
+                <p style="text-align: center; font-size: 10.5pt; color: #facc15; font-weight: bold; margin-bottom: 10px;">
+                    PROTOCOLO DE ARQUITETURA E CONSTRUÇÃO DE SETORES ESPACIAIS
+                </p>
+                <p>
+                    Este manual contém todas as especificações técnicas, padrões balísticos e mecânicas de grade para a criação de novos teatros de operações contra as frotas reacionárias. 
+                    Cada combatente tem o dever histórico de dominar o preenchimento dos arquivos de dados, calibragem de chefes e distribuição de esquadrões.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin: 10px 0;">
+                <p style="font-size: 9pt; letter-spacing: 1px; color: #44403c;">
+                    <strong>SISTEMA OPERACIONAL:</strong> CANVAS HTML5 / JAVASCRIPT ES6 SOBERANO<br>
+                    <strong>ARQUITETURA DE DADOS:</strong> FORMATO JSON ESTRUTURADO (UTF-8)<br>
+                    <strong>EDIÇÃO:</strong> 1ª IMPRESSÃO DA RESISTÊNCIA — OUTUBRO DE 2026
+                </p>
+            </div>
+
+            <div class="rodape-capa">
+                "A ESTRUTURA DO JOGO PERTENCE A QUEM A CONSTRÓI."<br>
+                BRIGADA POPULAR DE DESENVOLVIMENTO DE SOFTWARE LIVRE E EMANCIPATÓRIO
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 2: ESTRUTURA DE PASTAS E ARQUIVOS -->
+    <div class="pagina">
+        <div class="borda-decorativa">
+            <div class="conteudo-pagina">
+                <h1 class="secao-titulo">1. DIRETÓRIO DE OPERAÇÕES</h1>
+                <p>
+                    Cada nível do <strong>Levante 13</strong> é um setor autônomo contido dentro do diretório <code>levels/level_X/</code>. 
+                    O motor do jogo lê essa pasta para instanciar a missão sem requerer compilação de código.
+                </p>
+
+                <h2 class="secao-subtitulo">ESTRUTURA DE ARQUIVOS OBRIGATÓRIA</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 26%;">ARQUIVO</th>
+                            <th style="width: 20%;">FORMATO</th>
+                            <th>FUNÇÃO TÁTICA NO MOTOR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>config.json</code></td>
+                            <td>JSON UTF-8</td>
+                            <td>Contrato operacional: velocidade da grade, padrões balísticos, diálogos e chefe.</td>
+                        </tr>
+                        <tr>
+                            <td><code>bg.png</code></td>
+                            <td>Imagem PNG</td>
+                            <td>Fundo atmosférico/espacial do setor (480x720 ou proporcional).</td>
+                        </tr>
+                        <tr>
+                            <td><code>enemy.png</code></td>
+                            <td>Sprite PNG</td>
+                            <td>Embarcação padrão dos invasores da grade comum (aprox. 32x24px).</td>
+                        </tr>
+                        <tr>
+                            <td><code>boss.png</code></td>
+                            <td>Sprite PNG</td>
+                            <td>Nave Capitânia / Chefe de Setor (aprox. 76x50px até 96x64px).</td>
+                        </tr>
+                        <tr>
+                            <td><code>mentor.png</code></td>
+                            <td>Retrato PNG</td>
+                            <td>Imagem do mentor para holotransmissão (120x120px em pixel art).</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="caixa-aviso">
+                    <strong>AVISO DA BRIGADA TÉCNICA:</strong> Todos os caminhos de sprites dentro de <code>config.json</code> devem ser relativos à raiz da aplicação (ex: <code>levels/level_1/mentor.png</code>). As imagens devem possuir fundo transparente (PNG alpha) para encaixe harmônico com o motor de partículas.
+                </div>
+
+                <h2 class="secao-subtitulo">VISÃO GERAL DO FLUXO DO NÍVEL</h2>
+                <div class="diagrama-grid">
+[1. ENTRADA NO SETOR] ──► [2. HOLOTRANSMISSÃO DO MENTOR]
+                                     │ (Teletipo + Diálogo)
+                                     ▼
+[4. ENTRADA DA CAPITÂNIA] ◄── [3. COMBATE EM GRADE COM OS INVASORES]
+          │ (Chefe)                  │ (Marchas, Mergulhos Rasantes, Power-ups)
+          ▼
+[5. ANIMAÇÃO DE DESTRUIÇÃO] ──► [6. TRANSIÇÃO DE SETOR / VITÓRIA]
+                </div>
+                <p>
+                    O jogador apenas enfrenta a Capitânia (Chefe) após aniquilar completamente os invasores da grade regular. Durante o combate com a tropa, invasores eliminados têm chance de ejetar cápsulas de apoio popular (Escudo CLT, Tomo Laser, Vacina SUS, Megafone Triplo, Urna Soberana).
+                </p>
+            </div>
+            <div class="rodape-pagina">
+                COMITÊ CENTRAL DE ENGENHARIA ESPACIAL • DISTRIBUIÇÃO RESTRITA À RESISTÊNCIA • PÁGINA 2
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 3: CONFIG.JSON E PARÂMETROS DA GRADE -->
+    <div class="pagina">
+        <div class="borda-decorativa">
+            <div class="conteudo-pagina">
+                <h1 class="secao-titulo">2. ANATOMIA DO CONFIG.JSON</h1>
+                <p>
+                    O coração de cada fase é o arquivo <code>config.json</code>. Abaixo detalhamos os blocos de parametrização fundamentais:
+                </p>
+
+                <h2 class="secao-subtitulo">A) IDENTIFICAÇÃO E HOLOTRANSMISSÃO</h2>
+                <pre>{
+  "id": 1,
+  "name": "Setor das Redes: O Gabinete do Ódio",
+  "subtitle": "Guerra da Informação e Desinformação em Massa",
+  "theme": "cyber_matrix",
+  "holotransmission": {
+    "mentor": "Ana Elisa",
+    "role": "Oficial de Contrainteligência e Guerra Digital",
+    "avatar": "levels/level_1/mentor.png",
+    "dialogue": [
+      "Companheiras e companheiros da Vanguarda 13! Aqui é Ana Elisa.",
+      "O Gabinete Imperial ativou uma rede massiva de disparos de mentiras...",
+      "Quebrem a criptografia do ódio e destruam os servidores centrais!"
+    ]
+  }
+}</pre>
+
+                <h2 class="secao-subtitulo">B) PARÂMETROS TÁTICOS DA GRADE (ESQUADRÃO)</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CHAVE</th>
+                            <th>TIPO</th>
+                            <th>PADRÃO</th>
+                            <th>DESCRIÇÃO OPERACIONAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>rows</code></td>
+                            <td>Inteiro</td>
+                            <td><code>4</code></td>
+                            <td>Número de linhas horizontais de invasores (2 a 6).</td>
+                        </tr>
+                        <tr>
+                            <td><code>cols</code></td>
+                            <td>Inteiro</td>
+                            <td><code>8</code></td>
+                            <td>Número de colunas verticais de invasores (4 a 10).</td>
+                        </tr>
+                        <tr>
+                            <td><code>spacingX</code></td>
+                            <td>Número</td>
+                            <td><code>42</code></td>
+                            <td>Espaçamento horizontal entre o centro das naves (em pixels).</td>
+                        </tr>
+                        <tr>
+                            <td><code>spacingY</code></td>
+                            <td>Número</td>
+                            <td><code>36</code></td>
+                            <td>Espaçamento vertical entre as fileiras (em pixels).</td>
+                        </tr>
+                        <tr>
+                            <td><code>pattern</code></td>
+                            <td>String</td>
+                            <td><code>"classic"</code></td>
+                            <td>Padrão matemático de movimentação coletiva (ver Seção 3).</td>
+                        </tr>
+                        <tr>
+                            <td><code>initialSpeed</code></td>
+                            <td>Número</td>
+                            <td><code>0.65</code></td>
+                            <td>Velocidade horizontal base da marcha da grade.</td>
+                        </tr>
+                        <tr>
+                            <td><code>stepY</code></td>
+                            <td>Número</td>
+                            <td><code>4.0</code></td>
+                            <td>Quantidade de pixels que a grade desce ao bater na borda da tela.</td>
+                        </tr>
+                        <tr>
+                            <td><code>speedMultiplierPerKill</code></td>
+                            <td>Número</td>
+                            <td><code>1.015</code></td>
+                            <td>Aceleração a cada inimigo abatido (efeito clássico arcade).</td>
+                        </tr>
+                        <tr>
+                            <td><code>diveChance</code></td>
+                            <td>Número</td>
+                            <td><code>0.03</code></td>
+                            <td>Probabilidade de naves executarem mergulhos rasantes táticos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="rodape-pagina">
+                COMITÊ CENTRAL DE ENGENHARIA ESPACIAL • DISTRIBUIÇÃO RESTRITA À RESISTÊNCIA • PÁGINA 3
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 4: PADRÕES DE MOVIMENTO DA GRADE -->
+    <div class="pagina">
+        <div class="borda-decorativa">
+            <div class="conteudo-pagina">
+                <h1 class="secao-titulo">3. PADRÕES DE MOVIMENTO DA FROTA</h1>
+                <p>
+                    O motor do <strong>Levante 13</strong> implementa osciladores procedurais que combinam a marcha em bloco com desvios individuais senoidais:
+                </p>
+
+                <div class="duas-colunas">
+                    <div class="card-tatico">
+                        <h4>1. "classic"</h4>
+                        <p>Marcha clássica em bloco rígido estilo anos 80. Nenhuma distorção orgânica de linha. Ideal para fases introdutórias.</p>
+                        <code>offset = { x: 0, y: 0 }</code>
+                    </div>
+                    <div class="card-tatico">
+                        <h4>2. "zigzag"</h4>
+                        <p>Onda serpenteante fluida. Cada linha oscila horizontalmente com defasagem rítmica, gerando um efeito de serpente espacial.</p>
+                        <code>ox = sin(t*0.028 + lin*0.7)*8</code>
+                    </div>
+                    <div class="card-tatico">
+                        <h4>3. "orbit"</h4>
+                        <p>Movimento orbital planetário. Cada embarcação gira em pequenos vórtices circulares enquanto o bloco marcha para os lados.</p>
+                        <code>ox = cos(t*0.045 + fase)*15</code>
+                    </div>
+                    <div class="card-tatico">
+                        <h4>4. "advance_retreat"</h4>
+                        <p>Movimento de investida e recuo militar. A frota recua lentamente para o topo e subitamente avança em mergulho frontal coordenado.</p>
+                        <code>oy = ciclo de 240 quadros</code>
+                    </div>
+                    <div class="card-tatico">
+                        <h4>5. "pincer" (Tenaz)</h4>
+                        <p>Formação em pinça. As asas esquerda e direita convergem e se expandem para encurralar a nave do jogador no centro.</p>
+                        <code>distCentro * sin(t*0.05)*3.5</code>
+                    </div>
+                    <div class="card-tatico">
+                        <h4>6. "chaos"</h4>
+                        <p>Padrão de desespero imperial (usado na Batalha Final). Cada fileira executa um padrão diferente simultaneamente.</p>
+                        <code>Distribuição mista por linha</code>
+                    </div>
+                </div>
+
+                <h2 class="secao-subtitulo">MECÂNICA DE "PÂNICO E QUEBRA DE MANADA"</h2>
+                <p>
+                    Mesmo nos padrões ordenados, o motor calcula o <strong>fator de quebra de manada</strong>:
+                </p>
+                <pre>fatorErratica = Math.pow(1 - (inimigosVivos / totalInicial), 1.6);</pre>
+                <p>
+                    À medida que as forças imperiais são dizimadas, os sobreviventes perdem a disciplina de formação: começam a tremer, atirar com maior cadência e realizar mergulhos rasantes suicidas em desespero contra o jogador!
+                </p>
+            </div>
+            <div class="rodape-pagina">
+                COMITÊ CENTRAL DE ENGENHARIA ESPACIAL • DISTRIBUIÇÃO RESTRITA À RESISTÊNCIA • PÁGINA 4
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 5: TIPOS DE INIMIGOS E CHEFES -->
+    <div class="pagina">
+        <div class="borda-decorativa">
+            <div class="conteudo-pagina">
+                <h1 class="secao-titulo">4. INVASORES E CAPITÂNIAS (CHEFES)</h1>
+                
+                <h2 class="secao-subtitulo">A) ESPECIFICAÇÃO DE INIMIGOS REGULARES</h2>
+                <p>
+                    O vetor <code>enemyTypes</code> define a hierarquia da infantaria inimiga. Na formação da grade, as linhas superiores recebem os inimigos mais resistentes e valiosos.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CAMPO</th>
+                            <th>TIPO</th>
+                            <th>EXEMPLO</th>
+                            <th>FINALIDADE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>id</code></td>
+                            <td>String</td>
+                            <td><code>"drone_fake"</code></td>
+                            <td>Identificador interno do tipo.</td>
+                        </tr>
+                        <tr>
+                            <td><code>name</code></td>
+                            <td>String</td>
+                            <td><code>"Drone Troll"</code></td>
+                            <td>Nome exibido em relatórios e HUD.</td>
+                        </tr>
+                        <tr>
+                            <td><code>hp</code></td>
+                            <td>Inteiro</td>
+                            <td><code>1 a 4</code></td>
+                            <td>Quantidade de tiros suportados antes da destruição.</td>
+                        </tr>
+                        <tr>
+                            <td><code>points</code></td>
+                            <td>Inteiro</td>
+                            <td><code>50 a 300</code></td>
+                            <td>Pontuação concedida ao placar do jogador.</td>
+                        </tr>
+                        <tr>
+                            <td><code>color</code></td>
+                            <td>Hex / CSS</td>
+                            <td><code>"#ef4444"</code></td>
+                            <td>Cor das partículas de explosão e projéteis.</td>
+                        </tr>
+                        <tr>
+                            <td><code>behavior</code></td>
+                            <td>String</td>
+                            <td><code>"march", "dive", "tank"</code></td>
+                            <td>Perfil de combate do invasor.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 class="secao-subtitulo">B) ESPECIFICAÇÃO DA CAPITÂNIA (BOSS)</h2>
+                <pre>"boss": {
+  "id": "superbot_desinformacao",
+  "name": "O Super-Robô da Mentira",
+  "title": "Nave Capitânia da Desinformação",
+  "hp": 30,
+  "points": 2000,
+  "attackPattern": "circular_spread"
+}</pre>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">CHAVE BOSS</th>
+                            <th>DISPARO & COMPORTAMENTO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>hp</code></td>
+                            <td>Normalmente <code>30</code> para fases normais e <code>70</code> para o Chefe Final com fases de quebra de casco. Ao atingir 50% de HP, o chefe sempre ejeta um Power-Up de apoio popular.</td>
+                        </tr>
+                        <tr>
+                            <td><code>attackPattern</code></td>
+                            <td>
+                                • <code>circular_spread</code>: Leque de 5 projéteis em arco.<br>
+                                • <code>pincer_press</code>: Salvas verticais pesadas duplas nas pontas.<br>
+                                • <code>spiral_slice</code>: Disparos rotativos helicoidais de lâminas.<br>
+                                • <code>toxic_quad</code>: Rajada de 4 agulhas teleguiadas.<br>
+                                • <code>holy_cross</code>: Formação cruciforme expansiva.<br>
+                                • <code>hydra_multi_stage</code>: Batalha em 4 fases com perda física de asas.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="rodape-pagina">
+                COMITÊ CENTRAL DE ENGENHARIA ESPACIAL • DISTRIBUIÇÃO RESTRITA À RESISTÊNCIA • PÁGINA 5
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 6: CONSTRUTOR LOCAL DE LEVEL E DICAS -->
+    <div class="pagina">
+        <div class="borda-decorativa">
+            <div class="conteudo-pagina">
+                <h1 class="secao-titulo">5. FERRAMENTA: CONSTRUTOR DE NÍVEL LOCAL</h1>
+                <p>
+                    Para facilitar a homologação de novos setores sem necessitar de servidor web, banco de dados ou ferramentas de build, disponibilizamos na pasta <code>docs_fases/</code> o utilitário:
+                </p>
+                <div style="text-align: center; margin: 10px 0;">
+                    <strong style="font-size: 11.5pt; background: #0f172a; color: #facc15; padding: 5px 12px; border: 2px solid var(--dourado);">
+                        CONSTRUTOR_LEVEL.html
+                    </strong>
+                </div>
+                <p>
+                    Basta dar dois cliques no arquivo para abri-lo diretamente em qualquer navegador moderno (Chrome, Firefox, Safari ou Edge).
+                </p>
+
+                <h2 class="secao-subtitulo">RECURSOS DO CONSTRUTOR VISUAL</h2>
+                <ul style="margin-left: 20px; line-height: 1.6; font-size: 9pt;">
+                    <li><strong>Editor de Parâmetros Visual:</strong> Ajuste sliders de velocidade, linhas, colunas e padrões de movimento em tempo real.</li>
+                    <li><strong>Simulador em Canvas Instantâneo:</strong> Visualize a grade se movimentando com a física exata do motor oficial antes de exportar!</li>
+                    <li><strong>Importação e Exportação JSON:</strong> Carregue um <code>config.json</code> existente para editar ou baixe o arquivo gerado com 1 clique.</li>
+                    <li><strong>100% Offline e Soberano:</strong> Não faz requisições externas, funcionando em computadores sem conexão com a internet.</li>
+                </ul>
+
+                <div class="caixa-aviso" style="margin-top: 14px;">
+                    <strong>MENSAGEM DE ENCERRAMENTO DO COMISSARIADO:</strong><br>
+                    A soberania tecnológica constrói-se na prática. Crie novas fases, narre a história dos setores populares, calibrem os chefes imperiais e compartilhem suas fases com a resistência!
+                </div>
+
+                <div style="text-align: center; margin-top: 18px; font-weight: bold; font-size: 9.5pt; letter-spacing: 2px;">
+                    ★★★ VIVA O LEVANTE POPULAR! FASCISTAS NÃO PASSARÃO! ★★★
+                </div>
+            </div>
+            <div class="rodape-pagina">
+                COMITÊ CENTRAL DE ENGENHARIA ESPACIAL • DISTRIBUIÇÃO RESTRITA À RESISTÊNCIA • PÁGINA 6
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

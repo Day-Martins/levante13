@@ -30,6 +30,15 @@ class Jogador {
         this.particulas = [];
     }
 
+    /**
+     * Restaura a posição da nave para o centro inferior do canvas (usado no início de cada fase)
+     */
+    resetarPosicao() {
+        this.x = this.cw / 2 - this.largura / 2;
+        this.y = this.ch - 84;
+        this.particulas = [];
+    }
+
     atualizar(teclas, touchX, touchY = null) {
         // Movimentação via Teclado
         if (teclas['ArrowLeft'] || teclas['KeyA']) {
@@ -402,13 +411,13 @@ class ChefeSetor {
         this.idFase = idFase;
         this.nome = configChefe.name || 'Nave Capitânia';
         this.titulo = configChefe.title || 'Força de Ocupação';
-        this.hp = configChefe.hp || (idFase === 6 ? 70 : 30);
+        this.hp = configChefe.hp || (idFase === 7 ? 70 : 30);
         this.hpMax = this.hp;
-        this.pontos = configChefe.points || (idFase === 6 ? 5000 : 2000);
+        this.pontos = configChefe.points || (idFase === 7 ? 5000 : 2000);
         this.padrao = configChefe.attackPattern || 'circular_spread';
 
         // Dimensões do casco
-        if (this.idFase === 6) {
+        if (this.idFase === 7) {
             this.largura = 96;
             this.altura = 64;
         } else {
@@ -419,7 +428,7 @@ class ChefeSetor {
         this.x = canvasWidth / 2 - this.largura / 2;
         this.y = -70; // Entrada majestosa descendo
         this.yDestino = 45;
-        this.velocidadeX = this.idFase === 6 ? 1.6 : 1.9;
+        this.velocidadeX = this.idFase === 7 ? 1.6 : 1.9;
         this.direcaoX = 1;
         this.temporizadorDisparo = 0;
         // Período de ~2 segundos (120 quadros) após descer para o banner sumir antes de iniciar a batalha
@@ -440,20 +449,20 @@ class ChefeSetor {
         this.pedacosAtivos = [];
         this.particulasDano = [];
 
-        // Pré-carrega fases visuais e destroços do Chefe Final
+        // Pré-carrega fases visuais e destroços do Chefe Final (Fase 7)
         this.spritesFases = [];
         this.spritesDestrocos = {};
-        if (this.idFase === 6) {
+        if (this.idFase === 7) {
             this.carregarAssetsChefeFinal();
         }
     }
 
     carregarAssetsChefeFinal() {
         const caminhos = [
-            'levels/level_6/boss_phase1.png',
-            'levels/level_6/boss_phase2.png',
-            'levels/level_6/boss_phase3.png',
-            'levels/level_6/boss_phase4.png'
+            'levels/level_7/boss_phase1.png',
+            'levels/level_7/boss_phase2.png',
+            'levels/level_7/boss_phase3.png',
+            'levels/level_7/boss_phase4.png'
         ];
         this.spritesFases = caminhos.map(src => {
             const img = new Image();
@@ -462,11 +471,11 @@ class ChefeSetor {
         });
 
         const imgAsaEsq = new Image();
-        imgAsaEsq.src = 'levels/level_6/boss_piece_wing_left.png';
+        imgAsaEsq.src = 'levels/level_7/boss_piece_wing_left.png';
         const imgAsaDir = new Image();
-        imgAsaDir.src = 'levels/level_6/boss_piece_wing_right.png';
+        imgAsaDir.src = 'levels/level_7/boss_piece_wing_right.png';
         const imgPlaca = new Image();
-        imgPlaca.src = 'levels/level_6/boss_piece_core_plate.png';
+        imgPlaca.src = 'levels/level_7/boss_piece_core_plate.png';
 
         this.spritesDestrocos = {
             asaEsquerda: imgAsaEsq,
@@ -499,7 +508,7 @@ class ChefeSetor {
             bloqueadoPelaBlindagem: false
         };
 
-        if (this.idFase === 6) {
+        if (this.idFase === 7) {
             // Transição para Fase 2 (<= 75% HP) — Perde Asa Esquerda e Canhão
             if (pctHp <= 0.75 && !this.pedacosEjetados.asaEsquerda) {
                 this.pedacosEjetados.asaEsquerda = true;
@@ -550,7 +559,7 @@ class ChefeSetor {
                 this.velocidadeX = 3.4; // Fúria frenética
             }
         } else {
-            // Chefes dos níveis 1 a 5: apoio popular ao chegar em 50% de vida
+            // Chefes dos níveis 1 a 6: apoio popular ao chegar em 50% de vida
             if (pctHp <= 0.50 && !this.droppouMeio) {
                 this.droppouMeio = true;
                 eventos.soltarPowerUp = true;
@@ -587,7 +596,7 @@ class ChefeSetor {
         }
 
         // Se for o Chefe Final em modo desespero (Fase 4), oscilação e tremores
-        if (this.idFase === 6 && this.faseDano === 4) {
+        if (this.idFase === 7 && this.faseDano === 4) {
             this.x += (Math.random() - 0.5) * 2;
         }
 
@@ -606,7 +615,7 @@ class ChefeSetor {
     }
 
     atualizarParticulasDano() {
-        if (this.idFase === 6) {
+        if (this.idFase === 7) {
             // Fase 2: faíscas e fumaça no coto da asa esquerda
             if (this.faseDano >= 2 && Math.random() < 0.6) {
                 this.particulasDano.push({
@@ -739,7 +748,19 @@ class ChefeSetor {
             }
 
             case 6: {
-                // A Hidra Golpista (Fortaleza Imperial da Tirania) - ESCALADA POR FASES
+                // O Algoritmo do Pânico (Setor de Convocação - André Janones):
+                // Rajada de desinformação digital e pânico: disparos rápidos ciano e magenta em leque
+                this.temporizadorDisparo = 36;
+                tiros.push(new Projetil(centroX, base, 0, 4.2, 'chefe', '#ec4899', false, true));
+                tiros.push(new Projetil(centroX - 16, base - 4, -1.4, 3.8, 'chefe', '#a855f7', false, true));
+                tiros.push(new Projetil(centroX + 16, base - 4, 1.4, 3.8, 'chefe', '#a855f7', false, true));
+                tiros.push(new Projetil(centroX - 32, base - 8, -2.4, 3.4, 'chefe', '#38bdf8', false, true));
+                tiros.push(new Projetil(centroX + 32, base - 8, 2.4, 3.4, 'chefe', '#38bdf8', false, true));
+                break;
+            }
+
+            case 7: {
+                // A Hidra Golpista (Fortaleza Imperial da Tirania - Lula) - ESCALADA POR FASES
                 if (this.faseDano === 1) {
                     // FASE 1: Blindagem total intacta — Canhões pesados duplos
                     this.temporizadorDisparo = 42;
@@ -812,9 +833,9 @@ class ChefeSetor {
         ctx.save();
         ctx.translate(this.x, this.y);
 
-        // Seleção de sprite conforme fase de dano (para o Chefe 6) ou sprite principal
+        // Seleção de sprite conforme fase de dano (para o Chefe 7) ou sprite principal
         let spriteAtual = this.sprite;
-        if (this.idFase === 6 && this.spritesFases.length >= this.faseDano) {
+        if (this.idFase === 7 && this.spritesFases.length >= this.faseDano) {
             const spriteFase = this.spritesFases[this.faseDano - 1];
             if (spriteFase && spriteFase.complete && spriteFase.naturalWidth > 0) {
                 spriteAtual = spriteFase;
@@ -822,8 +843,8 @@ class ChefeSetor {
         }
 
         if (spriteAtual && spriteAtual.complete && spriteAtual.naturalWidth > 0) {
-            // Efeito visual de tremor / sobrecarga se for Fase 4 do Chefe Final
-            if (this.idFase === 6 && this.faseDano === 4 && Math.random() < 0.3) {
+            // Efeito visual de tremor / sobrecarga se for Fase 4 do Chefe Final (Fase 7)
+            if (this.idFase === 7 && this.faseDano === 4 && Math.random() < 0.3) {
                 ctx.translate((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
             }
             ctx.drawImage(spriteAtual, 0, 0, this.largura, this.altura);

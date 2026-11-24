@@ -29,10 +29,51 @@
     <meta name="twitter:description" content="O arcade oficial da democracia brasileira. Jogue no celular ou PC e fortaleça a virada popular.">
     <meta name="twitter:image" content="https://levante13.online/assets/img/og-preview.png">
 
+    <!-- SEO Canonical -->
+    <link rel="canonical" href="https://levante13.online/">
+
     <!-- FONTE RETRÔ VCR OSD MONO (https://www.dafont.com/vcr-osd-mono.font) -->
     <link rel="preload" href="assets/fonts/vcr_osd_mono.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/vcr-osd-mono">
     <link rel="stylesheet" href="css/home.css?v=20261016_rev">
+
+    <!-- Dados Estruturados Schema.org (Google Rich Results / SEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://levante13.online/#website",
+          "url": "https://levante13.online/",
+          "name": "Levante 13: A Virada",
+          "description": "O arcade clássico da democracia brasileira. Jogo online gratuito de resistência popular e soberania digital.",
+          "inLanguage": "pt-BR"
+        },
+        {
+          "@type": "VideoGame",
+          "@id": "https://levante13.online/#game",
+          "name": "Levante 13: A Virada",
+          "description": "Arcade espacial retrô da democracia brasileira. Enfrente as frotas do obscurantismo, dispute recordes e defenda as conquistas do povo brasileiro.",
+          "url": "https://levante13.online/game.html",
+          "image": "https://levante13.online/assets/img/og-preview.png",
+          "genre": ["Arcade", "Retro", "Space Shooter", "Shoot 'em up"],
+          "gamePlatform": ["Web Browser", "Mobile Browser", "Desktop"],
+          "applicationCategory": "Game",
+          "operatingSystem": "Any",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL"
+          },
+          "author": {
+            "@type": "Organization",
+            "name": "Comitê Popular de Luta Tecnologia"
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 
 <body>
@@ -256,24 +297,22 @@
 
             <nav class="nav">
                 <a href="#inicio">Início</a>
-                <a href="#placar" id="linkNavPlacar" style="display: none;">Placar da Resistência</a>
+                <a href="#placar" id="linkNavPlacar">Placar da Resistência</a>
                 <a href="#soberania">Mobilização & Soberania Digital</a>
-                <span class="btn-header btn-desativado" id="btnHeaderAcao" title="Lançamento oficial em breve!">
-                    EM BREVE <svg class="px-icon">
-                        <use href="#px-timer"></use>
-                    </svg>
-                </span>
+                <a href="game.html" class="btn-header" id="btnHeaderAcao">
+                    JOGAR AGORA <svg class="px-icon"><use href="#px-joystick"></use></svg>
+                </a>
             </nav>
         </div>
     </header>
 
     <main>
-        <!-- 2. HERO PRINCIPAL (VERSÃO EM BREVE COM BOTÃO DESATIVADO) -->
+        <!-- 2. HERO PRINCIPAL -->
         <section id="inicio" class="hero">
             <div class="container">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
                     <div class="hero-tag" id="heroBadgeStatus">
-                        ★ HANGAR DA RESISTÊNCIA • DECOLAGEM EM BREVE
+                        ★ HANGAR DA RESISTÊNCIA • JOGO LIBERADO
                     </div>
                     <div id="boxContadorPilotosHero" class="hero-tag" style="display: none; background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.6); color: #4ade80;">
                         <svg class="px-icon" style="color: #22c55e;"><use href="#px-users"></use></svg>
@@ -287,20 +326,18 @@
                 </h1>
 
                 <p class="hero-desc">
-                    O arcade clássico da democracia brasileira está nos ajustes finais para a decolagem! Nossos comitês
-                    populares estão afinando a Vanguarda 13 para você enfrentar os gabinetes de mentiras, disputar o
-                    placar da resistência e virar votos de coração a coração.
+                    O arcade clássico da democracia brasileira está no ar! Enfrente os gabinetes de mentiras, dispute o
+                    placar da resistência e vire votos de coração a coração.
                 </p>
 
-                <!-- Ações do Hero: Jogar Agora Desativado + Convocação no WhatsApp & Instagram -->
+                <!-- Ações do Hero: Jogar Agora Liberado + Convocação no WhatsApp & Instagram -->
                 <div class="hero-actions" id="heroAcoes">
-                    <button type="button" class="btn-cta btn-desativado" id="btnHeroPrincipal" disabled
-                        title="Motores em aquecimento! Lançamento oficial nos próximos dias.">
+                    <a href="game.html" class="btn-cta" id="btnHeroPrincipal">
                         <svg class="px-icon">
-                            <use href="#px-timer"></use>
-                        </svg> JOGAR AGORA (EM BREVE)
-                    </button>
-                    <a href="https://api.whatsapp.com/send?text=Prepare-se!%20O%20jogo%20arcade%20da%20democracia%20brasileira%20est%C3%A1%20chegando%3A%20Levante%2013%3A%20A%20Virada!%20Acompanhe%20em%20https%3A%2F%2Flevante13.online"
+                            <use href="#px-nave"></use>
+                        </svg> JOGAR AGORA NO NAVEGADOR
+                    </a>
+                    <a href="https://api.whatsapp.com/send?text=A%20esperan%C3%A7a%20vai%20virar%20o%20jogo!%20Conhe%C3%A7a%20e%20jogue%20Levante%2013%3A%20A%20Virada%20em%20https%3A%2F%2Flevante13.online"
                         target="_blank" rel="noopener noreferrer" class="btn-sec btn-zap" id="btnHeroSecundario">
                         <svg class="px-icon">
                             <use href="#px-zap"></use>
@@ -314,9 +351,9 @@
                 </div>
 
                 <p class="hero-aviso-bloqueio">
-                    <svg class="px-icon" style="color: var(--amarelo);">
-                        <use href="#px-timer"></use>
-                    </svg> Motores em fase final de testes. Liberação 100% gratuita nos navegadores em breve!
+                    <svg class="px-icon" style="color: var(--verde);">
+                        <use href="#px-terminal"></use>
+                    </svg> Arcade liberado 100% gratuito e soberano nos navegadores!
                 </p>
 
                 <!-- Box Informativo Atraente de Pré-Lançamento (Hangar Rebelde) -->

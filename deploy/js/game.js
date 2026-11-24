@@ -44,6 +44,13 @@ const MENSAGENS_MOTIVACIONAIS_FASE = [
     },
     {
         fase: 6,
+        titulo: "REDES DA VIRADA CONQUISTADAS!",
+        sub: "A Mobilização Popular Venceu o Algoritmo do Pânico",
+        frase: "O algoritmo do pânico foi quebrado! Milhões de vozes com coragem se uniram nas redes e o Exército de Lula avança para o coração de Brasília!",
+        autor: "ANDRÉ JANONES • COMUNICAÇÃO POPULAR"
+    },
+    {
+        fase: 7,
         titulo: "GRANDE VIRADA CONQUISTADA!",
         sub: "A Soberania Popular e a Democracia Triunfaram",
         frase: "Nós vencemos o ódio, e a soberania popular é soberana. O Brasil voltou a sorrir com dignidade e justiça social!",
@@ -449,15 +456,15 @@ class MotorLevante13 {
             });
         }
 
-        // Sprites multifase do Chefe Final (Fase 6)
+        // Sprites multifase do Chefe Final (Fase 7 - Lula)
         listaUrlsImagens.push(
-            'levels/level_6/boss_phase1.png',
-            'levels/level_6/boss_phase2.png',
-            'levels/level_6/boss_phase3.png',
-            'levels/level_6/boss_phase4.png',
-            'levels/level_6/boss_piece_wing_left.png',
-            'levels/level_6/boss_piece_wing_right.png',
-            'levels/level_6/boss_piece_core_plate.png'
+            'levels/level_7/boss_phase1.png',
+            'levels/level_7/boss_phase2.png',
+            'levels/level_7/boss_phase3.png',
+            'levels/level_7/boss_phase4.png',
+            'levels/level_7/boss_piece_wing_left.png',
+            'levels/level_7/boss_piece_wing_right.png',
+            'levels/level_7/boss_piece_core_plate.png'
         );
 
         // Remove duplicatas
@@ -652,10 +659,27 @@ class MotorLevante13 {
         }
     }
 
-    iniciarPartida() {
+    iniciarPartida(indiceFaseCustomizado = null) {
         audio.iniciar();
         this.resetarJogo();
-        this.iniciarFase(0);
+
+        // Permite testes diretos de fases via URL: game.html?fase=6 ou game.html?level=6
+        let faseInicial = 0;
+        if (indiceFaseCustomizado !== null && Number.isInteger(indiceFaseCustomizado)) {
+            faseInicial = indiceFaseCustomizado;
+        } else {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramFase = urlParams.get('fase') || urlParams.get('level');
+            if (paramFase) {
+                const num = parseInt(paramFase, 10);
+                // Converte 1-indexado (ex: ?fase=6) para 0-indexado (índice 5)
+                if (!isNaN(num) && num >= 1 && num <= this.fases.length) {
+                    faseInicial = num - 1;
+                }
+            }
+        }
+
+        this.iniciarFase(faseInicial);
     }
 
     /**
@@ -681,6 +705,14 @@ class MotorLevante13 {
         this.textoAlertaChefe = '';
         this.subtextoAlertaChefe = '';
         this.animacaoDestruicaoChefe = null;
+
+        // Reseta posição da nave do jogador para o ponto inicial padrão em qualquer fase
+        if (this.jogador) {
+            this.jogador.resetarPosicao();
+        }
+        this.touchX = null;
+        this.touchY = null;
+        this.teclas = {};
 
         // Reseta posição de âncora da grade e temporizadores
         this.gradeX = 0;
@@ -1759,7 +1791,7 @@ class MotorLevante13 {
             this.ctx.fillStyle = '#facc15';
             this.ctx.textAlign = 'left';
             let labelChefe = this.chefe.nome.toUpperCase();
-            if (this.chefe.idFase === 6) {
+            if (this.chefe.idFase === 7) {
                 const nomesFasesFinal = ['[FASE 1/4: BLINDAGEM]', '[FASE 2/4: ASA CORTADA]', '[FASE 3/4: NÚCLEO EXPOSTO]', '[FASE 4/4: CRÍTICO!]'];
                 labelChefe = `A HIDRA ${nomesFasesFinal[this.chefe.faseDano - 1] || ''}`;
             }
@@ -1777,7 +1809,7 @@ class MotorLevante13 {
 
             // Cor da barra de vida varia com a fase/perigo
             let corHp = '#ef4444';
-            if (this.chefe.idFase === 6) {
+            if (this.chefe.idFase === 7) {
                 if (this.chefe.faseDano === 2) corHp = '#f97316';
                 else if (this.chefe.faseDano === 3) corHp = '#facc15';
                 else if (this.chefe.faseDano === 4) {
@@ -1810,7 +1842,7 @@ class MotorLevante13 {
 
             // Sprite do chefe no momento da queda
             let spriteDesenho = anim.sprite;
-            if (anim.idFase === 6 && anim.spritesFases.length >= anim.faseDano) {
+            if (anim.idFase === 7 && anim.spritesFases.length >= anim.faseDano) {
                 const sf = anim.spritesFases[anim.faseDano - 1];
                 if (sf && sf.complete && sf.naturalWidth > 0) spriteDesenho = sf;
             }
